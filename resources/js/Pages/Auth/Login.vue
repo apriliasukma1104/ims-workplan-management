@@ -1,27 +1,51 @@
 <template>
-        <app-header></app-header>
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <form method="post" @submit.prevent="submit">
-                    <h2 class="text-center">Sign In</h2>
-
-                    <errors-and-messages :errors="errors"></errors-and-messages>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="text" class="form-control" name="email" id="email" v-model="form.email" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" v-model="form.password" />
-                    </div>
-
-                    <input type="submit" class="btn btn-primary btn-block" value="Login" />
-                </form>
-            </div>
+  <div class="hold-transition login-page">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div>
+          <img
+            src="images/bg.png"
+            class="w-100 h-100"
+          />
         </div>
-
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex justify-content-center">
+          <div class="login-box">
+            <div class="card card-outline card-danger">
+              <div class="card-body">
+                   <form method="post" @submit.prevent="submit">
+                    <errors-and-messages :errors="errors"></errors-and-messages>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="nip" v-model="form.name" placeholder="Username" />
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          <span class="fas fa-envelope"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group mb-3">
+                       <input type="password" class="form-control" name="password" id="password" v-model="form.password" placeholder="Password" />
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          <span class="fas fa-lock"></span>
+                        </div>
+                      </div>
+                    </div>
+                  <div class="form-group">
+                    <button class="btn btn-block btn-login text-white " type="submit">Login</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <p>Made by Aprilia SD | PKL IMS 2023</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,7 +67,7 @@
         },
         setup() {
             const form = reactive({
-               email: null,
+               name: null,
                password: null,
                _token: usePage().props.value.csrf_token
             });
@@ -65,4 +89,8 @@
     form {
         margin-top: 20px;
     }
+    .btn-login {
+    background-color: #FF4A31;
+    border-color: #FF4A31;
+  }
 </style>

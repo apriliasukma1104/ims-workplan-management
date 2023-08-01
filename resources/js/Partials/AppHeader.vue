@@ -1,54 +1,210 @@
 <template>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <inertia-link :href="$route('post.index')" class="navbar-brand">Inertia CRUD</inertia-link>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <inertia-link :href="$route('post.index')" class="nav-link">Home</inertia-link>
-                    </li>
-                    <li class="nav-item">
-                        <inertia-link :href="$route('post.create')" class="nav-link">Create Post</inertia-link>
-                    </li>
-                </ul>
-            </div>
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" v-if="user">
+        <span class="navbar-text mr-3" v-if="user">
+            Logged in as {{user.name}}
+        </span>
+        <inertia-link :href="$route('logout')" as="button" method="get" class="btn btn-sm nav-link logout-link " style="display: inline;background: #FF4A31" type="button">Logout</inertia-link>
+      </li>
 
-            <div class="navbar-collapse collapse order-3 dual-collapse2">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item" v-if="!user">
-                        <inertia-link :href="$route('showLoginForm')" class="nav-link">Login</inertia-link>
-                    </li>
-                    <li class="nav-item" v-if="!user">
-                        <inertia-link :href="$route('showRegisterForm')" class="nav-link">Register</inertia-link>
-                    </li>
-                    <li class="nav-item" v-if="user">
-                        <span class="navbar-text" v-if="user">
-                            Logged in as {{user.name}}
-                        </span>
-                        <inertia-link :href="$route('logout')" as="button" method="post" class="nav-link logout-link" style="display: inline" type="button">Logout</inertia-link>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+      <!-- <li class="nav-item dropdown" v-if="user">
+        <a class="nav-link" @click="toggleDropdown">
+          <span>
+                <div class="d-felx badge-pill">
+                  <span class="fa fa-user mr-2"></span>
+                  <span><b>{{user.name}}</b></span>
+                  <span class="fa fa-angle-down ml-2"></span>
+                </div>
+          </span>
+        </a>
+        <div v-if="isDropdownOpen" class="dropdown-menu" style="left: -2.5em;">
+          <inertia-link :href="$route('manage-account')" class="dropdown-item">
+            <i class="fa fa-cog"></i> Manage Account
+          </inertia-link>
+          <inertia-link :href="$route('logout')" method="get" class="dropdown-item">
+            <i class="fa fa-power-off"></i> Logout
+          </inertia-link>
+          <inertia-link :href="$route('logout')" method="get" class="dropdown-item">
+            <i class="fa fa-power-off"></i> Logout 2
+          </inertia-link>
+        </div>
+      </li> -->
+      
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-light-orange elevation-4" style="position: fixed;">  
+    <!-- Brand Logo -->
+    <div class="brand-link text-center">
+      <span class="brand-text font-weight-bold text-danger" style="font-size: 22px;"><b style="color: #000;">Project Monitoring</b> IMS</span>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a :href="$route('dashboard.index')" class="nav-link" :class="$route().current('dashboard.index') ? 'active' : ''">
+              <i class="fas fa-th-large nav-icon"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item" :class="$route().current().indexOf('members') >= 0 ? 'menu-open' : ''">
+            <a href="#" class="nav-link" :class="$route().current().indexOf('members') >= 0 ? 'active' : ''">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Members
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a :href="$route('members.list_members')" class="nav-link" :class="$route().current('members.list_members') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a :href="$route('members.add_members')" class="nav-link" :class="$route().current('members.add_members') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item" :class="$route().current().indexOf('projects') >= 0 ? 'menu-open' : ''">
+            <a href="#" class="nav-link" :class="$route().current().indexOf('projects') >= 0 ? 'active' : ''">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>
+                Projects
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a :href="$route('projects.list_projects')" class="nav-link" :class="$route().current('projects.list_projects') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a :href="$route('projects.add_projects')" class="nav-link" :class="$route().current('projects.add_projects') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item" :class="$route().current().indexOf('cek') >= 0 ? 'menu-open' : ''">
+            <a href="#" class="nav-link" :class="$route().current().indexOf('cek') >= 0 ? 'active' : ''">
+              <i class="nav-icon fas fa-tasks"></i> 
+              <p>
+                 Projects Contoh
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a :href="$route('cek.ceklpbg')" class="nav-link" :class="$route().current('cek.ceklpbg') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>RKAP</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                 <a :href="$route('cek.ceksttp')" class="nav-link" :class="$route().current('cek.ceksttp') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>KPI</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                 <a :href="$route('cek.ceksttp')" class="nav-link" :class="$route().current('cek.ceksttp') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>NPM</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+           <li class="nav-item" :class="$route().current().indexOf('master') >= 0 ? 'menu-open' : ''">
+            <a href="#" class="nav-link" :class="$route().current().indexOf('master') >= 0 ? 'active' : ''">
+              <i class="nav-icon fas fa-database"></i>
+              <p>
+                Data Master
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                <a :href="$route('master.PageProyek')" class="nav-link" :class="$route().current('master.PageProyek') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Members</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a :href="$route('master.PageMaster')" class="nav-link" :class="$route().current('master.PageMaster') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Projects</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+
+
 </template>
 
 <script>
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
 
 export default {
     name: "AppHeader",
     setup() {
         const user = computed(() => usePage().props.value.auth.user);
-
         return {
             user
         }
-    }
+    },
+
+    // name: "AppHeader",
+    // setup() {
+    //   const user = computed(() => usePage().props.value.auth.user);
+    //   const isDropdownOpen = ref(false);
+
+    //   const toggleDropdown = () => {
+    //     isDropdownOpen.value = !isDropdownOpen.value;
+    //   };
+
+    //   return {
+    //     user,
+    //     isDropdownOpen,
+    //     toggleDropdown,
+    //   };
+    // },
 }
 </script>
