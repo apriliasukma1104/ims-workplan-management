@@ -4,7 +4,7 @@
   <Toast position="top-center" />
 
     <form>
-      <div class="card">
+      <div class="callout callout">
         <div class="row">
           <div class="col-md-6">
             <div class="form-group mt-3 ml-3">
@@ -53,8 +53,7 @@
         <hr>
         <div class="row">
           <div class="col-md-12 text-right justify-content-center d-flex mb-3">
-            <button @click="submitForm" class="btn btn-dark ml-2" >Submit</button>
-            <!-- Tombol "Cancel" menggunakan button dan menambahkan method cancelForm sebagai aksi onClick -->
+            <button @click="submitForm" class="btn btn-dark ml-2" >Save</button>
             <button @click="cancelForm" class="btn btn-secondary ml-2">Cancel</button>
           </div>
         </div>
@@ -68,7 +67,8 @@ import Layout from "../../Partials/Layout";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { reactive } from "vue";
 import { storeMembers } from '../../Api/members.api.js';
-import { router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3';
+import axios from 'axios'
 
 export default {
   components: {
@@ -88,43 +88,31 @@ export default {
 
     });
     
-    
     const avatar = reactive({
       value: null,
     });
 
-    function submitForm () {
-      var bodyFormData = new FormData();
-      bodyFormData.append('image', formData.image);
-      router.post('/members/add/store_members', formData, {
-      forceFormData: true,
-    })
-    }
-    
-    const submitForm2 = (e) => {
-    e.preventDefault();
-    var bodyFormData = new FormData();
-    bodyFormData.append('image', formData.image);
- 
-    storeMembers(formData)
-      .then(() => {
-        window.location.href = "/members/list_members";
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 422) {
-          // Tangani error validasi dari server dan tampilkan pesan
-          const errors = error.response.data.errors;
-          for (const key in errors) {
-            if (Object.hasOwnProperty.call(errors, key)) {
-              // Assign pesan error ke error form data
-              formData[key + "_error"] = errors[key][0];
-              alert(errors[key][0]);
-            }
-          }
+    // function submitForm () {
+    //   var bodyFormData = new FormData();
+    //   bodyFormData.append('image', formData.image);
+    //   router.post('/members/add/store_members', formData, {
+    //   forceFormData: true,
+    // })
+    // }
+
+    async function submitForm() {
+      try {
+        const response = await axios.post('/members/add/store_members', formData);
+        if (response.status >= 200 && response.status < 300) {
+          alert("Data Saved Successfully!");
+          window.location.href = "/members/list_members";
         } else {
-          console.error(error);
+          alert("Data Failed to Save!");
         }
-      });
+      } catch (error) {
+        console.error(error);
+        alert("Data Failed to Save!");
+      }
     }
 
     const cancelForm = () => {

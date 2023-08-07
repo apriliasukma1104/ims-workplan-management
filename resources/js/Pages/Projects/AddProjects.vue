@@ -1,8 +1,10 @@
 <template>
     <layout title="Add New Project">
+    <ConfirmDialog></ConfirmDialog>
     <Toast position="top-center" />
+
       <form>
-        <div class="card">
+        <div class="callout callout">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group mt-3 ml-3">
@@ -22,7 +24,8 @@
               <div class="form-group mt-3 ml-3">
                   <label for="team_leader" class="control-label" style="display: block; margin-top: 1rem;">Team Leader</label>
                   <select name="team_leader" id="team_leader" class="custom-select custom-select-sm" required v-model="formData.team_leader" @change="handleTeamLeaderChange">
-                      <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
+                    <option disabled value="">Please Select One</option>
+                    <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
                   </select>
               </div>
               <div class="form-group mt-3 ml-3">
@@ -59,12 +62,13 @@
           <hr>
           <div class="row">
             <div class="col-md-12 text-right justify-content-center d-flex mb-3">
-              <button @click="submitForm" class="btn btn-dark ml-2" >Submit</button>
+              <button @click="submitForm" class="btn btn-dark ml-2" >Save</button>
               <button @click="cancelForm" class="btn btn-secondary ml-2">Cancel</button>
             </div>
           </div>
         </div>
       </form>
+
     </layout>
   </template>
   
@@ -73,6 +77,7 @@
   import { ref, reactive } from 'vue';
   import { usePage } from "@inertiajs/inertia-vue3";
   import { storeProjects } from '../../Api/projects.api.js';
+  import { router } from '@inertiajs/vue3'
  
   export default {
     components: {
@@ -94,38 +99,28 @@
       });
 
       const handleTeamLeaderChange = () => {
-        // Pastikan hanya satu nama yang bisa dipilih sebagai team leader
         if (formData.team_members.includes(formData.team_leader)) {
-          // Jika nama yang dipilih sudah ada di daftar team members, hapus dari daftar team members
           const index = formData.team_members.indexOf(formData.team_leader);
           formData.team_members.splice(index, 1);
         } else {
-          // Jika nama yang dipilih belum ada di daftar team members, pastikan tidak dimasukkan sebagai team members
           formData.team_members = formData.team_members.filter(memberId => memberId !== formData.team_leader);
         }
       };
 
-      const submitForm = (e) => {
-      e.preventDefault();
-      storeProjects(formData)
-        .then(() => {
-          window.location.href = "/projects/list_projects";
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 422) {
-            // Tangani error validasi dari server dan tampilkan pesan
-            const errors = error.response.data.errors;
-            for (const key in errors) {
-              if (Object.hasOwnProperty.call(errors, key)) {
-                // Assign pesan error ke error form data
-                formData[key + "_error"] = errors[key][0];
-                alert(errors[key][0]);
-              }
+      function submitForm() {
+        axios.post('/projects/add/store_projects', formData)
+          .then(response => {
+            if (response.status >= 200 && response.status < 300) {
+              alert("Data Saved Successfully!");
+              window.location.href = "/projects/list_projects";
+            } else {
+              alert("Data Failed to Save!");
             }
-          } else {
+          })
+          .catch(error => {
             console.error(error);
-          }
-        });
+            alert("Data Failed to Save!");
+          });
       }
   
       const cancelForm = () => {

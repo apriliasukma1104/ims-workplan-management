@@ -31,7 +31,7 @@
                 <Column :exportable="false" header="Action">
                     <template #body="slotProps">
                         <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-danger" />
+                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
                     </template>
                 </Column>
             </DataTable>
@@ -56,8 +56,8 @@ export default {
     data() {
         return {
             data: [],
-            dataPerPage: 10, // Ubah sesuai dengan jumlah data per halaman yang diinginkan
-            totalData: 0, // Jumlah total data anggota
+            dataPerPage: 10, 
+            totalData: 0, 
             display: false,
             search:null,
             form: {
@@ -85,29 +85,33 @@ export default {
     },
     methods: {
         async loadLazyData() {
-            // window.location.reload();
-            this.loading = true;
-            const res = await storeMembers({page : this.lazyParams.page + 1, search:this.search})
+            window.location.reload();
+            // this.loading = true;
+            // const res = await storeMembers({page : this.lazyParams.page + 1, search:this.search})
 
-            this.data = res.data.data;
+            // this.data = res.data.data;
 
-            this.loading = false;
+            // this.loading = false;
         },
         onSearch(){
             this.lazyParams.page = 0;
+            this.loadLazyData();
+        },
+        onPage(event) {
+            this.lazyParams.page = event.page + 1;
             this.loadLazyData();
         },
         onEdit(data) {
         this.$inertia.visit(`/members/list/edit_members?id=${data.id}`);
         },
         onDelete(data) {
-            if (window.confirm("Yakin ingin menghapus data?")) {
+            if (window.confirm("Are you sure you want to delete data?")) {
                 deleteMembers({ id: data.id })
                     .then(() => {
                         this.$toast.add({
                             severity: "success",
-                            summary: "Informasi!",
-                            detail: "Berhasil Dihapus",
+                            summary: "Information!",
+                            detail: "Data Deleted Successfully!",
                             life: 3000,
                         });
                         this.loadLazyData();
@@ -117,15 +121,11 @@ export default {
                         this.$toast.add({
                             severity: "error",
                             summary: "Error!",
-                            detail: "Gagal menghapus data",
+                            detail: "Data Failed to Delete!",
                             life: 3000,
                         });
                     });
             }
-        },
-        onPage(event) {
-            this.lazyParams.page = event.page + 1;
-            this.loadLazyData();
         },
     },
     props: {

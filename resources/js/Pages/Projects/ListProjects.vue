@@ -11,7 +11,7 @@
                 </template>
             </Toolbar>
             <DataTable :value="data" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
-                :totalRecords="totalData" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
+                :totalRecords="totalData" :loading="loading" :currentPage="lazyParams.page" @page="onPage($event)" responsiveLayout="scroll">
                 <Column field="" header="No">
                     <template #body="slotProps">
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
@@ -21,7 +21,7 @@
                 <Column field="project_type" header="Project Type"></Column>
                 <Column field="team_leader" header="Team Leader">
                     <template #body="slotProps">
-                        <span>{{ slotProps.data.team_leader_name }}</span>
+                        <span>{{ slotProps.data.team_leader }}</span>
                     </template>
                 </Column>
                 <Column field="start_date" header="Start Date"></Column>
@@ -36,7 +36,8 @@
                 <Column :exportable="false" header="Action">
                     <template #body="slotProps">
                         <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-danger" />
+                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 10px;" />
+                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-secondary" />
                     </template>
                 </Column>
             </DataTable>
@@ -50,7 +51,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
-import { storeProjects, getTeamLeaderName, deleteProjects } from '../../Api/projects.api.js';
+import { storeProjects, deleteProjects } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -62,8 +63,8 @@ export default {
     data() {
         return {
             data: [],
-            dataPerPage: 10, // Ubah sesuai dengan jumlah data per halaman yang diinginkan
-            totalData: 0, // Jumlah total data anggota
+            dataPerPage: 5, 
+            totalData: 0, 
             display: false,
             search:null,
             form: {
@@ -99,44 +100,39 @@ export default {
     methods: {
         async loadLazyData() {
             window.location.reload();
-            const res = await storeProjects({ page: this.lazyParams.page + 1, search: this.search });
-            this.data = res.projects.data; // Ubah menjadi res.data, sesuai dengan respons dari server
+            // this.loading = true; 
+            // try {
+            //     const res = await storeProjects({ page: this.lazyParams.page, search: this.search });
+            //     this.data = res.projects.data;
+            //     this.totalData = res.projects.total;
+            //     this.loading = false; 
+            // } catch (error) {
+            //     console.error("Error while fetching projects:", error);
+            //     this.loading = false; 
+            // }
         },
         onSearch(){
             this.lazyParams.page = 1;
             this.loadLazyData();
         },
+        onPage(event) {
+            this.lazyParams.page = event.page + 1;
+            this.loadLazyData();
+        },
         onEdit(data) {
         this.$inertia.visit(`/projects/list/edit_projects?id=${data.id}`);
         },
-        async getTeamLeaderName(team_leader_id) {
-            try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const response = fetch(`/projects/list/team_leader_name`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken, // Sertakan token CSRF dalam header permintaan
-                    },
-                    body: JSON.stringify({ team_leader_id }), // Kirim data team_leader_id sebagai JSON di dalam body permintaan
-                });
-                const data = response.json();
-                return data.name;
-                console.log(data.name)
-            } catch (error) {
-                console.error("Error while fetching team leader name:", error);
-                return "";
-            }
+        onView(data) {
+        this.$inertia.visit(`/projects/list/view_projects?id=${data.id}`);
         },
-        
         onDelete(data) {
-            if (window.confirm("Yakin ingin menghapus data?")) {
+            if (window.confirm("Are you sure you want to delete data?")) {
                 deleteProjects({ id: data.id })
                     .then(() => {
                         this.$toast.add({
                             severity: "success",
-                            summary: "Informasi!",
-                            detail: "Berhasil Dihapus",
+                            summary: "Information!",
+                            detail: "Data Deleted Successfully!",
                             life: 3000,
                         });
                         this.loadLazyData();
@@ -146,18 +142,12 @@ export default {
                         this.$toast.add({
                             severity: "error",
                             summary: "Error!",
-                            detail: "Gagal menghapus data",
+                            detail: "Data Failed to Delete!",
                             life: 3000,
                         });
                     });
             }
         },
-        
-        onPage(event) {
-            this.lazyParams.page = event.page + 1;
-            this.loadLazyData();
-        },
-
         getStatusClass(status) {
         switch (status) {
             case "to do":
@@ -165,21 +155,19 @@ export default {
             case "doing":
             return "badge badge-info";
             case "done":
-            return "badge badge-success";
+            return "badge badge-secondary";
             default:
             return "badge";
         }
         },
-        
     },
 
     props: {
         errors: Object
     },
     mounted() {
-        this.data = this.$page.props.projects; // Assign data dari server ke variabel data
-        this.totalData = this.$page.props.projects.length; // Set jumlah total data dari server
-       
+        this.data = this.$page.props.projects.data; 
+        this.totalData = this.$page.props.projects.data.length; 
     }
 
 };
@@ -202,8 +190,8 @@ export default {
   color: #fff;
 }
 
-.badge-success {
-  background-color: #28a745;
+.badge-secondary {
+  background-color: #6c757d;
   color: #fff;
 }
 </style>

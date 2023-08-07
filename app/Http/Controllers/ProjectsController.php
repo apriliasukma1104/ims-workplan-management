@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use App\Models\Projects;
 use App\Models\Members;
+use App\Models\Tasks;
 
 class ProjectsController extends Controller
 {
@@ -26,18 +27,16 @@ class ProjectsController extends Controller
 
     public function PageListProjects(Request $request)
     {
-        $search = $request->input('search'); 
+        $search = $request->input('search');
         $title = 'Projects';
-        
-        // Lakukan filter data berdasarkan pencarian jika ada
-        $projects = Projects::select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status')
-                            ->when($search, function ($query) use ($search) {
-                                return $query->where('name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
+        $projectsQuery = Projects::select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status');
+        if ($search) {
+            $projectsQuery->where('name', 'like', '%' . $search . '%');
+        }
+        $projects = $projectsQuery->paginate(5);
         return Inertia::render('Projects/ListProjects', [
             'title' => $title,
-            'projects' => $projects, // Mengirim data proyek ke halaman Vue.js
+            'projects' => $projects, // Mengirim data yang telah difilter ke halaman Vue.js
         ]);
     }
 
@@ -51,11 +50,33 @@ class ProjectsController extends Controller
         ]);
     }
 
-    public function StoreProjects(Request $request){
-        $params = [
-            'search'=>$request->input('search'),
-            'page'=>$request->input('page')
-         ];
+    // public function StoreProjects(Request $request){
+    //     // dd($request->all());
+    //     $validatedData = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255',
+    //         'project_type' => 'required|string|in:RKAP,KPI,NPM',
+    //         'team_leader' => 'required|exists:members,id', 
+    //         'team_members' => 'required|array',
+    //         'team_members.*' => 'exists:members,id', 
+    //         'start_date' => 'required|date',
+    //         'end_date' => 'required|date|after_or_equal:start_date',
+    //         'status' => 'required|in:to do,doing,done',
+    //         'description' => 'required|string|max:255',
+    //     ])->validate();
+    //     // Konversi array anggota tim menjadi string JSON
+    //     $validatedData['team_members'] = json_encode($validatedData['team_members']);
+    //     // Simpan data ke database
+    //     $project = Projects::create($validatedData);
+    //     // Simpan data anggota tim
+    //     $teamMembers = json_decode($validatedData['team_members']);
+    //     foreach ($teamMembers as $memberId) {
+    //         $project->teamMembers()->attach($memberId);
+    //     }
+    //     return response()->json(['message' => 'Data created successfully'], 201);
+    // }
+
+    public function StoreProjects(Request $request)
+    {
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'project_type' => 'required|string|in:RKAP,KPI,NPM',
@@ -67,16 +88,13 @@ class ProjectsController extends Controller
             'status' => 'required|in:to do,doing,done',
             'description' => 'required|string|max:255',
         ])->validate();
-        // Konversi array anggota tim menjadi string JSON
         $validatedData['team_members'] = json_encode($validatedData['team_members']);
-        // Simpan data ke database
         $project = Projects::create($validatedData);
-        // Simpan data anggota tim
         $teamMembers = json_decode($validatedData['team_members']);
         foreach ($teamMembers as $memberId) {
             $project->teamMembers()->attach($memberId);
         }
-        return response()->json(['message' => 'Data created successfully'], 201);
+        return redirect()->route('projects.list_projects')->with('message', 'Data created successfully!');
     }
 
     public function EditProjects(Request $request)
@@ -96,24 +114,12 @@ class ProjectsController extends Controller
         return redirect()->route('projects.list_projects')->with('message', 'Data Berhasil Diupdate!');
     }
 
-    public function GetTeamLeaderName(Request $request)
-    {
-        $team_leader_id = $request->team_leader_id;;
-        $teamLeader = Members::find($team_leader_id);
-        if ($teamLeader) {
-            return response()->json(['name' => $teamLeader->name]);
-        }
-        return response()->json(['name' => '']);
-    }
-
     public function DeleteProjects(Request $request)
     {
-        // Validasi input ID menggunakan Validator
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:projects,id',
         ]);
         if ($validator->fails()) {
-            // Jika validasi gagal, kembalikan response dengan status 422 (Unprocessable Entity) dan daftar pesan error
             return response()->json(['errors' => $validator->errors()], 422);
         }
         try {
@@ -124,5 +130,37 @@ class ProjectsController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to delete data'], 500);
         }
+    }
+
+    public function ViewProjects(Request $request)
+    {
+        $projects = Projects::with('teamMembers')->findOrFail($request->id);
+        return Inertia::render('Projects/ViewProjects', [
+            'formData' => $projects,
+        ]);
+    }
+
+    public function StoreTasks(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_project' => 'required|integer',
+                'task' => 'required|string|max:255',
+                'description' => 'required|string|max:255',
+                'status' => 'required|in:to do,doing,done',
+            ]);
+            Tasks::create($validatedData);
+            return redirect()->route('projects.list_tasks')->with('message', 'Data Created successfully!');
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Data Failed to Save!'], 500);
+        }
+    }
+
+    public function ListTasks(Request $request)
+    {
+        $tasks = Tasks::select('id', 'id_project', 'task', 'description', 'status')->get();
+        return response()->json(['tasks' => $tasks]);
     }
 }

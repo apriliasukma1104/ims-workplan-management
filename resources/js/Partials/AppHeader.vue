@@ -57,14 +57,14 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+          
           <li class="nav-item">
             <a :href="$route('dashboard.index')" class="nav-link" :class="$route().current('dashboard.index') ? 'active' : ''">
               <i class="fas fa-th-large nav-icon"></i>
               <p>Dashboard</p>
             </a>
           </li>
+
           <li class="nav-item" :class="$route().current().indexOf('members') >= 0 ? 'menu-open' : ''">
             <a href="#" class="nav-link" :class="$route().current().indexOf('members') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-users"></i>
@@ -74,6 +74,12 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a :href="$route('members.manage_member')" class="nav-link" :class="$route().current('members.manage_member') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a :href="$route('members.list_members')" class="nav-link" :class="$route().current('members.list_members') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
@@ -91,7 +97,7 @@
 
           <li class="nav-item" :class="$route().current().indexOf('projects') >= 0 ? 'menu-open' : ''">
             <a href="#" class="nav-link" :class="$route().current().indexOf('projects') >= 0 ? 'active' : ''">
-              <i class="nav-icon fas fa-tasks"></i>
+              <i class="nav-icon fas fa-book"></i>
               <p>
                 Projects
                 <i class="right fas fa-angle-left"></i>
@@ -112,8 +118,15 @@
               </li>
             </ul>
           </li>
+          
+          <li class="nav-item">
+            <a :href="$route('tasks.page_tasks')" class="nav-link" :class="$route().current('tasks.page_tasks') ? 'active' : ''">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>Task</p>
+            </a>
+          </li>
 
-          <li class="nav-item" :class="$route().current().indexOf('cek') >= 0 ? 'menu-open' : ''">
+          <!-- <li class="nav-item" :class="$route().current().indexOf('cek') >= 0 ? 'menu-open' : ''">
             <a href="#" class="nav-link" :class="$route().current().indexOf('cek') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-tasks"></i> 
               <p>
@@ -141,9 +154,9 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> -->
 
-           <li class="nav-item" :class="$route().current().indexOf('master') >= 0 ? 'menu-open' : ''">
+           <!-- <li class="nav-item" :class="$route().current().indexOf('master') >= 0 ? 'menu-open' : ''">
             <a href="#" class="nav-link" :class="$route().current().indexOf('master') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-database"></i>
               <p>
@@ -165,7 +178,7 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> -->
           
         </ul>
       </nav>

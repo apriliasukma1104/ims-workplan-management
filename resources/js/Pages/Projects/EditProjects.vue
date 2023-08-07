@@ -2,7 +2,7 @@
     <layout title="Edit Project">
     <Toast position="top-center" />
       <form @submit.prevent="update">
-        <div class="card">
+        <div class="callout callout">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group mt-3 ml-3">
@@ -98,19 +98,11 @@
         e.preventDefault();
         try {
           await updateProjects(formData); 
+          alert("Data Successfully Updated!");
           window.location.href = "/projects/list_projects";
         } catch (error) {
-          if (error.response && error.response.status === 422) {
-            const errors = error.response.data.errors;
-            for (const key in errors) {
-              if (Object.hasOwnProperty.call(errors, key)) {
-                formData[key + "_error"] = errors[key][0];
-                alert(errors[key][0]);
-              }
-            }
-          } else {
-            console.error(error);
-          }
+          console.error(error);
+          alert("Data Failed to Save!");
         }
       };
   
