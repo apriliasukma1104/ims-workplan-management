@@ -24289,83 +24289,100 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       description: "",
       status: ""
     });
+    var dataTask = (0,vue__WEBPACK_IMPORTED_MODULE_3__.reactive)({
+      task: [],
+      display: false
+    });
+    dataTask.task = tasks;
+
+    function loadLazyTask(_x) {
+      return _loadLazyTask.apply(this, arguments);
+    }
+
+    function _loadLazyTask() {
+      _loadLazyTask = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(form) {
+        var params, result;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                params = {
+                  id_project: formData.id
+                };
+                _context.next = 3;
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.listTasks)(form);
+
+              case 3:
+                result = _context.sent;
+                dataTask.task = result.data.data;
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+      return _loadLazyTask.apply(this, arguments);
+    }
+
+    ;
 
     function simpanTask() {
       return _simpanTask.apply(this, arguments);
     }
 
     function _simpanTask() {
-      _simpanTask = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      _simpanTask = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 form.id_project = formData.id;
-                _context.prev = 1;
-                _context.next = 4;
+                _context2.prev = 1;
+                dataTask.display = false;
+                _context2.next = 5;
                 return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.storeTasks)(form);
 
-              case 4:
-                response = _context.sent;
-
-                if (response.data.message === 'Data Created Successfully!') {
-                  alert("Data Saved Successfully!");
-                  this.$inertia.visit("/projects/view_project?id=".concat(formData.id));
-                }
-
-                _context.next = 12;
+              case 5:
+                response = _context2.sent;
+                alert("Data Saved Successfully!");
+                loadLazyTask(form);
+                _context2.next = 14;
                 break;
 
-              case 8:
-                _context.prev = 8;
-                _context.t0 = _context["catch"](1);
-                console.error(_context.t0);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](1);
+                console.error(_context2.t0);
                 alert("Data Failed to Save!");
 
-              case 12:
+              case 14:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this, [[1, 8]]);
+        }, _callee2, null, [[1, 10]]);
       }));
       return _simpanTask.apply(this, arguments);
     }
 
+    ;
     return {
       userType: userType,
       formData: formData,
       form: form,
       members: members,
       tasks: tasks,
-      simpanTask: simpanTask
-    };
-  },
-  data: function data() {
-    return {
-      display: false
+      dataTask: dataTask,
+      simpanTask: simpanTask,
+      loadLazyTask: loadLazyTask
     };
   },
   methods: {
-    loadLazyData: function loadLazyData() {
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                window.location.reload();
-
-              case 1:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
     newTask: function newTask() {
-      this.display = true;
+      this.dataTask.display = true;
       this.form.id = "";
       this.form.task = "";
       this.form.description = "";
@@ -24394,7 +24411,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             life: 3000
           });
 
-          _this.loadLazyData();
+          _this.loadLazyTask(data);
         })["catch"](function (error) {
           console.error("Error while deleting:", error);
 
@@ -30630,9 +30647,9 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         position: "top-center"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfirmDialog), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dialog, {
         header: "Header",
-        visible: $data.display,
+        visible: $setup.dataTask.display,
         "onUpdate:visible": _cache[7] || (_cache[7] = function ($event) {
-          return $data.display = $event;
+          return $setup.dataTask.display = $event;
         })
       }, {
         header: _withId(function () {
@@ -30644,7 +30661,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             icon: "pi pi-times",
             "class": "p-button-text",
             onClick: _cache[6] || (_cache[6] = function ($event) {
-              return $data.display = false;
+              return _ctx.display = false;
             })
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
             label: "Simpan",
@@ -30739,7 +30756,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       }, null, 8
       /* PROPS */
       , ["onClick"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DataTable, {
-        value: $setup.tasks,
+        value: $setup.dataTask.task,
         lazy: true,
         rows: _ctx.totalData,
         ref: "dt",
@@ -33346,6 +33363,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "deleteProject": () => (/* binding */ deleteProject),
 /* harmony export */   "updateProject": () => (/* binding */ updateProject),
 /* harmony export */   "storeTasks": () => (/* binding */ storeTasks),
+/* harmony export */   "listTasks": () => (/* binding */ listTasks),
 /* harmony export */   "deleteTask": () => (/* binding */ deleteTask)
 /* harmony export */ });
 /* harmony import */ var _httpClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./httpClient */ "./resources/js/Api/httpClient.js");
@@ -33365,6 +33383,12 @@ var updateProject = function updateProject(params) {
 
 var storeTasks = function storeTasks(params) {
   return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/view_project/store_tasks', params);
+};
+
+var listTasks = function listTasks(params) {
+  return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.get('/projects/list/view_project/list_tasks', {
+    params: params
+  });
 };
 
 var deleteTask = function deleteTask(params) {

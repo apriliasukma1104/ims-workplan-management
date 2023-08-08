@@ -3,7 +3,7 @@
     <Toast position="top-center" />
     <ConfirmDialog></ConfirmDialog>
 
-      <Dialog header="Header" v-model:visible="display" >
+      <Dialog header="Header" v-model:visible="dataTask.display" >
         <template #header>
                 <label>New Task</label>
                 </template>
@@ -31,7 +31,7 @@
                 <template #footer>
                     <Button label="Batal" icon="pi pi-times" class="p-button-text" @click="display = false"/>
                     <Button label="Simpan" icon="pi pi-check" autofocus @click="simpanTask"/>
-        </template>
+                </template>
       </Dialog>
     
       <form>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="card-body p-0 ml-2 mr-2">
-                        <DataTable :value="tasks" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
+                        <DataTable :value=" dataTask.task" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
                             <Column field="" header="No">
                               <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
@@ -133,74 +133,78 @@
   <script>
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
-  import { reactive } from "vue";
-  import { storeTasks, deleteTask } from '../../Api/projects.api.js';
+  import { reactive} from "vue";
+  import { storeTasks, deleteTask, listTasks } from '../../Api/projects.api.js';
   
   export default {
     components: {
-      Layout,
+        Layout,
     },
     setup() {
-      const { userType, members } = usePage().props.value;
-      const data = usePage().props.value.formData;
-      const tasks = usePage().props.value.tasks;
+        const { userType, members } = usePage().props.value;
+        const data = usePage().props.value.formData;
+        const tasks = usePage().props.value.tasks;
 
-      const formData = reactive({
-        id: data.id,
-        name: data.name,
-        project_type: data.project_type,
-        team_leader: data.team_leader,
-        team_members: data.team_members,
-        start_date: data.start_date,
-        end_date: data.end_date,
-        status: data.status,
-        description: data.description,
-      });
+        const formData = reactive({
+            id: data.id,
+            name: data.name,
+            project_type: data.project_type,
+            team_leader: data.team_leader,
+            team_members: data.team_members,
+            start_date: data.start_date,
+            end_date: data.end_date,
+            status: data.status,
+            description: data.description,
+        });
 
-      const form = reactive({
-        id: "",
-        task: "",
-        description: "",
-        status: "",
-      });
+        const form = reactive({
+            id: "",
+            task: "",
+            description: "",
+            status: "",
+        });
 
-      async function simpanTask() {
-          form.id_project = formData.id;
-          try {
-              const response = await storeTasks(form);
-              if (response.data.message === 'Data Created Successfully!') {
-                  alert("Data Saved Successfully!");
-                  this.$inertia.visit(`/projects/view_project?id=${formData.id}`);
-              }
-          } catch (error) {
-              console.error(error);
-              alert("Data Failed to Save!");
-          }
-      }    
+        var dataTask = reactive({
+            task : [],
+            display: false
+        });
 
-      return {
-        userType,
-        formData,
-        form,
-        members,
-        tasks,
-        simpanTask,
-      };
-    },
+        dataTask.task=tasks;
 
-    data(){
-      return{
-        display:false,
-      }
+        async function loadLazyTask(form) {
+            var params = {id_project:formData.id};
+            const result = await listTasks( form );
+            dataTask.task = result.data.data;
+        };
+
+        async function simpanTask() {
+            form.id_project = formData.id;
+            try {
+                dataTask.display = false
+                const response = await storeTasks(form);
+                alert("Data Saved Successfully!");
+                loadLazyTask(form);
+            } catch (error) {
+                console.error(error);
+                alert("Data Failed to Save!");
+            }
+        };    
+
+        return {
+            userType,
+            formData,
+            form,
+            members,
+            tasks,
+            dataTask,
+            simpanTask,
+            loadLazyTask
+        };
     },
 
     methods:{
-        async loadLazyData() {
-            window.location.reload();
-        },
-
         newTask() {
-            this.display = true;
+            this.dataTask.display = true;
             this.form.id = "";
             this.form.task = "";
             this.form.description = "";
@@ -227,7 +231,7 @@
                             detail: "Data Deleted Successfully!",
                             life: 3000,
                         });
-                        this.loadLazyData();
+                        this.loadLazyTask(data);
                     })
                     .catch((error) => {
                         console.error("Error while deleting:", error);

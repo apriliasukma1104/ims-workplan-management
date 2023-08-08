@@ -153,7 +153,11 @@ class ProjectsController extends Controller
             'id_project' => 'required|integer',
         ]);
         Tasks::create($validatedData);
-        return $this->inertia->visit('/projects/view_project?id=' . $formData->id)->with('message', 'Data Created Successfully!');
+    }
+
+    public function ListTasks(Request $request){
+        $task = Tasks::where('id_project', $request->id_project) ->get();
+        return response()->json(['message' => 'Data Saved Successfully', "data" => $task]);
     }
 
     public function DeleteTask(Request $request)
@@ -172,5 +176,4 @@ class ProjectsController extends Controller
             return response()->json(['message' => 'Failed to delete data'], 500);
         }
     }
-
 }
