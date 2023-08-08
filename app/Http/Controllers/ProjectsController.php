@@ -156,4 +156,21 @@ class ProjectsController extends Controller
         return $this->inertia->visit('/projects/view_projects?id=' . $formData->id)->with('message', 'Data Created Successfully!');
     }
 
+    public function DeleteTask(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:tasks,id',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        try {
+            $task = Tasks::findOrFail($request->id);
+            $task->delete();
+            return response()->json(['message' => 'Data deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete data'], 500);
+        }
+    }
+
 }

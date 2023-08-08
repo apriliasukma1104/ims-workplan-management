@@ -24348,6 +24348,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    loadLazyData: function loadLazyData() {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                window.location.reload();
+
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
     newTask: function newTask() {
       this.display = true;
       this.form.id = "";
@@ -24362,6 +24378,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return 'badge badge-info';
       } else if (status === 'done') {
         return 'badge badge-secondary';
+      }
+    },
+    onDelete: function onDelete(data) {
+      var _this = this;
+
+      if (window.confirm("Are you sure you want to delete data?")) {
+        (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.deleteTask)({
+          id: data.id
+        }).then(function () {
+          _this.$toast.add({
+            severity: "success",
+            summary: "Information!",
+            detail: "Data Deleted Successfully!",
+            life: 3000
+          });
+
+          _this.loadLazyData();
+        })["catch"](function (error) {
+          console.error("Error while deleting:", error);
+
+          _this.$toast.add({
+            severity: "error",
+            summary: "Error!",
+            detail: "Data Failed to Delete!",
+            life: 3000
+          });
+        });
       }
     }
   }
@@ -30754,13 +30797,10 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
               /* PROPS */
               , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
                 onClick: function onClick($event) {
-                  return _ctx.onDelete(slotProps.data);
+                  return $options.onDelete(slotProps.data);
                 },
                 icon: "pi pi-trash",
-                "class": "p-button-rounded p-button-info",
-                style: {
-                  "margin-right": "10px"
-                }
+                "class": "p-button-rounded p-button-info"
               }, null, 8
               /* PROPS */
               , ["onClick"])];
@@ -33305,7 +33345,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "storeProjects": () => (/* binding */ storeProjects),
 /* harmony export */   "deleteProjects": () => (/* binding */ deleteProjects),
 /* harmony export */   "updateProjects": () => (/* binding */ updateProjects),
-/* harmony export */   "storeTasks": () => (/* binding */ storeTasks)
+/* harmony export */   "storeTasks": () => (/* binding */ storeTasks),
+/* harmony export */   "deleteTask": () => (/* binding */ deleteTask)
 /* harmony export */ });
 /* harmony import */ var _httpClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./httpClient */ "./resources/js/Api/httpClient.js");
 
@@ -33324,6 +33365,10 @@ var updateProjects = function updateProjects(params) {
 
 var storeTasks = function storeTasks(params) {
   return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/view_projects/store_tasks', params);
+};
+
+var deleteTask = function deleteTask(params) {
+  return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/view_projects/delete_task', params);
 };
 
 

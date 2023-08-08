@@ -79,6 +79,7 @@ Route::prefix('projects')->name('projects.')->group(function () {
 
     Route::get('/list/view_projects', [ProjectsController::class, 'ViewProjects'])->name('view_projects');
     Route::post('/list/view_projects/store_tasks', [ProjectsController::class, 'StoreTasks'])->name('store_tasks');
+    Route::post('/list/view_projects/delete_task', [ProjectsController::class, 'DeleteTask'])->name('delete_task');
 });
 
 Route::prefix('tasks')->name('tasks.')->group(function () {

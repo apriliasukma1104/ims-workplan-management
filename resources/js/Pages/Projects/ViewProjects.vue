@@ -118,7 +118,7 @@
                             <Column :exportable="false" header="Action">
                                 <template #body="slotProps">
                                     <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
-                                    <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 10px;" />
+                                    <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
                                 </template>
                             </Column>
                         </DataTable>
@@ -134,7 +134,7 @@
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
   import { reactive } from "vue";
-  import { storeTasks } from '../../Api/projects.api.js';
+  import { storeTasks, deleteTask } from '../../Api/projects.api.js';
   
   export default {
     components: {
@@ -176,7 +176,7 @@
               console.error(error);
               alert("Data Failed to Save!");
           }
-      }
+      }    
 
       return {
         userType,
@@ -195,22 +195,52 @@
     },
 
     methods:{
-      newTask() {
-      this.display = true;
-      this.form.id = "";
-      this.form.task = "";
-      this.form.description = "";
-      this.form.status = "";
-    },
-      getStatusBadgeClass(status) {
-          if (status === 'to do') {
-              return 'badge badge-primary';
-          } else if (status === 'doing') {
-              return 'badge badge-info';
-          } else if (status === 'done') {
-              return 'badge badge-secondary';
-          }
-      },
+        async loadLazyData() {
+            window.location.reload();
+        },
+
+        newTask() {
+            this.display = true;
+            this.form.id = "";
+            this.form.task = "";
+            this.form.description = "";
+            this.form.status = "";
+        },
+
+        getStatusBadgeClass(status) {
+            if (status === 'to do') {
+                return 'badge badge-primary';
+            } else if (status === 'doing') {
+                return 'badge badge-info';
+            } else if (status === 'done') {
+                return 'badge badge-secondary';
+            }
+        },
+    
+        onDelete(data) {
+            if (window.confirm("Are you sure you want to delete data?")) {
+                deleteTask({ id: data.id })
+                    .then(() => {
+                        this.$toast.add({
+                            severity: "success",
+                            summary: "Information!",
+                            detail: "Data Deleted Successfully!",
+                            life: 3000,
+                        });
+                        this.loadLazyData();
+                    })
+                    .catch((error) => {
+                        console.error("Error while deleting:", error);
+                        this.$toast.add({
+                            severity: "error",
+                            summary: "Error!",
+                            detail: "Data Failed to Delete!",
+                            life: 3000,
+                        });
+                    });
+            }
+        },
+
   }
   
   };
