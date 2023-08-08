@@ -45,7 +45,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
-import { storeMembers, deleteMembers } from '../../Api/members.api.js';
+import { storeMembers, deleteMember } from '../../Api/members.api.js';
 
 export default {
     name: "ListMembers",
@@ -102,11 +102,11 @@ export default {
             this.loadLazyData();
         },
         onEdit(data) {
-        this.$inertia.visit(`/members/list/edit_members?id=${data.id}`);
+        this.$inertia.visit(`/members/list/edit_member?id=${data.id}`);
         },
         onDelete(data) {
             if (window.confirm("Are you sure you want to delete data?")) {
-                deleteMembers({ id: data.id })
+                deleteMember({ id: data.id })
                     .then(() => {
                         this.$toast.add({
                             severity: "success",

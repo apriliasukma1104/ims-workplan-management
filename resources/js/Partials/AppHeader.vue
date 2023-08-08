@@ -87,7 +87,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a :href="$route('members.add_members')" class="nav-link" :class="$route().current('members.add_members') ? 'active' : ''">
+                <a :href="$route('members.add_member')" class="nav-link" :class="$route().current('members.add_member') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add New</p>
                 </a>
@@ -111,7 +111,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a :href="$route('projects.add_projects')" class="nav-link" :class="$route().current('projects.add_projects') ? 'active' : ''">
+                <a :href="$route('projects.add_project')" class="nav-link" :class="$route().current('projects.add_project') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add New</p>
                 </a>

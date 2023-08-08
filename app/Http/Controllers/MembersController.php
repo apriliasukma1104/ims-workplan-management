@@ -37,10 +37,10 @@ class MembersController extends Controller
         ]);
     }
 
-    public function PageAddMembers()
+    public function PageAddMember()
     {
         $title = 'Members';
-        return Inertia::render('Members/AddMembers', [
+        return Inertia::render('Members/AddMember', [
             'title' =>  $title
         ]);
     }
@@ -74,22 +74,22 @@ class MembersController extends Controller
         return redirect()->route('members.list_members')->with('message', 'Data Created successfully!');
     }
 
-    public function EditMembers(Request $request)
+    public function EditMember(Request $request)
     {
-        $members = Members::findOrFail($request->id);
-        return Inertia::render('Members/EditMembers', [
-            'formData' => $members
+        $member = Members::findOrFail($request->id);
+        return Inertia::render('Members/EditMember', [
+            'formData' => $member
         ]);
     }
 
-    public function UpdateMembers(Request $request)
+    public function UpdateMember(Request $request)
     {
-        $members = Members::find($request->input('id'));
-        $members->update($request->all());
+        $member = Members::find($request->input('id'));
+        $member->update($request->all());
         return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
     }
 
-    public function DeleteMembers(Request $request)
+    public function DeleteMember(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:members,id',

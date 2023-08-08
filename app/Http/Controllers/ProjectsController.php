@@ -40,11 +40,11 @@ class ProjectsController extends Controller
         ]);
     }
 
-    public function PageAddProjects()
+    public function PageAddProject()
     {
         $title = 'Projects';
         $members = Members::all(); 
-        return Inertia::render('Projects/AddProjects', [
+        return Inertia::render('Projects/AddProject', [
             'title' =>  $title,
             'members' => $members 
         ]);
@@ -97,24 +97,24 @@ class ProjectsController extends Controller
         return redirect()->route('projects.list_projects')->with('message', 'Data created successfully!');
     }
 
-    public function EditProjects(Request $request)
+    public function EditProject(Request $request)
     {
-        $projects = Projects::findOrFail($request->id);
+        $project = Projects::findOrFail($request->id);
         $members = Members::all(); 
-        return Inertia::render('Projects/EditProjects', [
-            'formData' => $projects,
+        return Inertia::render('Projects/EditProject', [
+            'formData' => $project,
             'members' => $members 
         ]);
     }
 
-    public function UpdateProjects(Request $request)
+    public function UpdateProject(Request $request)
     {
-        $projects = Projects::find($request->input('id'));
-        $projects->update($request->all());
+        $project = Projects::find($request->input('id'));
+        $project->update($request->all());
         return redirect()->route('projects.list_projects')->with('message', 'Data Berhasil Diupdate!');
     }
 
-    public function DeleteProjects(Request $request)
+    public function DeleteProject(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:projects,id',
@@ -132,15 +132,15 @@ class ProjectsController extends Controller
         }
     }
 
-    public function ViewProjects(Request $request)
+    public function ViewProject(Request $request)
     {
-        $projects = Projects::with('teamMembers')->findOrFail($request->id);
-        $tasks = Tasks::select('id', 'id_project', 'task', 'description', 'status')
+        $project = Projects::with('teamMembers')->findOrFail($request->id);
+        $task = Tasks::select('id', 'id_project', 'task', 'description', 'status')
             ->where('id_project', $request->id) ->get();
 
-        return Inertia::render('Projects/ViewProjects', [
-            'formData' => $projects,
-            'tasks' => $tasks,
+        return Inertia::render('Projects/ViewProject', [
+            'formData' => $project,
+            'tasks' => $task,
         ]);
     }
 
@@ -153,7 +153,7 @@ class ProjectsController extends Controller
             'id_project' => 'required|integer',
         ]);
         Tasks::create($validatedData);
-        return $this->inertia->visit('/projects/view_projects?id=' . $formData->id)->with('message', 'Data Created Successfully!');
+        return $this->inertia->visit('/projects/view_project?id=' . $formData->id)->with('message', 'Data Created Successfully!');
     }
 
     public function DeleteTask(Request $request)

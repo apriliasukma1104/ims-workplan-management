@@ -51,7 +51,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
-import { storeProjects, deleteProjects } from '../../Api/projects.api.js';
+import { storeProjects, deleteProject } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -120,14 +120,14 @@ export default {
             this.loadLazyData();
         },
         onEdit(data) {
-        this.$inertia.visit(`/projects/list/edit_projects?id=${data.id}`);
+        this.$inertia.visit(`/projects/list/edit_project?id=${data.id}`);
         },
         onView(data) {
-        this.$inertia.visit(`/projects/list/view_projects?id=${data.id}`);
+        this.$inertia.visit(`/projects/list/view_project?id=${data.id}`);
         },
         onDelete(data) {
             if (window.confirm("Are you sure you want to delete data?")) {
-                deleteProjects({ id: data.id })
+                deleteProject({ id: data.id })
                     .then(() => {
                         this.$toast.add({
                             severity: "success",

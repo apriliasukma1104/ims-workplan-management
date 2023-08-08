@@ -170,7 +170,7 @@
               const response = await storeTasks(form);
               if (response.data.message === 'Data Created Successfully!') {
                   alert("Data Saved Successfully!");
-                  this.$inertia.visit(`/projects/view_projects?id=${formData.id}`);
+                  this.$inertia.visit(`/projects/view_project?id=${formData.id}`);
               }
           } catch (error) {
               console.error(error);

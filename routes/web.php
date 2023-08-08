@@ -46,15 +46,15 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
 });
 
 Route::prefix('members')->name('members.')->group(function () {
-    Route::get('/add_members', [MembersController::class, 'PageAddMembers'])->name('add_members');
+    Route::get('/add_member', [MembersController::class, 'PageAddMember'])->name('add_member');
     Route::get('/list_members', [MembersController::class, 'PageListMembers'])->name('list_members');
     Route::get('/manage_member', [MembersController::class, 'PageManageMember'])->name('manage_member');
     Route::post('/update_manage_member', [MembersController::class, 'UpdateManageMember'])->name('update_manage_member');
 
     Route::post('/add/store_members', [MembersController::class, 'StoreMembers'])->name('store_members');
-    Route::get('/list/edit_members', [MembersController::class, 'EditMembers'])->name('edit_members');
-    Route::post('/list/update_members', [MembersController::class, 'UpdateMembers'])->name('update_members');
-    Route::post('/list/delete_members', [MembersController::class, 'DeleteMembers'])->name('delete_members');
+    Route::get('/list/edit_member', [MembersController::class, 'EditMember'])->name('edit_member');
+    Route::post('/list/update_member', [MembersController::class, 'UpdateMember'])->name('update_member');
+    Route::post('/list/delete_member', [MembersController::class, 'DeleteMember'])->name('delete_member');
 });
 
 Route::get('/images/{filename}', function ($filename) {
@@ -68,18 +68,18 @@ Route::get('/images/{filename}', function ($filename) {
 });
 
 Route::prefix('projects')->name('projects.')->group(function () {
-    Route::get('/add_projects', [ProjectsController::class, 'PageAddProjects'])->name('add_projects');
+    Route::get('/add_project', [ProjectsController::class, 'PageAddProject'])->name('add_project');
     Route::get('/list_projects', [ProjectsController::class, 'PageListProjects'])->name('list_projects');
    
     Route::post('/add/store_projects', [ProjectsController::class, 'StoreProjects'])->name('store_projects');
-    Route::get('/list/edit_projects', [ProjectsController::class, 'EditProjects'])->name('edit_projects');
-    Route::post('/list/update_projects', [ProjectsController::class, 'UpdateProjects'])->name('update_projects');
+    Route::get('/list/edit_project', [ProjectsController::class, 'EditProject'])->name('edit_project');
+    Route::post('/list/update_project', [ProjectsController::class, 'UpdateProject'])->name('update_project');
     Route::post('/list/team_leader_name', [ProjectsController::class, 'GetTeamLeaderName'])->name('team_leader_name');
-    Route::post('/list/delete_projects', [ProjectsController::class, 'DeleteProjects'])->name('delete_projects');
+    Route::post('/list/delete_project', [ProjectsController::class, 'DeleteProject'])->name('delete_project');
 
-    Route::get('/list/view_projects', [ProjectsController::class, 'ViewProjects'])->name('view_projects');
-    Route::post('/list/view_projects/store_tasks', [ProjectsController::class, 'StoreTasks'])->name('store_tasks');
-    Route::post('/list/view_projects/delete_task', [ProjectsController::class, 'DeleteTask'])->name('delete_task');
+    Route::get('/list/view_project', [ProjectsController::class, 'ViewProject'])->name('view_project');
+    Route::post('/list/view_project/store_tasks', [ProjectsController::class, 'StoreTasks'])->name('store_tasks');
+    Route::post('/list/view_project/delete_task', [ProjectsController::class, 'DeleteTask'])->name('delete_task');
 });
 
 Route::prefix('tasks')->name('tasks.')->group(function () {

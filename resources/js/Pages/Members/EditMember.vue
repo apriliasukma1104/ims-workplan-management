@@ -49,7 +49,7 @@
 import Layout from "../../Partials/Layout";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { reactive } from "vue";
-import { updateMembers } from '../../Api/members.api.js';
+import { updateMember } from '../../Api/members.api.js';
 
 export default {
   components: {
@@ -71,7 +71,7 @@ export default {
     const update = async (e) => {
       e.preventDefault();
       try {
-        await updateMembers(formData);
+        await updateMember(formData);
         alert("Data Successfully Updated!");
         window.location.href = "/members/list_members";
       } catch (error) {

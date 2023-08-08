@@ -72,7 +72,7 @@
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
   import { reactive } from "vue";
-  import { updateProjects } from '../../Api/projects.api.js';
+  import { updateProject } from '../../Api/projects.api.js';
   
   export default {
     components: {
@@ -97,7 +97,7 @@
       const update = async (e) => {
         e.preventDefault();
         try {
-          await updateProjects(formData); 
+          await updateProject(formData); 
           alert("Data Successfully Updated!");
           window.location.href = "/projects/list_projects";
         } catch (error) {
