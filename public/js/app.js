@@ -24295,6 +24295,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     });
     dataTask.task = tasks;
 
+    var newTask = function newTask() {
+      dataTask.display = true;
+      form.id = '';
+      form.task = '';
+      form.description = '';
+      form.status = '';
+    };
+
     function loadLazyTask(_x) {
       return _loadLazyTask.apply(this, arguments);
     }
@@ -24369,26 +24377,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
 
     ;
-    return {
-      userType: userType,
-      formData: formData,
-      form: form,
-      members: members,
-      tasks: tasks,
-      dataTask: dataTask,
-      simpanTask: simpanTask,
-      loadLazyTask: loadLazyTask
-    };
-  },
-  methods: {
-    newTask: function newTask() {
-      this.dataTask.display = true;
-      this.form.id = "";
-      this.form.task = "";
-      this.form.description = "";
-      this.form.status = "";
-    },
-    getStatusBadgeClass: function getStatusBadgeClass(status) {
+
+    function onDelete(_x2) {
+      return _onDelete.apply(this, arguments);
+    }
+
+    function _onDelete() {
+      _onDelete = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(data) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.prev = 0;
+
+                if (!window.confirm("Are you sure you want to delete data?")) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _context3.next = 4;
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.deleteTask)({
+                  id: data.id
+                });
+
+              case 4:
+                alert("Data Deleted Successfully!");
+                loadLazyTask(data);
+
+              case 6:
+                _context3.next = 12;
+                break;
+
+              case 8:
+                _context3.prev = 8;
+                _context3.t0 = _context3["catch"](0);
+                console.error(_context3.t0);
+                alert("Data Failed to Delete!");
+
+              case 12:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[0, 8]]);
+      }));
+      return _onDelete.apply(this, arguments);
+    }
+
+    ;
+
+    var getStatusBadgeClass = function getStatusBadgeClass(status) {
       if (status === 'to do') {
         return 'badge badge-primary';
       } else if (status === 'doing') {
@@ -24396,34 +24434,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else if (status === 'done') {
         return 'badge badge-secondary';
       }
-    },
-    onDelete: function onDelete(data) {
-      var _this = this;
+    };
 
-      if (window.confirm("Are you sure you want to delete data?")) {
-        (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.deleteTask)({
-          id: data.id
-        }).then(function () {
-          _this.$toast.add({
-            severity: "success",
-            summary: "Information!",
-            detail: "Data Deleted Successfully!",
-            life: 3000
-          });
-
-          _this.loadLazyTask(data);
-        })["catch"](function (error) {
-          console.error("Error while deleting:", error);
-
-          _this.$toast.add({
-            severity: "error",
-            summary: "Error!",
-            detail: "Data Failed to Delete!",
-            life: 3000
-          });
-        });
-      }
-    }
+    return {
+      userType: userType,
+      members: members,
+      formData: formData,
+      form: form,
+      tasks: tasks,
+      dataTask: dataTask,
+      newTask: newTask,
+      loadLazyTask: loadLazyTask,
+      simpanTask: simpanTask,
+      onDelete: onDelete,
+      getStatusBadgeClass: getStatusBadgeClass
+    };
   }
 });
 
@@ -30648,7 +30673,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfirmDialog), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dialog, {
         header: "Header",
         visible: $setup.dataTask.display,
-        "onUpdate:visible": _cache[7] || (_cache[7] = function ($event) {
+        "onUpdate:visible": _cache[6] || (_cache[6] = function ($event) {
           return $setup.dataTask.display = $event;
         })
       }, {
@@ -30657,17 +30682,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         }),
         footer: _withId(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
-            label: "Batal",
-            icon: "pi pi-times",
-            "class": "p-button-text",
-            onClick: _cache[6] || (_cache[6] = function ($event) {
-              return _ctx.display = false;
-            })
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
-            label: "Simpan",
+            onClick: $setup.simpanTask,
+            label: "Save",
             icon: "pi pi-check",
             autofocus: "",
-            onClick: $setup.simpanTask
+            "class": "p-button-sm"
           }, null, 8
           /* PROPS */
           , ["onClick"])];
@@ -30696,26 +30715,24 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
               return $setup.form.task = $event;
             }),
-            type: "text",
-            "class": _ctx.error && _ctx.error.task ? 'p-invalid' : ''
+            type: "text"
           }, null, 8
           /* PROPS */
-          , ["modelValue", "class"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
+          , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
             modelValue: $setup.form.description,
             "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
               return $setup.form.description = $event;
             }),
-            type: "text",
-            "class": _ctx.error && _ctx.error.description ? 'p-invalid' : ''
+            type: "text"
           }, null, 8
           /* PROPS */
-          , ["modelValue", "class"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
-            "class": ["custom-select custom-select-sm", _ctx.error && _ctx.error.status ? 'p-invalid' : ''],
+          , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+            "class": "custom-select custom-select-sm",
             "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
               return $setup.form.status = $event;
             })
-          }, [_hoisted_9, _hoisted_10, _hoisted_11, _hoisted_12], 2
-          /* CLASS */
+          }, [_hoisted_9, _hoisted_10, _hoisted_11, _hoisted_12], 512
+          /* NEED_PATCH */
           ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.form.status]])])])];
         }),
         _: 1
@@ -30728,7 +30745,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         name: "id",
         "class": "form-control form-control-sm",
         required: "",
-        "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
+        "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
           return $setup.formData.id = $event;
         }),
         hidden: ""
@@ -30752,7 +30769,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         label: "New Task",
         icon: "pi pi-plus",
         "class": "p-button-secondary p-button-sm",
-        onClick: $options.newTask
+        onClick: $setup.newTask
       }, null, 8
       /* PROPS */
       , ["onClick"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DataTable, {
@@ -30788,7 +30805,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
           }, {
             body: _withId(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
-                "class": $options.getStatusBadgeClass(slotProps.data.status)
+                "class": $setup.getStatusBadgeClass(slotProps.data.status)
               }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(slotProps.data.status), 3
               /* TEXT, CLASS */
               )];
@@ -30814,7 +30831,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
               /* PROPS */
               , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
                 onClick: function onClick($event) {
-                  return $options.onDelete(slotProps.data);
+                  return $setup.onDelete(slotProps.data);
                 },
                 icon: "pi pi-trash",
                 "class": "p-button-rounded p-button-info"
@@ -36275,7 +36292,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.custom-select[data-v-a42d2fb0] {\r\n    font-size: 14px;\n}\r\n  ", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.custom-select[data-v-a42d2fb0] {\r\n        font-size: 14px;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -12,15 +12,15 @@
                         <label for="task">Task<span style="color:red;">*</span></label>
                         <InputText v-model="form.id" type="text" hidden/>
                         <InputText v-model="form.id_project" type="text" hidden/>
-                        <InputText v-model="form.task" type="text" :class="error && error.task ? 'p-invalid' : '' "/>
+                        <InputText v-model="form.task" type="text" />
                     </div>
                      <div class="p-field">
                         <label for="description">Description<span style="color:red;">*</span></label>
-                        <InputText v-model="form.description" type="text" :class="error && error.description ? 'p-invalid' : ''" />
+                        <InputText v-model="form.description" type="text" />
                     </div>
                     <div class="p-field">
                         <label for="status">Status<span style="color:red;">*</span></label>
-                          <select class="custom-select custom-select-sm" v-model="form.status" :class="error && error.status ? 'p-invalid' : '' ">
+                          <select class="custom-select custom-select-sm" v-model="form.status">
                             <option disabled value="">Please Select One</option>
                             <option>to do</option>
                             <option>doing</option>
@@ -29,8 +29,7 @@
                     </div>
                 </div>
                 <template #footer>
-                    <Button label="Batal" icon="pi pi-times" class="p-button-text" @click="display = false"/>
-                    <Button label="Simpan" icon="pi pi-check" autofocus @click="simpanTask"/>
+                    <Button @click="simpanTask" label="Save" icon="pi pi-check" autofocus class="p-button-sm" />
                 </template>
       </Dialog>
     
@@ -171,6 +170,15 @@
 
         dataTask.task=tasks;
 
+
+        const newTask = () => {
+            dataTask.display = true;
+            form.id = '';
+            form.task = '';
+            form.description = '';
+            form.status = '';
+        };
+
         async function loadLazyTask(form) {
             var params = {id_project:formData.id};
             const result = await listTasks( form );
@@ -188,30 +196,22 @@
                 console.error(error);
                 alert("Data Failed to Save!");
             }
-        };    
-
-        return {
-            userType,
-            formData,
-            form,
-            members,
-            tasks,
-            dataTask,
-            simpanTask,
-            loadLazyTask
         };
-    },
+        
+        async function onDelete(data) {
+            try {
+                if (window.confirm("Are you sure you want to delete data?")) {
+                    await deleteTask({ id: data.id });
+                    alert("Data Deleted Successfully!");
+                    loadLazyTask(data);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Data Failed to Delete!");
+            }
+        };
 
-    methods:{
-        newTask() {
-            this.dataTask.display = true;
-            this.form.id = "";
-            this.form.task = "";
-            this.form.description = "";
-            this.form.status = "";
-        },
-
-        getStatusBadgeClass(status) {
+        const getStatusBadgeClass = (status) => {
             if (status === 'to do') {
                 return 'badge badge-primary';
             } else if (status === 'doing') {
@@ -219,40 +219,29 @@
             } else if (status === 'done') {
                 return 'badge badge-secondary';
             }
-        },
-    
-        onDelete(data) {
-            if (window.confirm("Are you sure you want to delete data?")) {
-                deleteTask({ id: data.id })
-                    .then(() => {
-                        this.$toast.add({
-                            severity: "success",
-                            summary: "Information!",
-                            detail: "Data Deleted Successfully!",
-                            life: 3000,
-                        });
-                        this.loadLazyTask(data);
-                    })
-                    .catch((error) => {
-                        console.error("Error while deleting:", error);
-                        this.$toast.add({
-                            severity: "error",
-                            summary: "Error!",
-                            detail: "Data Failed to Delete!",
-                            life: 3000,
-                        });
-                    });
-            }
-        },
+        }
 
-  }
+        return {
+            userType,
+            members,
+            formData,
+            form,
+            tasks,
+            dataTask,
+            newTask,
+            loadLazyTask,
+            simpanTask,
+            onDelete,
+            getStatusBadgeClass  
+        };
+    }
   
   };
   </script>
-  
-  <style scoped>
-  .custom-select {
-    font-size: 14px;
-  }
-  </style>
+
+<style scoped>
+    .custom-select {
+        font-size: 14px;
+    }
+</style>
   
