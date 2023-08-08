@@ -28,7 +28,7 @@
                 <Column field="end_date" header="End Date"></Column>
                 <Column field="status" header="Status">
                     <template #body="slotProps">
-                        <span :class="getStatusClass(slotProps.data.status)">
+                        <span :class="getStatusBadgeClass(slotProps.data.status)">
                             {{ slotProps.data.status }}
                         </span>
                     </template>
@@ -63,7 +63,7 @@ export default {
     data() {
         return {
             data: [],
-            dataPerPage: 5, 
+            dataPerPage: 10, 
             totalData: 0, 
             display: false,
             search:null,
@@ -148,7 +148,7 @@ export default {
                     });
             }
         },
-        getStatusClass(status) {
+        getStatusBadgeClass(status) {
         switch (status) {
             case "to do":
             return "badge badge-primary";
@@ -174,24 +174,4 @@ export default {
 </script>
 
 <style scoped>
-.badge {
-  font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 4px;
-}
-
-.badge-primary {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.badge-info {
-  background-color: #17a2b8;
-  color: #fff;
-}
-
-.badge-secondary {
-  background-color: #6c757d;
-  color: #fff;
-}
 </style>
