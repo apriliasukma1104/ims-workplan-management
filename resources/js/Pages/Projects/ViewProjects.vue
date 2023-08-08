@@ -1,6 +1,7 @@
 <template>
     <layout title="View Project">
     <Toast position="top-center" />
+    <ConfirmDialog></ConfirmDialog>
 
       <Dialog header="Header" v-model:visible="display" >
         <template #header>
@@ -16,7 +17,6 @@
                      <div class="p-field">
                         <label for="description">Description<span style="color:red;">*</span></label>
                         <InputText v-model="form.description" type="text" :class="error && error.description ? 'p-invalid' : ''" />
-
                     </div>
                     <div class="p-field">
                         <label for="status">Status<span style="color:red;">*</span></label>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="card-body p-0 ml-2 mr-2">
-                        <DataTable :value="data" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
+                        <DataTable :value="tasks" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
                             <Column field="" header="No">
                               <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
@@ -108,7 +108,13 @@
                             </Column>
                             <Column field="task" header="Task"></Column>
                             <Column field="description" header="Description"></Column>
-                            <Column field="status" header="Status"></Column>
+                            <Column field="status" header="Status">
+                              <template #body="slotProps">
+                                  <span :class="getStatusBadgeClass(slotProps.data.status)">
+                                      {{ slotProps.data.status }}
+                                  </span>
+                              </template>
+                            </Column>
                             <Column :exportable="false" header="Action">
                                 <template #body="slotProps">
                                     <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
@@ -127,7 +133,7 @@
   <script>
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
-  import { reactive, onMounted } from "vue";
+  import { reactive } from "vue";
   import { storeTasks } from '../../Api/projects.api.js';
   
   export default {
@@ -137,6 +143,7 @@
     setup() {
       const { userType, members } = usePage().props.value;
       const data = usePage().props.value.formData;
+      const tasks = usePage().props.value.tasks;
 
       const formData = reactive({
         id: data.id,
@@ -152,56 +159,37 @@
 
       const form = reactive({
         id: "",
-        id_project: "",
         task: "",
         description: "",
         status: "",
       });
 
-      const tasks = reactive([]);
-
       async function simpanTask() {
-        console.log(form); 
-        form.id_project = formData.id;
-        try {
-          const response = await storeTasks(form);
-          if (response.data.message === 'Data created successfully!') {
-            alert("Data Saved Successfully!");
-            window.location.href = "/projects/view_projects?id=" + formData.id;
-          } else {
-            alert("Data Failed to Save!");
-          }
-        } catch (error) {
-          console.error(error);
-          alert("Data Failed to Save!");
-        }
-      }
-
-      async function mengambilTasks() {
+          form.id_project = formData.id;
           try {
-            const response = await storeTasks(); 
-            tasks.value = response.data.tasks; 
+              const response = await storeTasks(form);
+              if (response.data.message === 'Data Created Successfully!') {
+                  alert("Data Saved Successfully!");
+                  this.$inertia.visit(`/projects/view_projects?id=${formData.id}`);
+              }
           } catch (error) {
-            console.error(error);
+              console.error(error);
+              alert("Data Failed to Save!");
           }
-        }
-
-      onMounted(mengambilTasks);
+      }
 
       return {
         userType,
         formData,
         form,
-        tasks,
         members,
+        tasks,
         simpanTask,
-        mengambilTasks
       };
     },
 
     data(){
       return{
-        data : [],
         display:false,
       }
     },
@@ -214,7 +202,17 @@
       this.form.description = "";
       this.form.status = "";
     },
+      getStatusBadgeClass(status) {
+          if (status === 'to do') {
+              return 'badge badge-primary';
+          } else if (status === 'doing') {
+              return 'badge badge-info';
+          } else if (status === 'done') {
+              return 'badge badge-secondary';
+          }
+      },
   }
+  
   };
   </script>
   

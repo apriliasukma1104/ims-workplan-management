@@ -33,7 +33,7 @@ class ProjectsController extends Controller
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
-        $projects = $projectsQuery->paginate(5);
+        $projects = $projectsQuery->paginate(10);
         return Inertia::render('Projects/ListProjects', [
             'title' => $title,
             'projects' => $projects, // Mengirim data yang telah difilter ke halaman Vue.js
@@ -135,32 +135,25 @@ class ProjectsController extends Controller
     public function ViewProjects(Request $request)
     {
         $projects = Projects::with('teamMembers')->findOrFail($request->id);
+        $tasks = Tasks::select('id', 'id_project', 'task', 'description', 'status')
+            ->where('id_project', $request->id) ->get();
+
         return Inertia::render('Projects/ViewProjects', [
             'formData' => $projects,
+            'tasks' => $tasks,
         ]);
     }
 
     public function StoreTasks(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'id_project' => 'required|integer',
-                'task' => 'required|string|max:255',
-                'description' => 'required|string|max:255',
-                'status' => 'required|in:to do,doing,done',
-            ]);
-            Tasks::create($validatedData);
-            return redirect()->route('projects.list_tasks')->with('message', 'Data Created successfully!');
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Data Failed to Save!'], 500);
-        }
+        $validatedData = $request->validate([
+            'task' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'status' => 'required|in:to do,doing,done',
+            'id_project' => 'required|integer',
+        ]);
+        Tasks::create($validatedData);
+        return $this->inertia->visit('/projects/view_projects?id=' . $formData->id)->with('message', 'Data Created Successfully!');
     }
 
-    public function ListTasks(Request $request)
-    {
-        $tasks = Tasks::select('id', 'id_project', 'task', 'description', 'status')->get();
-        return response()->json(['tasks' => $tasks]);
-    }
 }

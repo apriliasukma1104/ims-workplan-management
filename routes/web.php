@@ -76,10 +76,9 @@ Route::prefix('projects')->name('projects.')->group(function () {
     Route::post('/list/update_projects', [ProjectsController::class, 'UpdateProjects'])->name('update_projects');
     Route::post('/list/team_leader_name', [ProjectsController::class, 'GetTeamLeaderName'])->name('team_leader_name');
     Route::post('/list/delete_projects', [ProjectsController::class, 'DeleteProjects'])->name('delete_projects');
+
     Route::get('/list/view_projects', [ProjectsController::class, 'ViewProjects'])->name('view_projects');
-    
     Route::post('/list/view_projects/store_tasks', [ProjectsController::class, 'StoreTasks'])->name('store_tasks');
-    Route::get('/list/view_projects/list_tasks', [ProjectsController::class, 'ListTasks'])->name('list_tasks');
 });
 
 Route::prefix('tasks')->name('tasks.')->group(function () {
