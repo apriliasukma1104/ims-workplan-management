@@ -9,6 +9,8 @@ use App\Http\Controllers\{
     DashboardController,
     MembersController,
     ProjectsController,
+    TasksController,
+    ReportsController,
 
     MasterController,
     PostsController,
@@ -86,6 +88,10 @@ Route::prefix('projects')->name('projects.')->group(function () {
 
 Route::prefix('tasks')->name('tasks.')->group(function () {
     Route::get('/', [TasksController::class, 'PageTasks'])->name('page_tasks');
+});
+
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportsController::class, 'PageReports'])->name('page_reports');
 });
 
 Route::resource('post', PostsController::class);

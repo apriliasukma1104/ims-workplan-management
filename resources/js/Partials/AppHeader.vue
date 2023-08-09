@@ -97,7 +97,7 @@
 
           <li class="nav-item" :class="$route().current().indexOf('projects') >= 0 ? 'menu-open' : ''">
             <a href="#" class="nav-link" :class="$route().current().indexOf('projects') >= 0 ? 'active' : ''">
-              <i class="nav-icon fas fa-book"></i>
+              <i class="nav-icon fas fa-th-list"></i>
               <p>
                 Projects
                 <i class="right fas fa-angle-left"></i>
@@ -123,6 +123,13 @@
             <a :href="$route('tasks.page_tasks')" class="nav-link" :class="$route().current('tasks.page_tasks') ? 'active' : ''">
               <i class="nav-icon fas fa-tasks"></i>
               <p>Task</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a :href="$route('reports.page_reports')" class="nav-link" :class="$route().current('reports.page_reports') ? 'active' : ''">
+              <i class="nav-icon fas fa-newspaper"></i>
+              <p>Reports</p>
             </a>
           </li>
 
