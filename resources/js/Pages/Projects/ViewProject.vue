@@ -133,7 +133,7 @@
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
   import { reactive} from "vue";
-  import { storeTasks, deleteTask, listTasks } from '../../Api/projects.api.js';
+  import { storeTasks, deleteTask, listTasks, updateTask } from '../../Api/projects.api.js';
   
   export default {
     components: {
@@ -170,7 +170,6 @@
 
         dataTask.task=tasks;
 
-
         const newTask = () => {
             dataTask.display = true;
             form.id = '';
@@ -188,14 +187,24 @@
         async function simpanTask() {
             form.id_project = formData.id;
             try {
-                dataTask.display = false
-                const response = await storeTasks(form);
-                alert("Data Saved Successfully!");
+                dataTask.display = false;  
+                if (form.id) {
+                    await updateTask(form); 
+                    alert("Data Updated Successfully!");
+                } else {
+                    const response = await storeTasks(form);
+                    alert("Data Saved Successfully!");
+                }
                 loadLazyTask(form);
             } catch (error) {
                 console.error(error);
                 alert("Data Failed to Save!");
             }
+        };
+
+        const onEdit = (item) => {
+            Object.assign(form, item);
+            dataTask.display = true;
         };
         
         async function onDelete(data) {
@@ -231,6 +240,7 @@
             newTask,
             loadLazyTask,
             simpanTask,
+            onEdit,
             onDelete,
             getStatusBadgeClass  
         };

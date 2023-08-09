@@ -24350,33 +24350,55 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 form.id_project = formData.id;
                 _context2.prev = 1;
                 dataTask.display = false;
-                _context2.next = 5;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.storeTasks)(form);
 
-              case 5:
-                response = _context2.sent;
-                alert("Data Saved Successfully!");
-                loadLazyTask(form);
-                _context2.next = 14;
+                if (!form.id) {
+                  _context2.next = 9;
+                  break;
+                }
+
+                _context2.next = 6;
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.updateTask)(form);
+
+              case 6:
+                alert("Data Updated Successfully!");
+                _context2.next = 13;
                 break;
 
-              case 10:
-                _context2.prev = 10;
+              case 9:
+                _context2.next = 11;
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_4__.storeTasks)(form);
+
+              case 11:
+                response = _context2.sent;
+                alert("Data Saved Successfully!");
+
+              case 13:
+                loadLazyTask(form);
+                _context2.next = 20;
+                break;
+
+              case 16:
+                _context2.prev = 16;
                 _context2.t0 = _context2["catch"](1);
                 console.error(_context2.t0);
                 alert("Data Failed to Save!");
 
-              case 14:
+              case 20:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 10]]);
+        }, _callee2, null, [[1, 16]]);
       }));
       return _simpanTask.apply(this, arguments);
     }
 
     ;
+
+    var onEdit = function onEdit(item) {
+      Object.assign(form, item);
+      dataTask.display = true;
+    };
 
     function onDelete(_x2) {
       return _onDelete.apply(this, arguments);
@@ -24446,6 +24468,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       newTask: newTask,
       loadLazyTask: loadLazyTask,
       simpanTask: simpanTask,
+      onEdit: onEdit,
       onDelete: onDelete,
       getStatusBadgeClass: getStatusBadgeClass
     };
@@ -30820,7 +30843,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             body: _withId(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
                 onClick: function onClick($event) {
-                  return _ctx.onEdit(slotProps.data);
+                  return $setup.onEdit(slotProps.data);
                 },
                 icon: "pi pi-pencil",
                 "class": "p-button-rounded p-button-primary",
@@ -33381,6 +33404,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "updateProject": () => (/* binding */ updateProject),
 /* harmony export */   "storeTasks": () => (/* binding */ storeTasks),
 /* harmony export */   "listTasks": () => (/* binding */ listTasks),
+/* harmony export */   "updateTask": () => (/* binding */ updateTask),
 /* harmony export */   "deleteTask": () => (/* binding */ deleteTask)
 /* harmony export */ });
 /* harmony import */ var _httpClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./httpClient */ "./resources/js/Api/httpClient.js");
@@ -33406,6 +33430,10 @@ var listTasks = function listTasks(params) {
   return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.get('/projects/list/view_project/list_tasks', {
     params: params
   });
+};
+
+var updateTask = function updateTask(params) {
+  return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/view_project/update_task', params);
 };
 
 var deleteTask = function deleteTask(params) {

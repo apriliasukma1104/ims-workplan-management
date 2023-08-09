@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
-use App\Models\Projects;
 use App\Models\Members;
+use App\Models\Projects;
 use App\Models\Tasks;
 
 class ProjectsController extends Controller
@@ -50,31 +50,6 @@ class ProjectsController extends Controller
         ]);
     }
 
-    // public function StoreProjects(Request $request){
-    //     // dd($request->all());
-    //     $validatedData = Validator::make($request->all(), [
-    //         'name' => 'required|string|max:255',
-    //         'project_type' => 'required|string|in:RKAP,KPI,NPM',
-    //         'team_leader' => 'required|exists:members,id', 
-    //         'team_members' => 'required|array',
-    //         'team_members.*' => 'exists:members,id', 
-    //         'start_date' => 'required|date',
-    //         'end_date' => 'required|date|after_or_equal:start_date',
-    //         'status' => 'required|in:to do,doing,done',
-    //         'description' => 'required|string|max:255',
-    //     ])->validate();
-    //     // Konversi array anggota tim menjadi string JSON
-    //     $validatedData['team_members'] = json_encode($validatedData['team_members']);
-    //     // Simpan data ke database
-    //     $project = Projects::create($validatedData);
-    //     // Simpan data anggota tim
-    //     $teamMembers = json_decode($validatedData['team_members']);
-    //     foreach ($teamMembers as $memberId) {
-    //         $project->teamMembers()->attach($memberId);
-    //     }
-    //     return response()->json(['message' => 'Data created successfully'], 201);
-    // }
-
     public function StoreProjects(Request $request)
     {
         $validatedData = Validator::make($request->all(), [
@@ -94,7 +69,7 @@ class ProjectsController extends Controller
         foreach ($teamMembers as $memberId) {
             $project->teamMembers()->attach($memberId);
         }
-        return redirect()->route('projects.list_projects')->with('message', 'Data created successfully!');
+        return redirect()->route('projects.list_projects')->with('message', 'Data Created Successfully!');
     }
 
     public function EditProject(Request $request)
@@ -111,7 +86,7 @@ class ProjectsController extends Controller
     {
         $project = Projects::find($request->input('id'));
         $project->update($request->all());
-        return redirect()->route('projects.list_projects')->with('message', 'Data Berhasil Diupdate!');
+        return redirect()->route('projects.list_projects')->with('message', 'Data Updated Successfully');
     }
 
     public function DeleteProject(Request $request)
@@ -123,12 +98,11 @@ class ProjectsController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         try {
-            // Cari data project berdasarkan ID
             $project = Projects::findOrFail($request->id);
             $project->delete();
-            return response()->json(['message' => 'Data deleted successfully'], 200);
+            return response()->json(['message' => 'Data Deleted Successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete data'], 500);
+            return response()->json(['message' => 'Failed to Delete Data'], 500);
         }
     }
 
@@ -160,6 +134,12 @@ class ProjectsController extends Controller
         return response()->json(['message' => 'Data Saved Successfully', "data" => $task]);
     }
 
+    public function UpdateTask(Request $request)
+    {
+        $task = Tasks::findOrFail($request->id); 
+        $task->update($request->all());
+    }
+
     public function DeleteTask(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -171,9 +151,9 @@ class ProjectsController extends Controller
         try {
             $task = Tasks::findOrFail($request->id);
             $task->delete();
-            return response()->json(['message' => 'Data deleted successfully'], 200);
+            return response()->json(['message' => 'Data Deleted Successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete data'], 500);
+            return response()->json(['message' => 'Failed to Delete Data'], 500);
         }
     }
 }
