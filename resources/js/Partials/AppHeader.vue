@@ -122,7 +122,7 @@
           <li class="nav-item">
             <a :href="$route('tasks.page_tasks')" class="nav-link" :class="$route().current('tasks.page_tasks') ? 'active' : ''">
               <i class="nav-icon fas fa-tasks"></i>
-              <p>Task</p>
+              <p>Tasks</p>
             </a>
           </li>
 
