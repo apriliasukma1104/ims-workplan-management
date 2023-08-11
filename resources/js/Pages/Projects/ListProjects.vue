@@ -21,7 +21,7 @@
                 <Column field="project_type" header="Project Type"></Column>
                 <Column field="team_leader" header="Team Leader">
                     <template #body="slotProps">
-                        <span>{{ slotProps.data.team_leader }}</span>
+                        <span>{{ slotProps.data.team_leader.name }}</span>
                     </template>
                 </Column>
                 <Column field="start_date" header="Start Date"></Column>

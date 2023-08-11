@@ -29,14 +29,15 @@ class ProjectsController extends Controller
     {
         $search = $request->input('search');
         $title = 'Projects';
-        $projectsQuery = Projects::select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status');
+        $projectsQuery = Projects::with('teamLeader')
+            ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
         $projects = $projectsQuery->paginate(10);
         return Inertia::render('Projects/ListProjects', [
             'title' => $title,
-            'projects' => $projects, // Mengirim data yang telah difilter ke halaman Vue.js
+            'projects' => $projects, 
         ]);
     }
 
@@ -108,7 +109,7 @@ class ProjectsController extends Controller
 
     public function ViewProject(Request $request)
     {
-        $project = Projects::with('teamMembers')->findOrFail($request->id);
+        $project = Projects::with(['teamMembers', 'teamLeader'])->findOrFail($request->id);
         $task = Tasks::select('id', 'id_project', 'task', 'description', 'status')
             ->where('id_project', $request->id) ->get();
 

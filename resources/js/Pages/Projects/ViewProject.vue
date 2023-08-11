@@ -52,15 +52,9 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <!-- <div class="form-group mt-3 ml-3">
-                    <label class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
-                    <div>
-                    <span v-for="member in members" :key="member.id" v-if="formData.team_members.includes(member.id)">{{ member.name }}</span>
-                    </div>
-                </div> -->
                 <div class="form-group mt-3 mr-3">
                     <label class="control-label" style="display: block; margin-top: 1rem;">Team Leader</label>
-                    <div>{{ formData.team_leader }}</div>
+                    <div>{{ formData.team_leader.name }}</div>
                 </div>
                 <div class="form-group mt-3 mr-3">
                     <label class="control-label">Start Date</label>
@@ -86,7 +80,9 @@
                         <span><b>Team Member/s:</b></span>
                     </div>
                     <div class="card-body p-0">
-                        <div>{{ formData.team_members }}</div>
+                        <div v-for="members in formData.team_members" :key="members.id">
+                            {{ members.name }} 
+                        </div>
                     </div>
                 </div>
             </div>
