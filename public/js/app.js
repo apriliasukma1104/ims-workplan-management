@@ -24606,6 +24606,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     mounted: function mounted() {
       this.tasks = this.$page.props.tasks;
+      console.log(tasks);
       this.totalData = this.$page.props.tasks.data.length;
     }
   }

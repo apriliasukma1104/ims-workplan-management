@@ -11,20 +11,6 @@ use App\Models\Tasks;
 
 class ProjectsController extends Controller
 {
-    // public function PageListProjects(Request $request)
-    // {
-    //     $params=[
-    //         'page'=>$request->input('page'),
-    //         'search'=>$request->input('search')
-    //     ];
-    //     $title = 'Projects';
-    //     $projects = Projects::select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status')->get();
-    //     return Inertia::render('Projects/ListProjects', [
-    //         'title' => $title,
-    //         'projects' => $projects, // Mengirim data proyek ke halaman Vue.js
-    //     ]);
-    // }
-
     public function PageListProjects(Request $request)
     {
         $search = $request->input('search');
@@ -85,10 +71,18 @@ class ProjectsController extends Controller
 
     public function UpdateProject(Request $request)
     {
-        $project = Projects::find($request->input('id'));
-        $project->update($request->all());
-        $project->teamMembers()->sync($request->input('team_members'));
-        return redirect()->route('projects.list_projects')->with('message', 'Data Updated Successfully');
+        try {
+            $project = Projects::find($request->input('id'));
+            $project->update($request->all());
+
+            $members = $project->teamMembers;
+
+            $project->teamMembers()->sync($request->input('team_members'));
+
+            return redirect()->route('projects.list_projects')->with('message', 'Data Updated Successfully!')->with('project', $project)->with('members', $members);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function DeleteProject(Request $request)

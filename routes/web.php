@@ -97,35 +97,3 @@ Route::prefix('reports')->name('reports.')->group(function () {
 Route::resource('post', PostsController::class);
 
 Route::redirect('/', 'dashboard');
-
-
-
-// Route::prefix('dcr')->name('dcr.')->group(function () {
-//     Route::get('/', [DcrController::class, 'index'])->name('index');
-// });
-
-// Route::prefix('master')->name('master.')->group(function () {
-//     Route::get('/lokasi', [MasterController::class, 'PageMaster'])->name('PageMaster');
-//     Route::get('/get-lokasi', [MasterController::class, 'getLokasi'])->name('getLokasi');
-//     Route::post('/simpan-lokasi', [MasterController::class, 'simpanLokasi'])->name('simpanLokasi');
-//     Route::post('/delete-lokasi', [MasterController::class, 'hapusLokasi'])->name('hapusLokasi');
-
-//     Route::get('/gedung', [MasterController::class, 'PageGedung'])->name('PageGedung');
-//     Route::get('/get-gedung', [MasterController::class, 'getGedung'])->name('getGedung');
-//     Route::post('/simpan-gedung', [MasterController::class, 'simpanGedung'])->name('simpanGedung');
-//     Route::post('/delete-gedung', [MasterController::class, 'hapusGedung'])->name('hapusGedung');
-
-//     Route::get('/proyek', [MasterController::class, 'PageProyek'])->name('PageProyek');
-//     Route::get('/get-proyek', [MasterController::class, 'PageProyek'])->name('getProyek');
-//     Route::post('/simpan-proyek', [MasterController::class, 'simpanProyek'])->name('simpanProyek');
-//     Route::post('/delete-proyek', [MasterController::class, 'hapusProyek'])->name('hapusProyek');
-
-//     Route::get('/user', [MasterController::class, 'PageUser'])->name('PageUser');
-//      Route::post('/simpan-user', [MasterController::class, 'simpanUser'])->name('simpanUser');
-//     Route::post('/delete-user', [MasterController::class, 'hapusUser'])->name('hapusUser');
-// });
-
-// Route::prefix('cek')->name('cek.')->group(function () {
-//     Route::get('cek-by-lpbg', [CekController::class, 'CekLpbg'])->name('ceklpbg');
-//     Route::get('cek-by-sttp', [CekController::class, 'CekSttp'])->name('ceksttp');
-// });

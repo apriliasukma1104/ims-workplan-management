@@ -28,6 +28,7 @@
             <Column field="project_status" header="Project Status"></Column>
             <Column field="status" header="Task Status"></Column>
           </DataTable>
+
         </div>
     </layout>
 </template>
@@ -86,6 +87,7 @@ export default {
 
     mounted() {
         this.tasks = this.$page.props.tasks; 
+        console.log(tasks);
         this.totalData = this.$page.props.tasks.data.length; 
     } 
   },
