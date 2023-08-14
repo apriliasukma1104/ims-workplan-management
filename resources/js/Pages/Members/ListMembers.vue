@@ -60,22 +60,6 @@ export default {
             totalData: 0, 
             display: false,
             search:null,
-            form: {
-                id: null,
-                image: null,
-                name: null, 
-                position: null, 
-                role: null,
-                email: null
-            },
-            initform: {
-                id: null,
-                image: null,
-                name: null,
-                position: null, 
-                role: null,
-                email: null
-            },
             error: {},
             lazyParams: {
                 page: 1
@@ -83,6 +67,11 @@ export default {
             loading: false
         };
     },
+
+    props: {
+        errors: Object
+    },
+
     methods: {
         async loadLazyData() {
             window.location.reload();
@@ -128,12 +117,9 @@ export default {
             }
         },
     },
-    props: {
-        errors: Object
-    },
     mounted() {
-        this.data = this.$page.props.members; // Assign data dari server ke variabel data
-        this.totalData = this.$page.props.members.length; // Set jumlah total data dari server
+        this.data = this.$page.props.members; 
+        this.totalData = this.$page.props.members.length; 
     }
 };
 </script>

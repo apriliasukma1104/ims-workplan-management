@@ -67,34 +67,16 @@ export default {
             totalData: 0, 
             display: false,
             search:null,
-            form: {
-                id: null,
-                name: null, 
-                project_type: null,
-                team_leader: null,
-                team_members: null,
-                start_date: null,
-                end_date: null,
-                status: null,
-                description: null
-            },
-            initform: {
-                id: null,
-                name: null,
-                project_type: null,
-                team_leader: null,
-                team_members: null,
-                start_date: null,
-                end_date: null,
-                status: null,
-                description: null
-            },
             error: {},
             lazyParams: {
                 page: 1
             },
             loading: false
         };
+    },
+
+    props: {
+        errors: Object
     },
 
     methods: {
@@ -160,10 +142,6 @@ export default {
             return "badge";
         }
         },
-    },
-
-    props: {
-        errors: Object
     },
     mounted() {
         this.data = this.$page.props.projects.data; 

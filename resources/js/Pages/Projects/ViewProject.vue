@@ -80,7 +80,7 @@
                         <span><b>Team Member/s:</b></span>
                     </div>
                     <div class="card-body p-0">
-                        <div v-for="members in formData.team_members" :key="members.id">
+                        <div v-for="members in formData.team_members">
                             {{ members.name }} 
                         </div>
                     </div>

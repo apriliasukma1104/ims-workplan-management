@@ -22611,28 +22611,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       totalData: 0,
       display: false,
       search: null,
-      form: {
-        id: null,
-        image: null,
-        name: null,
-        position: null,
-        role: null,
-        email: null
-      },
-      initform: {
-        id: null,
-        image: null,
-        name: null,
-        position: null,
-        role: null,
-        email: null
-      },
       error: {},
       lazyParams: {
         page: 1
       },
       loading: false
     };
+  },
+  props: {
+    errors: Object
   },
   methods: {
     loadLazyData: function loadLazyData() {
@@ -22693,13 +22680,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     }
   },
-  props: {
-    errors: Object
-  },
   mounted: function mounted() {
-    this.data = this.$page.props.members; // Assign data dari server ke variabel data
-
-    this.totalData = this.$page.props.members.length; // Set jumlah total data dari server
+    this.data = this.$page.props.members;
+    this.totalData = this.$page.props.members.length;
   }
 });
 
@@ -24112,34 +24095,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       totalData: 0,
       display: false,
       search: null,
-      form: {
-        id: null,
-        name: null,
-        project_type: null,
-        team_leader: null,
-        team_members: null,
-        start_date: null,
-        end_date: null,
-        status: null,
-        description: null
-      },
-      initform: {
-        id: null,
-        name: null,
-        project_type: null,
-        team_leader: null,
-        team_members: null,
-        start_date: null,
-        end_date: null,
-        status: null,
-        description: null
-      },
       error: {},
       lazyParams: {
         page: 1
       },
       loading: false
     };
+  },
+  props: {
+    errors: Object
   },
   methods: {
     loadLazyData: function loadLazyData() {
@@ -24223,9 +24187,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return "badge";
       }
     }
-  },
-  props: {
-    errors: Object
   },
   mounted: function mounted() {
     this.data = this.$page.props.projects.data;
@@ -24600,29 +24561,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
-      tasksList: {},
+      tasks: [],
       dataPerPage: 10,
+      totalData: 0,
+      display: false,
+      search: null,
       lazyParams: {
         page: 1
       },
-      loading: false,
-      search: null
+      loading: false
     };
   },
+  props: {
+    errors: Object
+  },
   methods: {
-    onPage: function onPage(event) {
-      var _this = this;
-
+    loadLazyData: function loadLazyData() {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this.lazyParams.page = event.page;
+                window.location.reload(); // this.loading = true;
+                // const response = await Inertia.get(route('tasks.page_tasks', lazyParams));
+                // this.tasksList = response.tasksList;
+                // console.log(tasksList);
+                // this.loading = false;
 
-                _this.loadLazyData();
-
-              case 2:
+              case 1:
               case "end":
                 return _context.stop();
             }
@@ -24630,71 +24596,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    loadLazyData: function loadLazyData() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this2.loading = true;
-                _context2.next = 3;
-                return _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_4__.Inertia.get(route('tasks.page_tasks', lazyParams.value));
-
-              case 3:
-                response = _context2.sent;
-                _this2.tasksList = response.tasksList;
-                _this2.loading = false;
-
-              case 6:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
     onSearch: function onSearch() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _this3.lazyParams.page = 1;
-
-                _this3.loadLazyData();
-
-              case 2:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
+      this.lazyParams.page = 1;
+      this.loadLazyData();
+    },
+    onPage: function onPage(event) {
+      this.lazyParams.page = event.page + 1;
+      this.loadLazyData();
+    },
+    mounted: function mounted() {
+      this.tasks = this.$page.props.tasks;
+      this.totalData = this.$page.props.tasks.data.length;
     }
-  },
-  mounted: function mounted() {
-    var _this4 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return _this4.loadLazyData();
-
-            case 2:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
-    }))();
   }
 });
 
@@ -31010,13 +30923,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_27, [_hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.formData.end_date), 1
       /* TEXT */
       )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_29, [_hoisted_30, $setup.formData.status === 'to do' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", _hoisted_31, "to do")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.formData.status === 'doing' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", _hoisted_32, "doing")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.formData.status === 'done' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", _hoisted_33, "done")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_36, [_hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_38, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.formData.team_members, function (members) {
-        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
-          key: members.id
-        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(members.name), 1
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(members.name), 1
         /* TEXT */
         );
-      }), 128
-      /* KEYED_FRAGMENT */
+      }), 256
+      /* UNKEYED_FRAGMENT */
       ))])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_41, [_hoisted_42, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
         label: "New Task",
         icon: "pi pi-plus",
@@ -31325,12 +31236,12 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         /* STABLE */
 
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DataTable, {
-        value: $data.tasksList.data,
+        value: $data.tasks,
         lazy: true,
         paginator: true,
         rows: $data.dataPerPage,
         ref: "dt",
-        totalRecords: $data.tasksList.total,
+        totalRecords: $data.totalData,
         loading: $data.loading,
         currentPage: $data.lazyParams.page,
         onPage: _cache[2] || (_cache[2] = function ($event) {
@@ -31352,19 +31263,19 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             /* STABLE */
 
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
-            field: "project.name",
+            field: "name",
             header: "Project Name"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "task",
             header: "Tasks"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
-            field: "project.start_date",
+            field: "start_date",
             header: "Project Started"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
-            field: "project.end_date",
+            field: "end_date",
             header: "Project End Date"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
-            field: "project.status",
+            field: "project_status",
             header: "Project Status"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "status",

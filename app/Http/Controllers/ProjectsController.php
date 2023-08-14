@@ -87,6 +87,7 @@ class ProjectsController extends Controller
     {
         $project = Projects::find($request->input('id'));
         $project->update($request->all());
+        $project->teamMembers()->sync($request->input('team_members'));
         return redirect()->route('projects.list_projects')->with('message', 'Data Updated Successfully');
     }
 
