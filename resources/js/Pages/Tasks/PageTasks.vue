@@ -25,8 +25,20 @@
             <Column field="task" header="Tasks"></Column>
             <Column field="start_date" header="Project Started"></Column>
             <Column field="end_date" header="Project End Date"></Column>
-            <Column field="project_status" header="Project Status"></Column>
-            <Column field="status" header="Task Status"></Column>
+            <Column field="project_status" header="Project Status">
+                <template #body="slotProps">
+                    <span :class="getStatusBadgeClass(slotProps.data.project_status)">
+                            {{ slotProps.data.project_status }}
+                    </span>
+                </template>
+            </Column>
+            <Column field="status" header="Task Status">
+                <template #body="slotProps">
+                    <span :class="getStatusBadgeClass(slotProps.data.status)">
+                            {{ slotProps.data.status }}
+                    </span>
+                </template>
+            </Column>
           </DataTable>
 
         </div>
@@ -74,25 +86,32 @@ export default {
       // console.log(tasksList);
       // this.loading = false;
     },
-
     onSearch() {
       this.lazyParams.page = 1;
       this.loadLazyData();
     },
-
     onPage(event) {
       this.lazyParams.page = event.page  + 1;
       this.loadLazyData();
+    }, 
+    getStatusBadgeClass(status) {
+        switch (status) {
+            case "to do":
+            return "badge badge-primary";
+            case "doing":
+            return "badge badge-info";
+            case "done":
+            return "badge badge-secondary";
+            default:
+            return "badge";
+      }
     },
-
-    mounted() {
-        this.tasks = this.$page.props.tasks; 
-        console.log(tasks);
-        this.totalData = this.$page.props.tasks.data.length; 
-    } 
   },
+
+  mounted() {
+        this.tasks = this.$page.props.tasks.data; 
+        this.totalData = this.$page.props.tasks.total; 
+  }
+
 };
 </script>
-
-<style scoped>
-</style>

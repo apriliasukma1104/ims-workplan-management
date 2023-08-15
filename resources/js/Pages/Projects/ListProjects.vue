@@ -143,6 +143,7 @@ export default {
         }
         },
     },
+    
     mounted() {
         this.data = this.$page.props.projects.data; 
         this.totalData = this.$page.props.projects.data.length; 

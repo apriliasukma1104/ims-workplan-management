@@ -79,7 +79,10 @@ class ProjectsController extends Controller
 
             $project->teamMembers()->sync($request->input('team_members'));
 
-            return redirect()->route('projects.list_projects')->with('message', 'Data Updated Successfully!')->with('project', $project)->with('members', $members);
+            return redirect()->route('projects.list_projects')
+                ->with('message', 'Data Updated Successfully!')
+                ->with('project', $project)
+                ->with('members', $members);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
