@@ -22,7 +22,14 @@
               </template>
             </Column>
             <Column field="name" header="Project Name"></Column>
-            <Column field="task" header="Tasks"></Column>
+            <!-- <Column field="task" header="Tasks"></Column> -->
+            <Column field="" header="Tasks">
+                <template #body="slotProps">
+                  {{ slotProps.data.task }}
+                <br>
+                <small>Description: {{ slotProps.data.description }}</small>
+                </template>
+            </Column>
             <Column field="start_date" header="Project Started"></Column>
             <Column field="end_date" header="Project End Date"></Column>
             <Column field="project_status" header="Project Status">

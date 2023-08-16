@@ -46,7 +46,6 @@
                         <small>{{ slotProps.data.progress.toFixed(2) }}% Complete</small>
                     </template>
                 </Column>
-                <!-- <Column field="status" header="Status"></Column> -->
                 <Column field="status" header="Status">
                     <template #body="slotProps">
                         <span :class="getStatusBadgeClass(slotProps.data.status)">

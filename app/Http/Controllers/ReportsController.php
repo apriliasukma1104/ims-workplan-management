@@ -78,12 +78,12 @@ class ReportsController extends Controller
             $end_date = new \DateTime($project->end_date);
             $work_duration = $start_date->diff($end_date)->days;
 
-            if ($totalTasks === 0) {
+            if (now() > $project->end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
+                $status = 'over due';
+            } elseif ($totalTasks === 0) {
                 $status = 'pending';
             } elseif ($completedTasks === 0) {
                 $status = 'started';
-            } elseif (now() > $project->end_date && $completedTasks < $totalTasks) {
-                $status = 'over due';
             } elseif ($completedTasks < $totalTasks && $progress >= 25) {
                 $status = 'on-progress';
             } else {
