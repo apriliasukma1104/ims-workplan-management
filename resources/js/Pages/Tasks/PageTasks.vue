@@ -4,7 +4,7 @@
         <div class="card">
           <Toolbar class="p-mb-4">
             <template #left>
-              <Button label="Add Productivity" icon="pi pi-plus" class="p-button-primary p-button-sm" @click="tambah" />
+              <Button label="Add Productivity" icon="pi pi-plus" class="p-button-primary p-button-sm" @click="addProductivity" />
             </template>
             <template #right>
               <span>
