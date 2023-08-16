@@ -8,18 +8,9 @@ use App\Models\Tasks;
 
 class TasksController extends Controller
 {
-    // public function PageTasks(Request $request)
-    // {
-    //     $title = 'Tasks';
-    //     return Inertia::render('Tasks/PageTasks', [
-    //         'title' => $title,
-    //     ]);
-    // }
-
     public function PageTasks(Request $request)
     {
         $title = 'Tasks';
-
         $tasks = Tasks::with('project') 
             ->leftJoin('projects', 'tasks.id_project', '=', 'projects.id')
             ->select(
@@ -33,7 +24,6 @@ class TasksController extends Controller
                 'projects.status as project_status'
             )
             ->paginate(10);
-
         return Inertia::render('Tasks/PageTasks', [
             'title' => $title,
             'tasks' => $tasks,
