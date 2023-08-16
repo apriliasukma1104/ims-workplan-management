@@ -101,7 +101,7 @@ export default {
             case "doing":
             return "badge badge-info";
             case "done":
-            return "badge badge-secondary";
+            return "badge badge-success";
             default:
             return "badge";
       }

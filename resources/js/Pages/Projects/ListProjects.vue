@@ -37,7 +37,7 @@
                     <template #body="slotProps">
                         <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
                         <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 10px;" />
-                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-secondary" />
+                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" />
                     </template>
                 </Column>
             </DataTable>
@@ -137,7 +137,7 @@ export default {
             case "doing":
             return "badge badge-info";
             case "done":
-            return "badge badge-secondary";
+            return "badge badge-success";
             default:
             return "badge";
         }

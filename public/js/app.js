@@ -24181,7 +24181,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return "badge badge-info";
 
         case "done":
-          return "badge badge-secondary";
+          return "badge badge-success";
 
         default:
           return "badge";
@@ -24415,7 +24415,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else if (status === 'doing') {
         return 'badge badge-info';
       } else if (status === 'done') {
-        return 'badge badge-secondary';
+        return 'badge badge-success';
       }
     };
 
@@ -24633,7 +24633,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return "badge badge-info";
 
         case "done":
-          return "badge badge-secondary";
+          return "badge badge-success";
 
         default:
           return "badge";
@@ -30582,7 +30582,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
                   return $options.onView(slotProps.data);
                 },
                 icon: "pi pi-eye",
-                "class": "p-button-rounded p-button-secondary"
+                "class": "p-button-rounded p-button-success"
               }, null, 8
               /* PROPS */
               , ["onClick"])];
@@ -30797,7 +30797,7 @@ var _hoisted_32 = {
 };
 var _hoisted_33 = {
   key: 2,
-  "class": "badge badge-secondary"
+  "class": "badge badge-success"
 };
 var _hoisted_34 = {
   "class": "row"

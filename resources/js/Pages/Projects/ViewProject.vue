@@ -68,7 +68,7 @@
                     <label class="control-label" style="display: block; margin-top: 1rem;">Status</label>
                     <span class="badge badge-primary" v-if="formData.status === 'to do'">to do</span>
                     <span class="badge badge-info" v-if="formData.status === 'doing'">doing</span>
-                    <span class="badge badge-secondary" v-if="formData.status === 'done'">done</span>
+                    <span class="badge badge-success" v-if="formData.status === 'done'">done</span>
                 </div>
             </div>
         </div>
@@ -222,7 +222,7 @@
             } else if (status === 'doing') {
                 return 'badge badge-info';
             } else if (status === 'done') {
-                return 'badge badge-secondary';
+                return 'badge badge-success';
             }
         }
 
