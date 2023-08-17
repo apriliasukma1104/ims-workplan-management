@@ -24537,10 +24537,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     onPrint: function onPrint() {
       window.print();
-
-      if (printButton) {
-        printButton.style.display = "block";
-      }
     }
   },
   mounted: function mounted() {

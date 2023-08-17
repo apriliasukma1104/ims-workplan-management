@@ -121,11 +121,7 @@ export default {
         },
         onPrint() {
         window.print();
-        if (printButton) {
-            printButton.style.display = "block";
-        }
         },
-
     },
 
     mounted() {

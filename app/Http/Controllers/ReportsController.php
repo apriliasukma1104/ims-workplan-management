@@ -8,52 +8,6 @@ use App\Models\Projects;
 
 class ReportsController extends Controller
 {
-    // public function PageReports(Request $request)
-    // {
-    //     $title = 'Reports';
-    //     return Inertia::render('Reports/PageReports', [
-    //         'title' => $title,
-    //     ]);
-    // }
-
-    // public function PageReports(Request $request)
-    // {
-    //     $title = 'Tasks';
-    //     $reports = Tasks::with('project') 
-    //         ->leftJoin('projects', 'tasks.id_project', '=', 'projects.id')
-    //         ->select(
-    //             'tasks.id',
-    //             'tasks.task',
-    //             'tasks.description',
-    //             'tasks.status',
-    //             'projects.name',
-    //             'projects.start_date',
-    //             'projects.end_date',
-    //             'projects.status as project_status'
-    //         )
-    //         ->paginate(10);
-    //     return Inertia::render('Reports/PageReports', [
-    //         'title' => $title,
-    //         'reports' => $reports,
-    //     ]);
-    // }
-
-    // public function PageReports(Request $request)
-    // {
-    //     $search = $request->input('search');
-    //     $title = 'Tasks';
-    //     $projectsQuery = Projects::with('tasks')
-    //         ->select('id', 'name', 'start_date', 'end_date', 'status');
-    //     if ($search) {
-    //         $projectsQuery->where('name', 'like', '%' . $search . '%');
-    //     }
-    //     $reports = $projectsQuery->paginate(10);
-    //     return Inertia::render('Reports/PageReports', [
-    //         'title' => $title,
-    //         'reports' => $reports, 
-    //     ]);
-    // }
-
     public function PageReports(Request $request)
     {
         $search = $request->input('search');
