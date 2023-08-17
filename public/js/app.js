@@ -24534,6 +24534,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         default:
           return "badge";
       }
+    },
+    onPrint: function onPrint() {
+      window.print();
+
+      if (printButton) {
+        printButton.style.display = "block";
+      }
     }
   },
   mounted: function mounted() {
@@ -31137,10 +31144,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             style: {
               "margin-left": "10px"
             },
-            onClick: _cache[2] || (_cache[2] = function ($event) {
-              return _ctx.onPrint(_ctx.slotProps.data);
-            })
-          })])];
+            onClick: $options.onPrint
+          }, null, 8
+          /* PROPS */
+          , ["onClick"])])];
         }),
         _: 1
         /* STABLE */
@@ -31154,7 +31161,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         totalRecords: $data.totalData,
         loading: $data.loading,
         currentPage: $data.lazyParams.page,
-        onPage: _cache[3] || (_cache[3] = function ($event) {
+        onPage: _cache[2] || (_cache[2] = function ($event) {
           return $options.onPage($event);
         }),
         responsiveLayout: "scroll"
@@ -31174,7 +31181,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
-            header: "Project Name"
+            header: "Project"
           }, {
             body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(slotProps.data.project_name) + " ", 1
@@ -31188,12 +31195,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "total_tasks",
-            header: "Total Tasks"
+            header: "Tasks"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "completed_task",
             header: "Completed Task"
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
-            field: "work_duration",
+            field: "",
             header: "Work Duration"
           }, {
             body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {

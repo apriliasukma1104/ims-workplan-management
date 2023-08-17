@@ -10,7 +10,7 @@
                     <span>
                         <InputText placeholder="Search..." v-model="search" style="font-size: 13px;" />
                         <Button icon="pi pi-search" iconPos="right"  class="p-button-sm"  @click="onSearch" />
-                        <Button icon="pi pi-print" class="p-button-sm" style="margin-left: 10px" @click="onPrint(slotProps.data)" />
+                        <Button icon="pi pi-print" class="p-button-sm" style="margin-left: 10px" @click="onPrint" />
                     </span>
                 </template>
             </Toolbar>
@@ -22,16 +22,16 @@
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
                     </template>
                 </Column>
-                <Column field="" header="Project Name">
+                <Column field="" header="Project">
                     <template #body="slotProps">
                     {{ slotProps.data.project_name }}
                     <br>
                     <small>Due: {{ slotProps.data.due }}</small>
                     </template>
                 </Column>
-                <Column field="total_tasks" header="Total Tasks"></Column>
+                <Column field="total_tasks" header="Tasks"></Column>
                 <Column field="completed_task" header="Completed Task"></Column>
-                <Column field="work_duration" header="Work Duration">
+                <Column field="" header="Work Duration">
                     <template #body="slotProps">
                         {{ slotProps.data.work_duration }} days
                     </template>
@@ -119,6 +119,13 @@ export default {
             return "badge";
         }
         },
+        onPrint() {
+        window.print();
+        if (printButton) {
+            printButton.style.display = "block";
+        }
+        },
+
     },
 
     mounted() {
