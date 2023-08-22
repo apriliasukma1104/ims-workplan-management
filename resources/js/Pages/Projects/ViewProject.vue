@@ -79,7 +79,7 @@
                     <div class="card-header">
                         <span><b>Team Member/s:</b></span>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body p-0 mt-3 ml-3 mb-3">
                         <div v-for="members in formData.team_members">
                             {{ members.name }} 
                         </div>

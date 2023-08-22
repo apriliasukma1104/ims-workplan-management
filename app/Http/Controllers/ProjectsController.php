@@ -15,8 +15,8 @@ class ProjectsController extends Controller
     {
         $search = $request->input('search');
         $title = 'Projects';
-        $projectsQuery = Projects::with('teamLeader')
-            ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status');
+        $projectsQuery = Projects::with('teamLeader', 'teamMembers')
+            ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
@@ -76,7 +76,6 @@ class ProjectsController extends Controller
             $project->update($request->all());
 
             $members = $project->teamMembers;
-
             $project->teamMembers()->sync($request->input('team_members'));
 
             return redirect()->route('projects.list_projects')
@@ -129,8 +128,8 @@ class ProjectsController extends Controller
     }
 
     public function ListTasks(Request $request){
-        $task = Tasks::where('id_project', $request->id_project) ->get();
-        return response()->json(['message' => 'Data Saved Successfully', "data" => $task]);
+        $tasks = Tasks::where('id_project', $request->id_project) ->get();
+        return response()->json(['message' => 'Data Saved Successfully', "data" => $tasks]);
     }
 
     public function UpdateTask(Request $request)

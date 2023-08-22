@@ -23,7 +23,7 @@ class TasksController extends Controller
                 'projects.end_date',
                 'projects.status as project_status'
             )
-            ->paginate(10);
+            ->paginate(5);
         return Inertia::render('Tasks/PageTasks', [
             'title' => $title,
             'tasks' => $tasks,

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Repositories\Eloquent\SoContractRepo;
-
+use App\Models\Projects;
 
 class DashboardController extends Controller
 {
@@ -18,41 +16,60 @@ class DashboardController extends Controller
         $this->SoContractRepo = $SoContractRepo;
     }
 
-    public function index()
-    {   
-
-        return Inertia::render('Home/Index');
-    }
-
-     public function indexPost(Request $request)
-    {   
-        $params = [
-            'page'=>$request->page,
-            'filters'=>$request->filters,
-            'sortField'=>$request->sortField,
-            'sortOrder'=>$request->sortOrder
-        ];
-
-        $res = $this->SoContractRepo->getSoContract($params);
-
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $title = 'Dashboard';
+        $projectsQuery = Projects::with('tasks')
+            ->select('id', 'name', 'start_date', 'end_date', 'status');
         
-
-        if($res['data']->code == 401){
-            return redirect('logout');
+        if ($search) {
+            $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
 
-        return response()->json($res['data']->data, $res['data']->code);
-    }
+        $dashboard = $projectsQuery->get();
 
-    public function getDataSo()
-    {   
-        $res = $this->SoContractRepo->getSoContract();
+        $formattedDashboard = [];
+        $totalTaskProjects = 0;
+        $totalProject = 0;
 
-        if($res['data']->code == 401){
-            return redirect('logout');
+        foreach ($dashboard as $project) {
+            $completedTasks = $project->tasks->where('status', 'done')->count();
+            $totalTasks = $project->tasks->count();
+            $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
+
+            $totalTaskProjects += $totalTasks;
+            $totalProject = $project->count();
+
+            $start_date = new \DateTime($project->start_date);
+            $end_date = new \DateTime($project->end_date);
+            $work_duration = $start_date->diff($end_date)->days;
+
+            if (now() > $project->end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
+                $status = 'over due';
+            } elseif ($totalTasks === 0) {
+                $status = 'pending';   
+            } elseif ($completedTasks === 0) {
+                $status = 'started';
+            } elseif ($completedTasks < $totalTasks && $progress >= 25) {
+                $status = 'on-progress';
+            } else {
+                $status = 'done';
+            }
+
+            $formattedDashboard[] = [
+                'project_name' => $project->name,
+                'progress' => $progress,
+                'status' => $status,
+            ];
         }
 
-       return response()->json($res['data'], $res['data']->code);
+        return Inertia::render('Home/Index', [
+            'title' => $title,
+            'dashboard' => $formattedDashboard,
+            'total_tasks' => $totalTaskProjects,
+            'total_projects' => $totalProject,
+        ]);
     }
 
 }

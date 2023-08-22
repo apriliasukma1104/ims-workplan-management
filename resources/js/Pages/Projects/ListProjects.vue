@@ -24,6 +24,13 @@
                         <span>{{ slotProps.data.team_leader.name }}</span>
                     </template>
                 </Column>
+                <!-- <Column field="team_members" header="Team Members">
+                    <template #body="slotProps">
+                        <div>
+                            {{ slotProps.data.team_members.map(member => member.name).join(', ') }}
+                        </div>
+                    </template>
+                </Column> -->
                 <Column field="start_date" header="Start Date"></Column>
                 <Column field="end_date" header="End Date"></Column>
                 <Column field="status" header="Status">

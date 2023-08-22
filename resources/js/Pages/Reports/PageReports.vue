@@ -33,7 +33,7 @@
                 <Column field="completed_task" header="Completed Task"></Column>
                 <Column field="" header="Work Duration">
                     <template #body="slotProps">
-                        {{ slotProps.data.work_duration }} days
+                        {{ slotProps.data.work_duration }} day
                     </template>
                 </Column>
                 <Column field="progress" header="Progress">
