@@ -129,7 +129,7 @@
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
   import { reactive} from "vue";
-  import { storeTasks, deleteTask, listTasks, updateTask } from '../../Api/projects.api.js';
+  import { storeTasks, listTasks, updateTask, deleteTask } from '../../Api/projects.api.js';
   
   export default {
     components: {

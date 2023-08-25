@@ -10,8 +10,9 @@
                     </span>
                 </template>
             </Toolbar>
-            <DataTable :value="data" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
-                :totalRecords="totalData" :loading="loading" :currentPage="lazyParams.page" @page="onPage($event)" responsiveLayout="scroll">
+
+            <DataTable :value="projects" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
+                :totalRecords="totalData" :loading="loading"  @page="onPage($event)" responsiveLayout="scroll">
                 <Column field="" header="No">
                     <template #body="slotProps">
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
@@ -24,13 +25,6 @@
                         <span>{{ slotProps.data.team_leader.name }}</span>
                     </template>
                 </Column>
-                <!-- <Column field="team_members" header="Team Members">
-                    <template #body="slotProps">
-                        <div>
-                            {{ slotProps.data.team_members.map(member => member.name).join(', ') }}
-                        </div>
-                    </template>
-                </Column> -->
                 <Column field="start_date" header="Start Date"></Column>
                 <Column field="end_date" header="End Date"></Column>
                 <Column field="status" header="Status">
@@ -58,7 +52,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
-import { storeProjects, deleteProject } from '../../Api/projects.api.js';
+import { pageListProjects, deleteProject } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -69,8 +63,8 @@ export default {
 
     data() {
         return {
-            data: [],
-            dataPerPage: 10, 
+            projects: [],
+            dataPerPage: 5, 
             totalData: 0, 
             display: false,
             search:null,
@@ -88,17 +82,10 @@ export default {
 
     methods: {
         async loadLazyData() {
-            window.location.reload();
-            // this.loading = true; 
-            // try {
-            //     const res = await storeProjects({ page: this.lazyParams.page, search: this.search });
-            //     this.data = res.projects.data;
-            //     this.totalData = res.projects.total;
-            //     this.loading = false; 
-            // } catch (error) {
-            //     console.error("Error while fetching projects:", error);
-            //     this.loading = false; 
-            // }
+            this.loading = true;
+            var response = await pageListProjects (this.lazyParams);
+            this.projects = response.data.data.data;
+            this.loading = false;
         },
         onSearch(){
             this.lazyParams.page = 1;
@@ -136,6 +123,7 @@ export default {
                         });
                     });
             }
+            this.loadLazyData();
         },
         getStatusBadgeClass(status) {
         switch (status) {
@@ -152,12 +140,8 @@ export default {
     },
     
     mounted() {
-        this.data = this.$page.props.projects.data; 
-        this.totalData = this.$page.props.projects.data.length; 
+        this.projects = this.$page.props.projects.data; 
+        this.totalData = this.$page.props.projects.total;
     }
-
 };
 </script>
-
-<style scoped>
-</style>

@@ -57,6 +57,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
+import { pageListTasks } from '../../Api/projects.api.js'
 
 export default {
   name: "PageTasks",
@@ -68,7 +69,7 @@ export default {
   data() {
     return {
       tasks: [],
-      dataPerPage: 5,
+      dataPerPage: 10,
       totalData: 0,
       display: false,
       search:null,
@@ -85,9 +86,9 @@ export default {
 
   methods: {
     async loadLazyData() {
-      // window.location.reload();
       this.loading = true;
-      this.response = await Inertia.get('/tasks?page=' + this.lazyParams.page);
+      var response = await pageListTasks (this.lazyParams);
+      this.tasks = response.data.data.data;
       this.loading = false;
     },
     onSearch() {
@@ -114,7 +115,7 @@ export default {
 
   mounted() {
         this.tasks = this.$page.props.tasks.data; 
-        this.totalData = this.$page.props.tasks.total; 
+        this.totalData = this.$page.props.tasks.total;
   }
 
 };

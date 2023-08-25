@@ -16,7 +16,7 @@
             </Toolbar>
 
             <DataTable :value="reports" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
-                :totalRecords="totalData" :loading="loading" :currentPage="lazyParams.page" @page="onPage($event)" responsiveLayout="scroll">
+                :totalRecords="totalData" :totalData="total" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
                 <Column field="" header="No">
                     <template #body="slotProps">
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
@@ -65,6 +65,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
+import { pageListReports } from '../../Api/reports.api.js';;
 
 export default {
     name: "PageReports",
@@ -76,8 +77,7 @@ export default {
     data() {
         return {
         reports: [],
-        dataPerPage: 10,
-        totalData: 0, 
+        dataPerPage: 3,
         display: false,
         search:null,
         lazyParams: {
@@ -93,7 +93,11 @@ export default {
 
     methods: {
         async loadLazyData() {
-            window.location.reload();
+            // window.location.reload();
+            this.loading = true;
+            var response = await pageListReports (this.lazyParams);
+            this.reports = response.data.data.data;
+            this.loading = false;
         },
         onSearch(){
             this.lazyParams.page = 1;
@@ -125,8 +129,8 @@ export default {
     },
 
     mounted() {
-        this.reports = this.$page.props.reports; 
-        this.totalData = this.$page.props.reports.total; 
+        this.reports = this.$page.props.reports.data;
+        this.totalData = this.$page.props.reports.total;
     }
 
 };

@@ -68,7 +68,6 @@
           </div>
         </div>
       </form>
-
     </layout>
   </template>
   
@@ -76,8 +75,6 @@
   import Layout from "../../Partials/Layout";
   import { ref, reactive } from 'vue';
   import { usePage } from "@inertiajs/inertia-vue3";
-  import { storeProjects } from '../../Api/projects.api.js';
-  import { router } from '@inertiajs/vue3'
  
   export default {
     components: {

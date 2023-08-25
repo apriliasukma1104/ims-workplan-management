@@ -48,7 +48,7 @@
   <aside class="main-sidebar sidebar-light-orange elevation-4" style="position: fixed;">  
     <!-- Brand Logo -->
     <div class="brand-link text-center">
-      <span class="brand-text font-weight-bold text-danger" style="font-size: 22px;"><b style="color: #000;">Project Monitoring</b> IMS</span>
+      <span class="brand-text font-weight-bold text-orange" style="font-size: 22px;"><b style="color: #000;">Project Monitoring</b> IMS</span>
     </div>
 
     <!-- Sidebar -->

@@ -41,19 +41,19 @@
               <input type="text" name="position" class="form-control form-control-sm" required v-model="formData.position">
             </div>
             <div class="form-group mt-3 mr-3">
-              <label class="control-label">Email</label>
-              <input type="email" class="form-control form-control-sm" name="email" required v-model="formData.email">
+              <label for="email" class="control-label">Email</label>
+              <input type="email" name="email" class="form-control form-control-sm" required v-model="formData.email">
             </div>
             <div class="form-group mt-3 mr-3">
-              <label class="control-label">Password</label>
-              <input type="password" class="form-control form-control-sm" name="password" required v-model="formData.password">
+              <label for="password" class="control-label">Password</label>
+              <input type="password" name="password" class="form-control form-control-sm" required v-model="formData.password">
             </div>
           </div>
         </div>
         <hr>
         <div class="row">
           <div class="col-md-12 text-right justify-content-center d-flex mb-3">
-            <button @click="submitForm" class="btn btn-dark ml-2" >Save</button>
+            <button @click="submitForm" class="btn btn-dark ml-2">Save</button>
             <button @click="cancelForm" class="btn btn-secondary ml-2">Cancel</button>
           </div>
         </div>
@@ -66,8 +66,6 @@
 import Layout from "../../Partials/Layout";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { reactive } from "vue";
-import { storeMembers } from '../../Api/members.api.js';
-import { router } from '@inertiajs/vue3';
 import axios from 'axios'
 
 export default {
@@ -92,14 +90,6 @@ export default {
       value: null,
     });
 
-    // function submitForm () {
-    //   var bodyFormData = new FormData();
-    //   bodyFormData.append('image', formData.image);
-    //   router.post('/members/add/store_members', formData, {
-    //   forceFormData: true,
-    // })
-    // }
-
     async function submitForm() {
       try {
         const response = await axios.post('/members/add/store_members', formData);
@@ -122,6 +112,7 @@ export default {
     const displayImg = (event) => {
       const file = event.target.files[0];
       formData.image=file
+      console.log(formData.image);
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -132,7 +123,7 @@ export default {
         avatar.value = null;
       }
     };
-
+    
     return {
       userType,
       formData,

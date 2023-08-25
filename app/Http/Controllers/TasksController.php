@@ -23,7 +23,12 @@ class TasksController extends Controller
                 'projects.end_date',
                 'projects.status as project_status'
             )
-            ->paginate(5);
+            ->paginate(10);
+
+        if ($request->ajax()){
+            return response()->json(['data'=>$tasks]);
+        }
+            
         return Inertia::render('Tasks/PageTasks', [
             'title' => $title,
             'tasks' => $tasks,

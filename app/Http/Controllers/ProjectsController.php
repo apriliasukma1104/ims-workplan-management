@@ -17,10 +17,14 @@ class ProjectsController extends Controller
         $title = 'Projects';
         $projectsQuery = Projects::with('teamLeader', 'teamMembers')
             ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
-        if ($search) {
-            $projectsQuery->where('name', 'like', '%' . $search . '%');
-        }
-        $projects = $projectsQuery->paginate(10);
+            if ($search) {
+                $projectsQuery->where('name', 'like', '%' . $search . '%');
+            }
+            $projects = $projectsQuery->paginate(5);
+
+            if ($request->ajax()){
+                return response()->json(['data'=>$projects]);
+            }
         return Inertia::render('Projects/ListProjects', [
             'title' => $title,
             'projects' => $projects, 

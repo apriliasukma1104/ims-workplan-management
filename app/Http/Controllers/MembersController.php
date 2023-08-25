@@ -26,16 +26,29 @@ class MembersController extends Controller
         $members->update($request->all());
         return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
     }
-    
+
     public function PageListMembers(Request $request)
     {
         $title = 'Members';
-        $members = Members::select('id', 'image', 'name', 'position', 'role', 'email')->get();
+        $membersQuery = Members::select('id', 'image', 'name', 'position', 'role', 'email');
+
+        $search = $request->input('search');
+        if ($search) {
+            $membersQuery->where('name', 'like', '%' . $search . '%');
+        }
+
+        $members = $membersQuery->paginate(5); 
+
+        if ($request->ajax()) {
+            return response()->json(['data' => $members]);
+        }
+
         return Inertia::render('Members/ListMembers', [
             'title' => $title,
-            'members' => $members, // Mengirim data anggota ke halaman Vue.js
+            'members' => $members,
         ]);
     }
+
 
     public function PageAddMember()
     {
@@ -55,19 +68,12 @@ class MembersController extends Controller
             'email' => 'required|string|email|max:255|unique:members,email',
             'password' => 'required|string|min:8',  
         ])->validate();
-        
-        // if ($validator->fails()) {
-        //     return Inertia::render('Members/AddMembers', [
-        //         'errors' => $validator->errors()->toArray(), 
-        //         'formData' => $request->all(), 
-        //     ])->withViewData(['message' => 'Failed to save data']); 
-        // }
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-                        
-            $imagePath = $image->store('public/uploads'); // Simpan gambar di folder storage/app/public/uploads
-            $validatedData['image'] = asset(str_replace('public', 'storage', $imagePath));
+
+            $imagePath = $image->store('public/images'); 
+            $validatedData['image'] = str_replace('public/images/', '', $imagePath);
         }
         $validatedData['password'] = Hash::make($request->password); // Simpan data ke database
         Members::create($validatedData);

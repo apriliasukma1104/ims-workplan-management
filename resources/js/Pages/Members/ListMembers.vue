@@ -12,7 +12,7 @@
                     </span>
                 </template>
             </Toolbar>
-            <DataTable :value="data" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
+            <DataTable :value="members" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
                 :totalRecords="totalData" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
                 <Column field="" header="No">
                     <template #body="slotProps">
@@ -45,7 +45,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
-import { storeMembers, deleteMember } from '../../Api/members.api.js';
+import { pageListMembers, deleteMember } from '../../Api/members.api.js';
 
 export default {
     name: "ListMembers",
@@ -55,8 +55,8 @@ export default {
     },
     data() {
         return {
-            data: [],
-            dataPerPage: 10, 
+            members: [],
+            dataPerPage: 5, 
             totalData: 0, 
             display: false,
             search:null,
@@ -74,13 +74,10 @@ export default {
 
     methods: {
         async loadLazyData() {
-            window.location.reload();
-            // this.loading = true;
-            // const res = await storeMembers({page : this.lazyParams.page + 1, search:this.search})
-
-            // this.data = res.data.data;
-
-            // this.loading = false;
+            this.loading = true;
+            var response = await pageListMembers (this.lazyParams);
+            this.members = response.data.data.data;
+            this.loading = false;
         },
         onSearch(){
             this.lazyParams.page = 0;
@@ -118,8 +115,8 @@ export default {
         },
     },
     mounted() {
-        this.data = this.$page.props.members; 
-        this.totalData = this.$page.props.members.length; 
+        this.members = this.$page.props.members.data; 
+        this.totalData = this.$page.props.members.total; 
     }
 };
 </script>

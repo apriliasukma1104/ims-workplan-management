@@ -59,15 +59,15 @@ Route::prefix('members')->name('members.')->group(function () {
     Route::post('/list/delete_member', [MembersController::class, 'DeleteMember'])->name('delete_member');
 });
 
-Route::get('/images/{filename}', function ($filename) {
-    $path = storage_path('app/public/uploads/' . $filename);
+// Route::get('/images/{filename}', function ($filename) {
+//     $path = storage_path('app/public/uploads/' . $filename);
     
-    if (file_exists($path)) {
-        return Response::file($path);
-    } else {
-        abort(404);
-    }
-});
+//     // if (file_exists($path)) {
+//     //     return Response::file($path);
+//     // } else {
+//     //     abort(404);
+//     // }
+// });
 
 Route::prefix('projects')->name('projects.')->group(function () {
     Route::get('/add_project', [ProjectsController::class, 'PageAddProject'])->name('add_project');
