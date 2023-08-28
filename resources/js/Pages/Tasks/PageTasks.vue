@@ -45,6 +45,9 @@
                     </span>
                 </template>
             </Column>
+            <template #empty>
+                No records found
+            </template>
           </DataTable>
 
         </div>
@@ -72,7 +75,6 @@ export default {
       dataPerPage: 10,
       totalData: 0,
       display: false,
-      search:null,
       lazyParams: {
         page: 1,
       },
@@ -87,12 +89,13 @@ export default {
   methods: {
     async loadLazyData() {
       this.loading = true;
-      var response = await pageListTasks (this.lazyParams);
+      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search });
       this.tasks = response.data.data.data;
+      this.totalData = response.data.data.total;
       this.loading = false;
     },
     onSearch() {
-      this.lazyParams.page = 1;
+      this.totalData = 0;
       this.loadLazyData();
     },
     onPage(event) {

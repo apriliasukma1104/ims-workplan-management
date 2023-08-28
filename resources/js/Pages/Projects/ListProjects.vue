@@ -41,6 +41,9 @@
                         <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" />
                     </template>
                 </Column>
+                <template #empty>
+                    No records found
+                </template>
             </DataTable>
         </div>
     </layout>
@@ -67,7 +70,6 @@ export default {
             dataPerPage: 5, 
             totalData: 0, 
             display: false,
-            search:null,
             error: {},
             lazyParams: {
                 page: 1
@@ -83,12 +85,13 @@ export default {
     methods: {
         async loadLazyData() {
             this.loading = true;
-            var response = await pageListProjects (this.lazyParams);
+            var response = await pageListProjects ({ page : this.lazyParams.page, search: this.search });
             this.projects = response.data.data.data;
+            this.totalData = response.data.data.total;
             this.loading = false;
         },
         onSearch(){
-            this.lazyParams.page = 1;
+            this.totalData = 0;
             this.loadLazyData();
         },
         onPage(event) {

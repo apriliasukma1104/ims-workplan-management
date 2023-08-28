@@ -18372,7 +18372,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       dataPerPage: 5,
       totalData: 0,
       display: false,
-      search: null,
       error: {},
       lazyParams: {
         page: 1
@@ -18395,14 +18394,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_members_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListMembers)(_this.lazyParams);
+                return (0,_Api_members_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListMembers)({
+                  page: _this.lazyParams.page,
+                  search: _this.search
+                });
 
               case 3:
                 response = _context.sent;
                 _this.members = response.data.data.data;
+                _this.totalData = response.data.data.total;
                 _this.loading = false;
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -18411,7 +18414,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onSearch: function onSearch() {
-      this.lazyParams.page = 0;
+      this.totalData = 0;
       this.loadLazyData();
     },
     onPage: function onPage(event) {
@@ -19859,7 +19862,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       dataPerPage: 5,
       totalData: 0,
       display: false,
-      search: null,
       error: {},
       lazyParams: {
         page: 1
@@ -19882,14 +19884,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListProjects)(_this.lazyParams);
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListProjects)({
+                  page: _this.lazyParams.page,
+                  search: _this.search
+                });
 
               case 3:
                 response = _context.sent;
                 _this.projects = response.data.data.data;
+                _this.totalData = response.data.data.total;
                 _this.loading = false;
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -19898,7 +19904,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onSearch: function onSearch() {
-      this.lazyParams.page = 1;
+      this.totalData = 0;
       this.loadLazyData();
     },
     onPage: function onPage(event) {
@@ -20249,7 +20255,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reports: [],
       dataPerPage: 3,
       display: false,
-      search: null,
       lazyParams: {
         page: 1
       },
@@ -20269,14 +20274,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                // window.location.reload();
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_reports_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListReports)(_this.lazyParams);
+                return (0,_Api_reports_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListReports)({
+                  page: _this.lazyParams.page,
+                  search: _this.search
+                });
 
               case 3:
                 response = _context.sent;
-                _this.reports = response.data.data.data;
+                _this.reports = response.data.reports.data;
                 _this.loading = false;
 
               case 6:
@@ -20371,7 +20378,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       dataPerPage: 10,
       totalData: 0,
       display: false,
-      search: null,
       lazyParams: {
         page: 1
       },
@@ -20393,14 +20399,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListTasks)(_this.lazyParams);
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListTasks)({
+                  page: _this.lazyParams.page,
+                  search: _this.search
+                });
 
               case 3:
                 response = _context.sent;
                 _this.tasks = response.data.data.data;
+                _this.totalData = response.data.data.total;
                 _this.loading = false;
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -20409,7 +20419,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onSearch: function onSearch() {
-      this.lazyParams.page = 1;
+      this.totalData = 0;
       this.loadLazyData();
     },
     onPage: function onPage(event) {
@@ -24838,10 +24848,10 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true":
-/*!************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28":
+/*!************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28 ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -24851,18 +24861,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-
-var _withId = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.withScopeId)("data-v-247abc28");
-
-(0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-247abc28");
-
 var _hoisted_1 = {
   "class": "card"
 };
 
-(0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" No records found ");
 
-var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
+function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ConfirmDialog = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ConfirmDialog");
 
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
@@ -24882,18 +24887,18 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_layout, {
     title: "Member List"
   }, {
-    "default": _withId(function () {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfirmDialog), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Toast, {
         position: "top-center"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Toolbar, {
         "class": "p-mb-4"
       }, {
-        right: _withId(function () {
+        right: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
             placeholder: "Search...",
-            modelValue: $data.search,
+            modelValue: _ctx.search,
             "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-              return $data.search = $event;
+              return _ctx.search = $event;
             }),
             style: {
               "font-size": "13px"
@@ -24925,12 +24930,15 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         }),
         responsiveLayout: "scroll"
       }, {
-        "default": _withId(function () {
+        empty: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_2];
+        }),
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
             header: "No"
           }, {
-            body: _withId(function (slotProps) {
+            body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(($data.lazyParams.page - 1) * $data.dataPerPage + slotProps.index + 1), 1
               /* TEXT */
               )];
@@ -24942,7 +24950,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             field: "image",
             header: "Image"
           }, {
-            body: _withId(function (slotProps) {
+            body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
                 src: slotProps.data.image,
                 style: {
@@ -24972,7 +24980,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             exportable: false,
             header: "Action"
           }, {
-            body: _withId(function (slotProps) {
+            body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {
               return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
                 onClick: function onClick($event) {
                   return $options.onEdit(slotProps.data);
@@ -25010,7 +25018,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     /* STABLE */
 
   });
-});
+}
 
 /***/ }),
 
@@ -26356,6 +26364,9 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "card"
 };
+
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" No records found ");
+
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
 
@@ -26383,9 +26394,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         right: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
             placeholder: "Search...",
-            modelValue: $data.search,
+            modelValue: _ctx.search,
             "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-              return $data.search = $event;
+              return _ctx.search = $event;
             }),
             style: {
               "font-size": "13px"
@@ -26417,6 +26428,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }),
         responsiveLayout: "scroll"
       }, {
+        empty: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_2];
+        }),
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
@@ -27003,6 +27017,9 @@ var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 var _hoisted_4 = {
   "class": "progress progress-sm"
 };
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" No records found ");
+
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
 
@@ -27033,9 +27050,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         right: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
             placeholder: "Search...",
-            modelValue: $data.search,
+            modelValue: _ctx.search,
             "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-              return $data.search = $event;
+              return _ctx.search = $event;
             }),
             style: {
               "font-size": "13px"
@@ -27077,6 +27094,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }),
         responsiveLayout: "scroll"
       }, {
+        empty: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_5];
+        }),
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
@@ -27195,6 +27215,8 @@ var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 /* HOISTED */
 );
 
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" No records found ");
+
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
 
@@ -27232,9 +27254,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         right: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
             placeholder: "Search...",
-            modelValue: $data.search,
+            modelValue: _ctx.search,
             "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-              return $data.search = $event;
+              return _ctx.search = $event;
             }),
             style: {
               "font-size": "13px"
@@ -27266,6 +27288,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }),
         responsiveLayout: "scroll"
       }, {
+        empty: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_3];
+        }),
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
@@ -69252,13 +69277,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _ListMembers_vue_vue_type_template_id_247abc28_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListMembers.vue?vue&type=template&id=247abc28&scoped=true */ "./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true");
+/* harmony import */ var _ListMembers_vue_vue_type_template_id_247abc28__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListMembers.vue?vue&type=template&id=247abc28 */ "./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28");
 /* harmony import */ var _ListMembers_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListMembers.vue?vue&type=script&lang=js */ "./resources/js/Pages/Members/ListMembers.vue?vue&type=script&lang=js");
 
 
 
-_ListMembers_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _ListMembers_vue_vue_type_template_id_247abc28_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render
-_ListMembers_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__scopeId = "data-v-247abc28"
+_ListMembers_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _ListMembers_vue_vue_type_template_id_247abc28__WEBPACK_IMPORTED_MODULE_0__.render
 /* hot reload */
 if (false) {}
 
@@ -70607,18 +70631,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true":
-/*!**********************************************************************************************!*\
-  !*** ./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true ***!
-  \**********************************************************************************************/
+/***/ "./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28 ***!
+  \**********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ListMembers_vue_vue_type_template_id_247abc28_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ListMembers_vue_vue_type_template_id_247abc28__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ListMembers_vue_vue_type_template_id_247abc28_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./ListMembers.vue?vue&type=template&id=247abc28&scoped=true */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28&scoped=true");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ListMembers_vue_vue_type_template_id_247abc28__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./ListMembers.vue?vue&type=template&id=247abc28 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Members/ListMembers.vue?vue&type=template&id=247abc28");
 
 
 /***/ }),

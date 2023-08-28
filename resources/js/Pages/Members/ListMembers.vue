@@ -34,6 +34,9 @@
                         <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
                     </template>
                 </Column>
+                <template #empty>
+                    No records found
+                </template>
             </DataTable>
         </div>
     </layout>
@@ -59,7 +62,6 @@ export default {
             dataPerPage: 5, 
             totalData: 0, 
             display: false,
-            search:null,
             error: {},
             lazyParams: {
                 page: 1
@@ -75,12 +77,13 @@ export default {
     methods: {
         async loadLazyData() {
             this.loading = true;
-            var response = await pageListMembers (this.lazyParams);
+            var response = await pageListMembers ({ page : this.lazyParams.page, search: this.search });
             this.members = response.data.data.data;
+            this.totalData = response.data.data.total;
             this.loading = false;
         },
         onSearch(){
-            this.lazyParams.page = 0;
+            this.totalData = 0;
             this.loadLazyData();
         },
         onPage(event) {
@@ -120,6 +123,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>

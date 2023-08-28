@@ -53,6 +53,9 @@
                         </span>
                     </template>
                 </Column>
+                <template #empty>
+                    No records found
+                </template>
             </DataTable>
 
         </div>
@@ -79,7 +82,6 @@ export default {
         reports: [],
         dataPerPage: 3,
         display: false,
-        search:null,
         lazyParams: {
             page: 1,
         },
@@ -93,10 +95,9 @@ export default {
 
     methods: {
         async loadLazyData() {
-            // window.location.reload();
             this.loading = true;
-            var response = await pageListReports (this.lazyParams);
-            this.reports = response.data.data.data;
+            var response = await pageListReports ({ page : this.lazyParams.page, search: this.search });
+            this.reports = response.data.reports.data;
             this.loading = false;
         },
         onSearch(){
@@ -104,8 +105,8 @@ export default {
             this.loadLazyData();
         },
         onPage(event) {
-        this.lazyParams.page = event.page  + 1;
-        this.loadLazyData();
+            this.lazyParams.page = event.page  + 1;
+            this.loadLazyData();
         }, 
         getStatusBadgeClass(status) {
         switch (status) {

@@ -34,7 +34,12 @@ class MembersController extends Controller
 
         $search = $request->input('search');
         if ($search) {
-            $membersQuery->where('name', 'like', '%' . $search . '%');
+            $membersQuery->where(function ($query) use ($search) {
+                $columns = ['name', 'position', 'role', 'email'];
+                foreach ($columns as $column) {
+                    $query->orWhere($column, 'like', '%' . $search . '%');
+                }
+            });
         }
 
         $members = $membersQuery->paginate(5); 
@@ -48,7 +53,6 @@ class MembersController extends Controller
             'members' => $members,
         ]);
     }
-
 
     public function PageAddMember()
     {

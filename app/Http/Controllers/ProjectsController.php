@@ -13,18 +13,29 @@ class ProjectsController extends Controller
 {
     public function PageListProjects(Request $request)
     {
-        $search = $request->input('search');
         $title = 'Projects';
         $projectsQuery = Projects::with('teamLeader', 'teamMembers')
             ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
-            if ($search) {
-                $projectsQuery->where('name', 'like', '%' . $search . '%');
-            }
-            $projects = $projectsQuery->paginate(5);
 
-            if ($request->ajax()){
-                return response()->json(['data'=>$projects]);
-            }
+        $search = $request->input('search');
+        if ($search) {
+            $projectsQuery->where(function ($query) use ($search) {
+                $columns = ['name', 'project_type', 'start_date', 'end_date', 'status'];
+                foreach ($columns as $column) {
+                    $query->orWhere($column, 'like', '%' . $search . '%');
+                }
+                $query->orWhereHas('teamLeader', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        $projects = $projectsQuery->paginate(5);
+
+        if ($request->ajax()){
+            return response()->json(['data'=>$projects]);
+        }
+        
         return Inertia::render('Projects/ListProjects', [
             'title' => $title,
             'projects' => $projects, 
