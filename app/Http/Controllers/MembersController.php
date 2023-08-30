@@ -22,15 +22,23 @@ class MembersController extends Controller
 
     public function UpdateManageMember(Request $request)
     {
-        $members = Members::find($request->input('id'));
-        $members->update($request->all());
+        $member = Members::find($request->input('id'));
+
+        $member->fill($request->except('password'));
+        $newPassword = $request->input('password');
+            if (!empty($newPassword)) {
+                $hashedPassword = bcrypt($newPassword);
+                $member->password = $hashedPassword;
+            }
+        $member->save();
+        
         return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
     }
 
     public function PageListMembers(Request $request)
     {
         $title = 'Members';
-        $membersQuery = Members::select('id', 'image', 'name', 'position', 'role', 'email');
+        $membersQuery = Members::select('id', 'name', 'position', 'role', 'email');
 
         $search = $request->input('search');
         if ($search) {
@@ -79,7 +87,11 @@ class MembersController extends Controller
             $imagePath = $image->store('public/images'); 
             $validatedData['image'] = str_replace('public/images/', '', $imagePath);
         }
-        $validatedData['password'] = Hash::make($request->password); // Simpan data ke database
+        $newPassword = $validatedData['password'];
+            if (!empty($newPassword)) {
+                $hashedPassword = bcrypt($newPassword);
+                $validatedData['password'] = $hashedPassword;
+        }
         Members::create($validatedData);
         return redirect()->route('members.list_members')->with('message', 'Data Created successfully!');
     }
@@ -95,7 +107,15 @@ class MembersController extends Controller
     public function UpdateMember(Request $request)
     {
         $member = Members::find($request->input('id'));
-        $member->update($request->all());
+
+        $member->fill($request->except('password'));
+        $newPassword = $request->input('password');
+            if (!empty($newPassword)) {
+                $hashedPassword = bcrypt($newPassword);
+                $member->password = $hashedPassword;
+            }
+        $member->save();
+
         return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
     }
 
@@ -109,7 +129,6 @@ class MembersController extends Controller
         }
         try {
             $member = Members::findOrFail($request->id);
-            // Hapus data anggota dari database
             $member->delete();
             return response()->json(['message' => 'Data Deleted Successfully!'], 200);
         } catch (\Exception $e) {

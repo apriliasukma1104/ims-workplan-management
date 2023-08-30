@@ -17,7 +17,7 @@
                    <form method="post" @submit.prevent="submit">
                     <errors-and-messages :errors="errors"></errors-and-messages>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="nip" v-model="form.name" placeholder="Username" />
+                        <input type="text" class="form-control" name="username" v-model="form.name" placeholder="Username" />
                       <div class="input-group-append">
                         <div class="input-group-text">
                           <span class="fas fa-envelope"></span>

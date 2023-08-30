@@ -71,10 +71,6 @@ return [
             'model' => App\Models\Members::class,
         ],
 
-        // 'members' => [
-        //     'driver' => 'database',
-        //     'table' => 'members',
-        // ],
     ],
 
     /*

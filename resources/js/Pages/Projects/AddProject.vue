@@ -28,12 +28,20 @@
                     <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
                   </select>
               </div>
+
               <div class="form-group mt-3 ml-3">
                 <label for="team_members" class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
                 <select name="team_members[]" id="team_members" class="custom-select custom-select-sm" multiple required v-model="formData.team_members">
                   <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
                 </select>
               </div>
+
+              <!-- <div class="form-group mt-3 ml-3">
+                <label for="team_members" class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
+                <MultiSelect v-model="formData.team_members" :options="members" optionLabel="name" placeholder="Select Team Members"
+                  display="chip" class="custom-select custom-select-sm" />
+              </div> -->
+
             </div>
             <div class="col-md-6">
               <div class="form-group mt-3 mr-3">
@@ -73,12 +81,14 @@
   
   <script>
   import Layout from "../../Partials/Layout";
-  import { ref, reactive } from 'vue';
+  import { reactive } from 'vue';
   import { usePage } from "@inertiajs/inertia-vue3";
+  import Multiselect from 'vue-multiselect';
  
   export default {
     components: {
-      Layout,
+      Layout, 
+      Multiselect,
     },
     setup() {
       const { userType, members } = usePage().props.value; // Ambil data members dari props

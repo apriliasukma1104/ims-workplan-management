@@ -132,60 +132,6 @@
               <p>Reports</p>
             </a>
           </li>
-
-          <!-- <li class="nav-item" :class="$route().current().indexOf('cek') >= 0 ? 'menu-open' : ''">
-            <a href="#" class="nav-link" :class="$route().current().indexOf('cek') >= 0 ? 'active' : ''">
-              <i class="nav-icon fas fa-tasks"></i> 
-              <p>
-                 Projects Contoh
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a :href="$route('cek.ceklpbg')" class="nav-link" :class="$route().current('cek.ceklpbg') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>RKAP</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                 <a :href="$route('cek.ceksttp')" class="nav-link" :class="$route().current('cek.ceksttp') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>KPI</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                 <a :href="$route('cek.ceksttp')" class="nav-link" :class="$route().current('cek.ceksttp') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>NPM</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
-
-           <!-- <li class="nav-item" :class="$route().current().indexOf('master') >= 0 ? 'menu-open' : ''">
-            <a href="#" class="nav-link" :class="$route().current().indexOf('master') >= 0 ? 'active' : ''">
-              <i class="nav-icon fas fa-database"></i>
-              <p>
-                Data Master
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-               <li class="nav-item">
-                <a :href="$route('master.PageProyek')" class="nav-link" :class="$route().current('master.PageProyek') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Members</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a :href="$route('master.PageMaster')" class="nav-link" :class="$route().current('master.PageMaster') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Projects</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
           
         </ul>
       </nav>
@@ -199,7 +145,7 @@
 </template>
 
 <script>
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
 
 export default {

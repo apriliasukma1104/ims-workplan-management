@@ -29,7 +29,8 @@
             </div>
             <div class="form-group mt-3 ml-3 mr-3">
               <label class="control-label">Password</label>
-              <input type="password" class="form-control form-control-sm" name="password" v-model="formData.password">
+              <input type="text" class="form-control form-control-sm" name="password" v-model="formData.password">
+              <small><i>{{ "Leave this blank if you don't want to change your password" }}</i></small>
             </div>
           </div>
         </div>

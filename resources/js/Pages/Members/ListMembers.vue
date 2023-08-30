@@ -19,11 +19,6 @@
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
                     </template>
                 </Column>
-                <Column field="image" header="Image">
-                    <template #body="slotProps">
-                        <img :src="slotProps.data.image" style="max-width: 2cm; max-height: 2cm;" />
-                    </template>
-                </Column>
                 <Column field="name" header="Name"></Column>
                 <Column field="position" header="Position"></Column>
                 <Column field="role" header="Member Role"></Column>
