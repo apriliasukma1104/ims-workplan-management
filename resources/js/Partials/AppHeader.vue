@@ -80,13 +80,13 @@
                   <p>Manage</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="user && (user.role === 'Super Admin' || user.role === 'Admin 1' || user.role === 'Admin 2')">
                 <a :href="$route('members.list_members')" class="nav-link" :class="$route().current('members.list_members') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>List</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="user && user.role === 'Super Admin'">
                 <a :href="$route('members.add_member')" class="nav-link" :class="$route().current('members.add_member') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add New</p>
@@ -104,29 +104,29 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              <li class="nav-item" v-if="user && user.role === 'Admin 1'">
+                <a :href="$route('projects.add_project')" class="nav-link" :class="$route().current('projects.add_project') ? 'active' : ''">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a :href="$route('projects.list_projects')" class="nav-link" :class="$route().current('projects.list_projects') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>List</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a :href="$route('projects.add_project')" class="nav-link" :class="$route().current('projects.add_project') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add New</p>
-                </a>
-              </li>
             </ul>
           </li>
           
-          <li class="nav-item">
+          <li class="nav-item" v-if="user && (user.role === 'Admin 2' || user.role === 'User')">
             <a :href="$route('tasks.page_tasks')" class="nav-link" :class="$route().current('tasks.page_tasks') ? 'active' : ''">
               <i class="nav-icon fas fa-tasks"></i>
               <p>Tasks</p>
             </a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item" v-if="user && (user.role === 'Super Admin' || user.role === 'Admin 1' || user.role === 'Admin 2')">
             <a :href="$route('reports.page_reports')" class="nav-link" :class="$route().current('reports.page_reports') ? 'active' : ''">
               <i class="nav-icon fas fa-newspaper"></i>
               <p>Reports</p>

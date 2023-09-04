@@ -47,6 +47,7 @@
                   <option disabled value="">Please Select One</option>
                   <option>to do</option>
                   <option>doing</option>
+                  <option>review</option>
                   <option>done</option>
                 </select>
               </div>

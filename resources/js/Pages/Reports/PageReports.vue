@@ -48,10 +48,14 @@
                 </Column>
                 <Column field="status" header="Status">
                     <template #body="slotProps">
-                        <span :class="getStatusBadgeClass(slotProps.data.status)">
-                                {{ slotProps.data.status }}
+                        <span :class="['status-badge', getStatusBadgeClass(slotProps.data.status)]">
+                            {{ slotProps.data.status }}
                         </span>
                     </template>
+                </Column>
+                <Column field="validation" header="Validation">
+                </Column>
+                <Column field="note" header="Note">
                 </Column>
                 <template #empty>
                     No records found
@@ -67,9 +71,7 @@ import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import { computed, inject } from "vue";
-import { pageListReports } from '../../Api/reports.api.js';;
-
+import { pageListReports } from '../../Api/reports.api.js';
 export default {
     name: "PageReports",
     components: {
@@ -116,6 +118,8 @@ export default {
             return "badge badge-primary";
             case "on-progress":
             return "badge badge-info";
+            case "review":
+            return "badge badge-dark";
             case "done":
             return "badge badge-success";
             case "over due":
@@ -136,3 +140,9 @@ export default {
 
 };
 </script>
+
+<style scoped>
+.status-badge {
+  min-width: 80px; 
+}
+</style>

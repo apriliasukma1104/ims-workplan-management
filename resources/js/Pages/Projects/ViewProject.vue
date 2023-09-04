@@ -1,7 +1,6 @@
 <template>
     <layout title="View Project">
     <Toast position="top-center" />
-    <ConfirmDialog></ConfirmDialog>
 
       <Dialog header="Header" v-model:visible="dataTask.display" >
         <template #header>
@@ -68,6 +67,7 @@
                     <label class="control-label" style="display: block; margin-top: 1rem;">Status</label>
                     <span class="badge badge-primary" v-if="formData.status === 'to do'">to do</span>
                     <span class="badge badge-info" v-if="formData.status === 'doing'">doing</span>
+                    <span class="badge badge-secondary" v-if="formData.status === 'review'">review</span>
                     <span class="badge badge-success" v-if="formData.status === 'done'">done</span>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                             <Column field="description" header="Description"></Column>
                             <Column field="status" header="Status">
                               <template #body="slotProps">
-                                  <span :class="getStatusBadgeClass(slotProps.data.status)">
+                                  <span :class="['status-badge', getStatusBadgeClass(slotProps.data.status)]">
                                       {{ slotProps.data.status }}
                                   </span>
                               </template>
@@ -193,7 +193,6 @@
                 }
                 loadLazyTask(form);
             } catch (error) {
-                console.error(error);
                 alert("Data Failed to Save!");
             }
         };
@@ -221,9 +220,11 @@
                 return 'badge badge-primary';
             } else if (status === 'doing') {
                 return 'badge badge-info';
+            } else if (status === 'review') {
+                return 'badge badge-secondary';
             } else if (status === 'done') {
                 return 'badge badge-success';
-            }
+            } 
         }
 
         return {
@@ -248,6 +249,9 @@
 <style scoped>
     .custom-select {
         font-size: 14px;
+    }
+    .status-badge {
+    min-width: 50px; 
     }
 </style>
   

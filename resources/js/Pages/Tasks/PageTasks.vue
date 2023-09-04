@@ -1,6 +1,37 @@
 <template>
     <layout title="Tasks List">
     <Toast position="top-center" />
+
+      <!-- <Dialog header="Header" v-model:visible="dataTask.display" >
+          <template #header>
+                  <label>New Progress</label>
+                  </template>
+                  <div class="p-fluid">
+                      <div class="p-field">
+                          <label for="task">Task<span style="color:red;">*</span></label>
+                          <InputText v-model="form.id" type="text" hidden/>
+                          <InputText v-model="form.id_project" type="text" hidden/>
+                          <InputText v-model="form.task" type="text" />
+                      </div>
+                      <div class="p-field">
+                          <label for="description">Description<span style="color:red;">*</span></label>
+                          <InputText v-model="form.description" type="text" />
+                      </div>
+                      <div class="p-field">
+                          <label for="status">Status<span style="color:red;">*</span></label>
+                            <select class="custom-select custom-select-sm" v-model="form.status">
+                              <option disabled value="">Please Select One</option>
+                              <option>to do</option>
+                              <option>doing</option>
+                              <option>done</option>
+                            </select>
+                      </div>
+                  </div>
+                  <template #footer>
+                      <Button @click="simpanTask" label="Save" icon="pi pi-check" autofocus class="p-button-sm" />
+                  </template>
+        </Dialog> -->
+
         <div class="card">
           <Toolbar class="p-mb-4">
             <template #left>
@@ -58,6 +89,7 @@
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
+import { reactive} from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { computed, inject } from "vue";
 import { pageListTasks } from '../../Api/projects.api.js'
@@ -68,6 +100,67 @@ export default {
     ErrorsAndMessages,
     Layout,
   },
+
+  // setup(){
+  //   const { userType } = usePage().props.value;
+  //   const tasks = usePage().props.value.tasks;
+
+  //   const form = reactive({
+  //           id: "",
+  //           task: "",
+  //           description: "",
+  //           status: "",
+  //       });
+
+  //       var dataTask = reactive({
+  //           task : [],
+  //           display: false
+  //       });
+
+  //       dataTask.task=tasks;
+
+  //       const newTask = () => {
+  //           dataTask.display = true;
+  //           form.id = '';
+  //           form.task = '';
+  //           form.description = '';
+  //           form.status = '';
+  //       };
+
+  //       async function loadLazyTask(form) {
+  //           var params = {id_project:formData.id};
+  //           const result = await listTasks( form );
+  //           dataTask.task = result.data.data;
+  //       };
+
+  //       async function simpanTask() {
+  //           form.id_project = formData.id;
+  //           try {
+  //               dataTask.display = false;  
+  //               if (form.id) {
+  //                   await updateTask(form); 
+  //                   alert("Data Updated Successfully!");
+  //               } else {
+  //                   const response = await storeTasks(form);
+  //                   alert("Data Saved Successfully!");
+  //               }
+  //               loadLazyTask(form);
+  //           } catch (error) {
+  //               console.error(error);
+  //               alert("Data Failed to Save!");
+  //           }
+  //       };
+
+  //       return {
+  //           userType,
+  //           form,
+  //           tasks,
+  //           dataTask,
+  //           newTask,
+  //           loadLazyTask,
+  //           simpanTask
+  //       };
+  // },
 
   data() {
     return {

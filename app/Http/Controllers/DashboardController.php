@@ -41,18 +41,20 @@ class DashboardController extends Controller
             $totalTaskProjects += $totalTasks;
             $totalProject = $project->count();
 
-            $start_date = new \DateTime($project->start_date);
             $end_date = new \DateTime($project->end_date);
-            $work_duration = $start_date->diff($end_date)->days;
+            $end_date->setTime(23, 59, 0);
 
-            if (now() > $project->end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
+            $now = now();
+            if ($now > $end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
                 $status = 'over due';
             } elseif ($totalTasks === 0) {
-                $status = 'pending';   
+                $status = 'pending';
             } elseif ($completedTasks === 0) {
                 $status = 'started';
             } elseif ($completedTasks < $totalTasks && $progress >= 25) {
                 $status = 'on-progress';
+            } elseif ($project->status === 'review') {
+                $status = 'review';
             } else {
                 $status = 'done';
             }

@@ -67,7 +67,7 @@ Route::prefix('members')->name('members.')->group(function () {
 //     // } else {
 //     //     abort(404);
 //     // }
-// });
+// }); 
 
 Route::prefix('projects')->name('projects.')->group(function () {
     Route::get('/add_project', [ProjectsController::class, 'PageAddProject'])->name('add_project');

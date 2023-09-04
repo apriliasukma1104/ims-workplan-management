@@ -19,6 +19,9 @@ class Projects extends Model
         'end_date',
         'status',
         'description',
+        'validation',
+        'note',
+        
     ];
 
     public function teamLeader()

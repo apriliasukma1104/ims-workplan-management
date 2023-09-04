@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class Members extends Authenticatable
 {

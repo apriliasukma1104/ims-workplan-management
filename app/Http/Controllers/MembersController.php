@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Members;
@@ -31,13 +30,12 @@ class MembersController extends Controller
                 $member->password = $hashedPassword;
             }
         $member->save();
-        
-        return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
+
+        return redirect()->route('members.list_members');
     }
 
     public function PageListMembers(Request $request)
     {
-        $title = 'Members';
         $membersQuery = Members::select('id', 'name', 'position', 'role', 'email');
 
         $search = $request->input('search');
@@ -51,23 +49,18 @@ class MembersController extends Controller
         }
 
         $members = $membersQuery->paginate(5); 
-
         if ($request->ajax()) {
             return response()->json(['data' => $members]);
         }
 
         return Inertia::render('Members/ListMembers', [
-            'title' => $title,
             'members' => $members,
         ]);
     }
 
     public function PageAddMember()
     {
-        $title = 'Members';
-        return Inertia::render('Members/AddMember', [
-            'title' =>  $title
-        ]);
+        return Inertia::render('Members/AddMember');
     }
 
     public function StoreMembers(Request $request)
@@ -83,17 +76,16 @@ class MembersController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-
             $imagePath = $image->store('public/images'); 
             $validatedData['image'] = str_replace('public/images/', '', $imagePath);
         }
         $newPassword = $validatedData['password'];
             if (!empty($newPassword)) {
-                $hashedPassword = bcrypt($newPassword);
-                $validatedData['password'] = $hashedPassword;
+            $hashedPassword = bcrypt($newPassword);
+            $validatedData['password'] = $hashedPassword;
         }
         Members::create($validatedData);
-        return redirect()->route('members.list_members')->with('message', 'Data Created successfully!');
+        return redirect()->route('members.list_members');
     }
 
     public function EditMember(Request $request)
@@ -116,23 +108,12 @@ class MembersController extends Controller
             }
         $member->save();
 
-        return redirect()->route('members.list_members')->with('message', 'Data Successfully Updated!');
+        return redirect()->route('members.list_members');
     }
 
     public function DeleteMember(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:members,id',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-        try {
-            $member = Members::findOrFail($request->id);
-            $member->delete();
-            return response()->json(['message' => 'Data Deleted Successfully!'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Data Failed to Delete!'], 500);
-        }
+        $member = Members::findOrFail($request->id);
+        $member->delete();
     }
 }

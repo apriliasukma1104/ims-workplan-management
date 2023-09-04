@@ -32,9 +32,11 @@
               </Column>
               <Column field="status" header="Status">
                   <template #body="slotProps">
-                      <span :class="getStatusBadgeClass(slotProps.data.status)">
-                              {{ slotProps.data.status }}
+                    <div>
+                      <span :class="['status-badge', getStatusBadgeClass(slotProps.data.status)]">
+                        {{ slotProps.data.status }}
                       </span>
+                    </div>
                   </template>
               </Column>
             </DataTable>
@@ -110,20 +112,22 @@ export default {
             this.loadLazyData();
         },
         getStatusBadgeClass(status) {
-        switch (status) {
-            case "pending":
-            return "badge badge-secondary";
-            case "started":
-            return "badge badge-primary";
-            case "on-progress":
-            return "badge badge-info";
-            case "done":
-            return "badge badge-success";
-            case "over due":
-            return "badge badge-danger";
-            default:
-            return "badge";
-        }
+          switch (status) {
+              case "pending":
+              return "badge badge-secondary";
+              case "started":
+              return "badge badge-primary";
+              case "on-progress":
+              return "badge badge-info";
+              case "review":
+              return "badge badge-dark";
+              case "done":
+              return "badge badge-success";
+              case "over due":
+              return "badge badge-danger";
+              default:
+              return "badge";
+          }
         },
     },
     setup() {     
@@ -141,8 +145,9 @@ export default {
 <style scoped>
 .custom-card {
   background: linear-gradient(to bottom right, #ff8000, #d05428);
-  border: none;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   color: white;
+}
+.status-badge {
+  min-width: 80px; 
 }
 </style>

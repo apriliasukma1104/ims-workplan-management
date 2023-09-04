@@ -11,7 +11,6 @@ class ReportsController extends Controller
     public function PageReports(Request $request)
     {
         $search = $request->input('search');
-        $title = 'Reports';
         $projectsQuery = Projects::with('tasks')
             ->select('id', 'name', 'start_date', 'end_date', 'status');
         
@@ -31,9 +30,11 @@ class ReportsController extends Controller
 
             $start_date = new \DateTime($project->start_date);
             $end_date = new \DateTime($project->end_date);
+            $end_date->setTime(23, 59, 0);
             $work_duration = $start_date->diff($end_date)->days;
 
-            if (now() > $project->end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
+            $now = now();
+            if ($now > $end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
                 $status = 'over due';
             } elseif ($totalTasks === 0) {
                 $status = 'pending';
@@ -41,6 +42,8 @@ class ReportsController extends Controller
                 $status = 'started';
             } elseif ($completedTasks < $totalTasks && $progress >= 25) {
                 $status = 'on-progress';
+            } elseif ($project->status === 'review') {
+                $status = 'review';
             } else {
                 $status = 'done';
             }
@@ -61,9 +64,7 @@ class ReportsController extends Controller
         }
 
         return Inertia::render('Reports/PageReports', [
-            'title' => $title,
             'reports' => ['data' => $reports, 'total' => $totalData] 
         ]);
     }
-
 }

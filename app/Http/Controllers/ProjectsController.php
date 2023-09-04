@@ -13,7 +13,6 @@ class ProjectsController extends Controller
 {
     public function PageListProjects(Request $request)
     {
-        $title = 'Projects';
         $projectsQuery = Projects::with('teamLeader', 'teamMembers')
             ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
 
@@ -31,23 +30,27 @@ class ProjectsController extends Controller
         }
 
         $projects = $projectsQuery->paginate(5);
-
         if ($request->ajax()){
             return response()->json(['data'=>$projects]);
         }
         
         return Inertia::render('Projects/ListProjects', [
-            'title' => $title,
             'projects' => $projects, 
+        ]);
+    }
+
+    public function PageValidationProjects()
+    {
+        $members = Members::all(); 
+        return Inertia::render('Projects/ValidationProject', [
+            'members' => $members 
         ]);
     }
 
     public function PageAddProject()
     {
-        $title = 'Projects';
         $members = Members::all(); 
         return Inertia::render('Projects/AddProject', [
-            'title' =>  $title,
             'members' => $members 
         ]);
     }
@@ -62,8 +65,8 @@ class ProjectsController extends Controller
             'team_members.*' => 'exists:members,id', 
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|in:to do,doing,done',
-            'description' => 'required|string|max:255',
+            'status' => 'required|in:to do,doing,review,done',
+            'description' => 'required|string|max:500',
         ])->validate();
         $validatedData['team_members'] = json_encode($validatedData['team_members']);
         $project = Projects::create($validatedData);
@@ -86,37 +89,21 @@ class ProjectsController extends Controller
 
     public function UpdateProject(Request $request)
     {
-        try {
-            $project = Projects::find($request->input('id'));
-            $project->update($request->all());
+        $project = Projects::find($request->input('id'));
+        $project->update($request->all());
 
-            $members = $project->teamMembers;
-            $project->teamMembers()->sync($request->input('team_members'));
+        $members = $project->teamMembers;
+        $project->teamMembers()->sync($request->input('team_members'));
 
-            return redirect()->route('projects.list_projects')
-                ->with('message', 'Data Updated Successfully!')
-                ->with('project', $project)
-                ->with('members', $members);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-        }
+        return redirect()->route('projects.list_projects')
+            ->with('project', $project)
+            ->with('members', $members);
     }
 
     public function DeleteProject(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:projects,id',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-        try {
-            $project = Projects::findOrFail($request->id);
-            $project->delete();
-            return response()->json(['message' => 'Data Deleted Successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to Delete Data'], 500);
-        }
+        $project = Projects::findOrFail($request->id);
+        $project->delete();
     }
 
     public function ViewProject(Request $request)
@@ -144,7 +131,7 @@ class ProjectsController extends Controller
 
     public function ListTasks(Request $request){
         $tasks = Tasks::where('id_project', $request->id_project) ->get();
-        return response()->json(['message' => 'Data Saved Successfully', "data" => $tasks]);
+        return response()->json(["data" => $tasks]);
     }
 
     public function UpdateTask(Request $request)
@@ -155,18 +142,7 @@ class ProjectsController extends Controller
 
     public function DeleteTask(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:tasks,id',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-        try {
-            $task = Tasks::findOrFail($request->id);
-            $task->delete();
-            return response()->json(['message' => 'Data Deleted Successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to Delete Data'], 500);
-        }
+        $task = Tasks::findOrFail($request->id);
+        $task->delete();
     }
 }

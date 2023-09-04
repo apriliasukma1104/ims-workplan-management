@@ -21,8 +21,10 @@ class CreateProjectsTable extends Migration
             $table->json('team_members')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status', ['to do', 'doing', 'done']);
+            $table->enum('status', ['to do', 'doing', 'review', 'done']);
             $table->string('description');
+            $table->enum('validation', ['approved', 'not approved']);
+            $table->string('note');
             $table->timestamps();
 
             // Menambahkan foreign key constraint untuk team_leader

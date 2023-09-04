@@ -10,7 +10,6 @@ class TasksController extends Controller
 {
     public function PageTasks(Request $request)
     {
-        $title = 'Tasks';
         $tasksQuery = Tasks::with('project') 
             ->leftJoin('projects', 'tasks.id_project', '=', 'projects.id')
             ->select(
@@ -41,9 +40,7 @@ class TasksController extends Controller
         }
             
         return Inertia::render('Tasks/PageTasks', [
-            'title' => $title,
             'tasks' => $tasks,
         ]);
     }
-
 }
