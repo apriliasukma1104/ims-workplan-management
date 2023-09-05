@@ -12,11 +12,20 @@
     <div class="row">
       <div class="col-md-8">
         <div class="card card-outline card-secondary">
-          <div class="card-body p-0 ml-2 mr-2">
-            <DataTable :value="dashboard" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll" class="table-hover">
+          <div class="card-body p-0 ml-2 mr-2 mt-3">
+            <Toolbar class="p-mb-4">
+                <template #left>
+                    <span>
+                        <Button icon="pi pi-search" iconPos="right"  class="p-button-sm"  @click="onSearch" />
+                        <InputText placeholder="Search..." v-model="search" style="font-size: 13px;" />
+                    </span>
+                </template>
+            </Toolbar>
+            <DataTable :value="formattedDashboard" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
+                :totalRecords="totalProject" :totalProject="total" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
               <Column field="" header="No">
                 <template #body="slotProps">
-                  {{ slotProps.index + 1 }}
+                  {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
                 </template>
               </Column>
               <Column field="project_name" header="Project"></Column>
@@ -39,6 +48,9 @@
                     </div>
                   </template>
               </Column>
+              <template #empty>
+                  No records found
+              </template>
             </DataTable>
           </div>
         </div>
@@ -80,6 +92,7 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import {usePage} from "@inertiajs/inertia-vue3";
 import {Inertia} from "@inertiajs/inertia";
 import {computed, inject} from "vue";
+import { pageListDashboard } from '../../Api/dashboard.api.js';
 
 export default {
     name: "Posts",
@@ -89,8 +102,11 @@ export default {
     },
    data() {
         return {
-          dashboard: [],
-          lazyParams: {},
+          formattedDashboard: [],
+          dataPerPage: 5,
+          lazyParams: {
+            page: 1,
+          },
           loading:false
         }
     },
@@ -100,17 +116,20 @@ export default {
         total_tasks: Number,
     },
     methods:{
-        loadLazyData() {
+        async loadLazyData() {
             this.loading = true;
-            axios.post('/dashboard', this.lazyParams).then(response=>{
-                 this.data = response.data;
-                 this.loading = false;
-            })
+            var response = await pageListDashboard ({ page : this.lazyParams.page, search: this.search });
+            this.formattedDashboard = response.data.dashboard.data;
+            this.loading = false;
         },
-        onPage(event) {
-            this.lazyParams = event;
+        onSearch(){
+            this.lazyParams.page = 1;
             this.loadLazyData();
         },
+        onPage(event) {
+            this.lazyParams.page = event.page  + 1;
+            this.loadLazyData();
+        }, 
         getStatusBadgeClass(status) {
           switch (status) {
               case "pending":
@@ -137,7 +156,8 @@ export default {
         }
     },
     mounted(){
-        this.dashboard = this.$page.props.dashboard;
+        this.formattedDashboard = this.$page.props.dashboard.data;
+        this.totalProject = this.$page.props.dashboard.total;
     }
 }
 </script>

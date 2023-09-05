@@ -4,6 +4,7 @@ const pageListProjects = (params) => httpClient.get('/projects/list_projects', {
 const deleteProject = (params) => httpClient.post('/projects/list/delete_project', params);
 const storeProject = (params) => httpClient.post('/projects/list/store_project', params);
 const updateProject = (params) => httpClient.post('/projects/list/update_project', params);
+const updateValidation = (params) => httpClient.post('/projects/list/update_validation', params);
 const storeTasks = (params) => httpClient.post('/projects/list/view_project/store_tasks', params);
 const listTasks = (params) => httpClient.get('/projects/list/view_project/list_tasks', {params});
 const pageListTasks = (params) => httpClient.get('/tasks', {params});
@@ -15,6 +16,7 @@ export {
     deleteProject,
     storeProject,
     updateProject,
+    updateValidation,
     storeTasks,
     listTasks,
     pageListTasks,

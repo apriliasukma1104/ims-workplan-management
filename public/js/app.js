@@ -17013,11 +17013,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _Partials_Layout__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Partials/Layout */ "./resources/js/Partials/Layout.vue");
-/* harmony import */ var _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Partials/ErrorsAndMessages */ "./resources/js/Partials/ErrorsAndMessages.vue");
-/* harmony import */ var _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @inertiajs/inertia-vue3 */ "./node_modules/@inertiajs/inertia-vue3/dist/index.js");
-/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Partials_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Partials/Layout */ "./resources/js/Partials/Layout.vue");
+/* harmony import */ var _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Partials/ErrorsAndMessages */ "./resources/js/Partials/ErrorsAndMessages.vue");
+/* harmony import */ var _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @inertiajs/inertia-vue3 */ "./node_modules/@inertiajs/inertia-vue3/dist/index.js");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _Api_dashboard_api_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Api/dashboard.api.js */ "./resources/js/Api/dashboard.api.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
 
 
 
@@ -17026,13 +17036,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Posts",
   components: {
-    ErrorsAndMessages: _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_1__.default,
-    Layout: _Partials_Layout__WEBPACK_IMPORTED_MODULE_0__.default
+    ErrorsAndMessages: _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_2__.default,
+    Layout: _Partials_Layout__WEBPACK_IMPORTED_MODULE_1__.default
   },
   data: function data() {
     return {
-      dashboard: [],
-      lazyParams: {},
+      formattedDashboard: [],
+      dataPerPage: 5,
+      lazyParams: {
+        page: 1
+      },
       loading: false
     };
   },
@@ -17045,14 +17058,38 @@ __webpack_require__.r(__webpack_exports__);
     loadLazyData: function loadLazyData() {
       var _this = this;
 
-      this.loading = true;
-      axios.post('/dashboard', this.lazyParams).then(function (response) {
-        _this.data = response.data;
-        _this.loading = false;
-      });
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this.loading = true;
+                _context.next = 3;
+                return (0,_Api_dashboard_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListDashboard)({
+                  page: _this.lazyParams.page,
+                  search: _this.search
+                });
+
+              case 3:
+                response = _context.sent;
+                _this.formattedDashboard = response.data.dashboard.data;
+                _this.loading = false;
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    onSearch: function onSearch() {
+      this.lazyParams.page = 1;
+      this.loadLazyData();
     },
     onPage: function onPage(event) {
-      this.lazyParams = event;
+      this.lazyParams.page = event.page + 1;
       this.loadLazyData();
     },
     getStatusBadgeClass: function getStatusBadgeClass(status) {
@@ -17081,15 +17118,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   setup: function setup() {
-    var user = (0,vue__WEBPACK_IMPORTED_MODULE_4__.computed)(function () {
-      return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_2__.usePage)().props.value.auth.user;
+    var user = (0,vue__WEBPACK_IMPORTED_MODULE_5__.computed)(function () {
+      return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.value.auth.user;
     });
     return {
       user: user
     };
   },
   mounted: function mounted() {
-    this.dashboard = this.$page.props.dashboard;
+    this.formattedDashboard = this.$page.props.dashboard.data;
+    this.totalProject = this.$page.props.dashboard.total;
   }
 });
 
@@ -18368,6 +18406,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     ErrorsAndMessages: _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_2__.default,
     Layout: _Partials_Layout__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  setup: function setup() {
+    var user = (0,vue__WEBPACK_IMPORTED_MODULE_5__.computed)(function () {
+      return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.value.auth.user;
+    });
+    return {
+      user: user
+    };
   },
   data: function data() {
     return {
@@ -19839,7 +19885,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Partials/ErrorsAndMessages */ "./resources/js/Partials/ErrorsAndMessages.vue");
 /* harmony import */ var _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @inertiajs/inertia-vue3 */ "./node_modules/@inertiajs/inertia-vue3/dist/index.js");
 /* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
-/* harmony import */ var _Api_projects_api_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Api/projects.api.js */ "./resources/js/Api/projects.api.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Api/projects.api.js */ "./resources/js/Api/projects.api.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -19851,11 +19898,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "ListProjects",
   components: {
     ErrorsAndMessages: _Partials_ErrorsAndMessages__WEBPACK_IMPORTED_MODULE_2__.default,
     Layout: _Partials_Layout__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  setup: function setup() {
+    var user = (0,vue__WEBPACK_IMPORTED_MODULE_5__.computed)(function () {
+      return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.value.auth.user;
+    });
+    return {
+      user: user
+    };
   },
   data: function data() {
     return {
@@ -19890,7 +19946,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_5__.pageListProjects)({
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListProjects)({
                   page: _this.lazyParams.page,
                   search: _this.search
                 });
@@ -19927,7 +19983,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       if (window.confirm("Are you sure you want to delete data?")) {
-        (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_5__.deleteProject)({
+        (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.deleteProject)({
           id: data.id
         }).then(function () {
           _this2.$toast.add({
@@ -19960,6 +20016,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -19973,33 +20030,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _context2.next = 5;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_5__.updateProject)(_this3.form);
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.updateValidation)(_this3.form);
 
               case 5:
-                alert("Data Saved Successfully!");
-                _context2.next = 9;
+                alert("Data Updated Successfully!");
+                _context2.next = 12;
                 break;
 
               case 8:
-                throw new Error("Data Failed to Save!");
+                _context2.next = 10;
+                return storeProjects(form);
 
-              case 9:
-                _this3.loadLazyData();
-
-                _context2.next = 15;
-                break;
+              case 10:
+                response = _context2.sent;
+                alert("Data Saved Successfully!");
 
               case 12:
-                _context2.prev = 12;
-                _context2.t0 = _context2["catch"](0);
-                alert(_context2.t0.message);
+                _this3.loadLazyData();
+
+                _context2.next = 18;
+                break;
 
               case 15:
+                _context2.prev = 15;
+                _context2.t0 = _context2["catch"](0);
+                // alert("Data Failed to Save!");
+                alert(_context2.t0.message);
+
+              case 18:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 12]]);
+        }, _callee2, null, [[0, 15]]);
       }))();
     },
     getStatusBadgeClass: function getStatusBadgeClass(status) {
@@ -20547,6 +20610,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
         case "doing":
           return "badge badge-info";
+
+        case "review":
+          return "badge badge-dark";
 
         case "done":
           return "badge badge-success";
@@ -23020,32 +23086,35 @@ var _hoisted_8 = {
   "class": "card card-outline card-secondary"
 };
 var _hoisted_9 = {
-  "class": "card-body p-0 ml-2 mr-2"
+  "class": "card-body p-0 ml-2 mr-2 mt-3"
 };
 var _hoisted_10 = {
   "class": "progress progress-sm"
 };
-var _hoisted_11 = {
+
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" No records found ");
+
+var _hoisted_12 = {
   "class": "col-md-4"
 };
-var _hoisted_12 = {
+var _hoisted_13 = {
   "class": "row"
 };
-var _hoisted_13 = {
+var _hoisted_14 = {
   "class": "col-12 col-sm-6 col-md-12"
 };
-var _hoisted_14 = {
+var _hoisted_15 = {
   "class": "small-box bg-light shadow-sm border"
 };
-var _hoisted_15 = {
+var _hoisted_16 = {
   "class": "inner"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, "Total Projects", -1
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, "Total Projects", -1
 /* HOISTED */
 );
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "icon"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fa fa-th-list"
@@ -23053,21 +23122,21 @@ var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 /* HOISTED */
 );
 
-var _hoisted_18 = {
+var _hoisted_19 = {
   "class": "col-12 col-sm-6 col-md-12"
 };
-var _hoisted_19 = {
+var _hoisted_20 = {
   "class": "small-box bg-light shadow-sm border"
 };
-var _hoisted_20 = {
+var _hoisted_21 = {
   "class": "inner"
 };
 
-var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, "Total Tasks", -1
+var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", null, "Total Tasks", -1
 /* HOISTED */
 );
 
-var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "icon"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "fa fa-tasks"
@@ -23078,6 +23147,12 @@ var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)();
 
 var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Button");
+
+  var _component_InputText = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("InputText");
+
+  var _component_Toolbar = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toolbar");
+
   var _component_Column = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Column");
 
   var _component_DataTable = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DataTable");
@@ -23088,22 +23163,57 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     "default": _withId(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h5", null, "Welcome " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.user.name) + " !", 1
       /* TEXT */
-      )])])]), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DataTable, {
-        value: $data.dashboard,
-        lazy: true,
-        rows: _ctx.totalData,
-        ref: "dt",
-        loading: $data.loading,
-        responsiveLayout: "scroll",
-        "class": "table-hover"
+      )])])]), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Toolbar, {
+        "class": "p-mb-4"
       }, {
+        left: _withId(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+            icon: "pi pi-search",
+            iconPos: "right",
+            "class": "p-button-sm",
+            onClick: $options.onSearch
+          }, null, 8
+          /* PROPS */
+          , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {
+            placeholder: "Search...",
+            modelValue: _ctx.search,
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+              return _ctx.search = $event;
+            }),
+            style: {
+              "font-size": "13px"
+            }
+          }, null, 8
+          /* PROPS */
+          , ["modelValue"])])];
+        }),
+        _: 1
+        /* STABLE */
+
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DataTable, {
+        value: $data.formattedDashboard,
+        lazy: true,
+        paginator: true,
+        rows: $data.dataPerPage,
+        ref: "dt",
+        totalRecords: _ctx.totalProject,
+        totalProject: _ctx.total,
+        loading: $data.loading,
+        onPage: _cache[2] || (_cache[2] = function ($event) {
+          return $options.onPage($event);
+        }),
+        responsiveLayout: "scroll"
+      }, {
+        empty: _withId(function () {
+          return [_hoisted_11];
+        }),
         "default": _withId(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "",
             header: "No"
           }, {
             body: _withId(function (slotProps) {
-              return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(slotProps.index + 1), 1
+              return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(($data.lazyParams.page - 1) * $data.dataPerPage + slotProps.index + 1), 1
               /* TEXT */
               )];
             }),
@@ -23155,11 +23265,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
       }, 8
       /* PROPS */
-      , ["value", "rows", "loading"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.total_projects), 1
+      , ["value", "rows", "totalRecords", "totalProject", "loading"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.total_projects), 1
       /* TEXT */
-      ), _hoisted_16]), _hoisted_17])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.total_tasks), 1
+      ), _hoisted_17]), _hoisted_18])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.total_tasks), 1
       /* TEXT */
-      ), _hoisted_21]), _hoisted_22])])])])])])];
+      ), _hoisted_22]), _hoisted_23])])])])])])];
     }),
     _: 1
     /* STABLE */
@@ -25076,7 +25186,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
             field: "email",
             header: "Email"
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
+          }), $setup.user && $setup.user.role === 'Super Admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Column, {
+            key: 0,
             exportable: false,
             header: "Action"
           }, {
@@ -25105,7 +25216,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             _: 1
             /* STABLE */
 
-          })];
+          })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
         }),
         _: 1
         /* STABLE */
@@ -26450,8 +26561,7 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 );
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
-  disabled: "",
-  value: ""
+  disabled: ""
 }, "Please Select One", -1
 /* HOISTED */
 );
@@ -26514,7 +26624,10 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
         visible: $data.display,
         "onUpdate:visible": _cache[4] || (_cache[4] = function ($event) {
           return $data.display = $event;
-        })
+        }),
+        style: {
+          width: '30vw'
+        }
       }, {
         header: _withId(function () {
           return [_hoisted_1];
@@ -26659,12 +26772,14 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             _: 1
             /* STABLE */
 
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Column, {
+          }), $setup.user && ($setup.user.role === 'Admin 1' || $setup.user.role === 'Admin 2' || $setup.user.role === 'User') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Column, {
+            key: 0,
             exportable: false,
             header: "Action"
           }, {
             body: _withId(function (slotProps) {
-              return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+              return [$setup.user && ($setup.user.role === 'Admin 1' || $setup.user.role === 'Admin 2') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+                key: 0,
                 onClick: function onClick($event) {
                   return $options.onEdit(slotProps.data);
                 },
@@ -26675,7 +26790,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
                 }
               }, null, 8
               /* PROPS */
-              , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+              , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.user && ($setup.user.role === 'Admin 1' || $setup.user.role === 'Admin 2') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+                key: 1,
                 onClick: function onClick($event) {
                   return $options.onDelete(slotProps.data);
                 },
@@ -26686,7 +26802,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
                 }
               }, null, 8
               /* PROPS */
-              , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+              , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.user && ($setup.user.role === 'Admin 2' || $setup.user.role === 'User') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+                key: 2,
                 onClick: function onClick($event) {
                   return $options.onView(slotProps.data);
                 },
@@ -26697,7 +26814,8 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
                 }
               }, null, 8
               /* PROPS */
-              , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+              , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.user && $setup.user.role === 'Admin 1' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Button, {
+                key: 3,
                 onClick: function onClick($event) {
                   return $options.onValidation(slotProps.data);
                 },
@@ -26705,12 +26823,12 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
                 "class": "p-button-rounded p-button-secondary"
               }, null, 8
               /* PROPS */
-              , ["onClick"])];
+              , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
             }),
             _: 1
             /* STABLE */
 
-          })];
+          })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
         }),
         _: 1
         /* STABLE */
@@ -29840,6 +29958,30 @@ var getCekSttp = function getCekSttp(params) {
 
 /***/ }),
 
+/***/ "./resources/js/Api/dashboard.api.js":
+/*!*******************************************!*\
+  !*** ./resources/js/Api/dashboard.api.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "pageListDashboard": () => (/* binding */ pageListDashboard)
+/* harmony export */ });
+/* harmony import */ var _httpClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./httpClient */ "./resources/js/Api/httpClient.js");
+
+
+var pageListDashboard = function pageListDashboard(params) {
+  return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.get('/dashboard', {
+    params: params
+  });
+};
+
+
+
+/***/ }),
+
 /***/ "./resources/js/Api/httpClient.js":
 /*!****************************************!*\
   !*** ./resources/js/Api/httpClient.js ***!
@@ -30049,6 +30191,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "deleteProject": () => (/* binding */ deleteProject),
 /* harmony export */   "storeProject": () => (/* binding */ storeProject),
 /* harmony export */   "updateProject": () => (/* binding */ updateProject),
+/* harmony export */   "updateValidation": () => (/* binding */ updateValidation),
 /* harmony export */   "storeTasks": () => (/* binding */ storeTasks),
 /* harmony export */   "listTasks": () => (/* binding */ listTasks),
 /* harmony export */   "pageListTasks": () => (/* binding */ pageListTasks),
@@ -30074,6 +30217,10 @@ var storeProject = function storeProject(params) {
 
 var updateProject = function updateProject(params) {
   return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/update_project', params);
+};
+
+var updateValidation = function updateValidation(params) {
+  return _httpClient__WEBPACK_IMPORTED_MODULE_0__.default.post('/projects/list/update_validation', params);
 };
 
 var storeTasks = function storeTasks(params) {

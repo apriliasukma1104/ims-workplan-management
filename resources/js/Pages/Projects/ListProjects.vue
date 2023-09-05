@@ -2,7 +2,7 @@
     <layout title="Project List">
     <Toast position="top-center" />
 
-            <Dialog header="Header" v-model:visible="display" >
+            <Dialog header="Header" v-model:visible="display" :style="{ width: '30vw' }">
             <template #header>
                     <label>Project Validation</label>
                     </template>
@@ -11,7 +11,7 @@
                             <label for="validation">Validation<span style="color:red;">*</span></label>
                             <InputText v-model="form.id" type="text" hidden/>
                             <select class="custom-select custom-select-sm" v-model="form.validation">
-                                <option disabled value="">Please Select One</option>
+                                <option disabled>Please Select One</option>
                                 <option>approved</option>
                                 <option>not approved</option>
                             </select>
@@ -62,12 +62,12 @@
                         </span>
                     </template>
                 </Column>
-                <Column :exportable="false" header="Action">
+                <Column :exportable="false" header="Action" v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2' || user.role === 'User')">
                     <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 5px;" />
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 5px;" />
-                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" />
-                        <Button @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
+                        <Button v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2')" @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 5px;" />
+                        <Button v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2')" @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 5px;" />
+                        <Button v-if="user && (user.role === 'Admin 2' || user.role === 'User')" @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" />
+                        <Button v-if="user && user.role === 'Admin 1'" @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
                     </template>
                 </Column>
                 <template #empty>
@@ -83,7 +83,8 @@ import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import { pageListProjects, deleteProject, updateProject, storeProject } from '../../Api/projects.api.js';
+import { computed, inject } from "vue";
+import { pageListProjects, deleteProject, updateValidation, storeProject } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -91,7 +92,12 @@ export default {
         ErrorsAndMessages,
         Layout,
     },
-
+    setup() {
+        const user = computed(() => usePage().props.value.auth.user);
+        return {
+            user
+        }
+    },
     data() {
         return {
             projects: [],
@@ -100,7 +106,7 @@ export default {
                 id:null,
                 validation:null,
                 note:null
-              },
+            },
             dataPerPage: 5, 
             totalData: 0, 
             error: {},
@@ -110,11 +116,9 @@ export default {
             loading: false
         };
     },
-
     props: {
         errors: Object
     },
-
     methods: {
         async loadLazyData() {
             this.loading = true;
@@ -170,14 +174,16 @@ export default {
                 this.display = false;
 
                 if (this.form.id && this.form.validation !== null && this.form.note !== null) {
-                    await updateProject(this.form); 
-                    alert("Data Saved Successfully!");
+                    await updateValidation(this.form); 
+                    alert("Data Updated Successfully!");
                 } else {
-                    throw new Error("Data Failed to Save!");
+                    const response = await storeProjects(form);
+                    alert("Data Saved Successfully!");
                 }
-                this.loadLazyData(); 
+                this.loadLazyData();  
             } catch (error) {
-                alert(error.message);
+                // alert("Data Failed to Save!");
+                alert(error.message); 
             }
         },
         getStatusBadgeClass(status) {

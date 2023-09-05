@@ -18,16 +18,15 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $title = 'Dashboard';
         $projectsQuery = Projects::with('tasks')
             ->select('id', 'name', 'start_date', 'end_date', 'status');
         
+        $search = $request->input('search');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
 
-        $dashboard = $projectsQuery->get();
+        $dashboard = $projectsQuery->paginate(5);
 
         $formattedDashboard = [];
         $totalTaskProjects = 0;
@@ -66,9 +65,12 @@ class DashboardController extends Controller
             ];
         }
 
+        if ($request->ajax()) {
+            return response()->json(['dashboard' => ['data' => $formattedDashboard, 'total' => $totalProject]]);
+        }
+
         return Inertia::render('Home/Index', [
-            'title' => $title,
-            'dashboard' => $formattedDashboard,
+            'dashboard' => ['data' => $formattedDashboard, 'total' => $totalProject], 
             'total_tasks' => $totalTaskProjects,
             'total_projects' => $totalProject,
         ]);

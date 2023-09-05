@@ -10,10 +10,10 @@ class ReportsController extends Controller
 {
     public function PageReports(Request $request)
     {
-        $search = $request->input('search');
         $projectsQuery = Projects::with('tasks')
             ->select('id', 'name', 'start_date', 'end_date', 'status');
         
+        $search = $request->input('search');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }

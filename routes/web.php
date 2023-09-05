@@ -76,6 +76,7 @@ Route::prefix('projects')->name('projects.')->group(function () {
     Route::post('/add/store_projects', [ProjectsController::class, 'StoreProjects'])->name('store_projects');
     Route::get('/list/edit_project', [ProjectsController::class, 'EditProject'])->name('edit_project');
     Route::post('/list/update_project', [ProjectsController::class, 'UpdateProject'])->name('update_project');
+    Route::post('/list/update_validation', [ProjectsController::class, 'UpdateValidation'])->name('update_validation');
     Route::post('/list/team_leader_name', [ProjectsController::class, 'GetTeamLeaderName'])->name('team_leader_name');
     Route::post('/list/delete_project', [ProjectsController::class, 'DeleteProject'])->name('delete_project');
 

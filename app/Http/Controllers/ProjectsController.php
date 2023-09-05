@@ -35,7 +35,7 @@ class ProjectsController extends Controller
         }
         
         return Inertia::render('Projects/ListProjects', [
-            'projects' => $projects, 
+            'projects' => $projects
         ]);
     }
 
@@ -57,20 +57,10 @@ class ProjectsController extends Controller
 
     public function StoreProjects(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'project_type' => 'required|string|in:RKAP,KPI,NPM',
-            'team_leader' => 'required|exists:members,id', 
-            'team_members' => 'required|array',
-            'team_members.*' => 'exists:members,id', 
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|in:to do,doing,review,done',
-            'description' => 'required|string|max:500',
-        ])->validate();
-        $validatedData['team_members'] = json_encode($validatedData['team_members']);
-        $project = Projects::create($validatedData);
-        $teamMembers = json_decode($validatedData['team_members']);
+        $projectsQuery = $request->all();
+        $projectsQuery['team_members'] = json_encode($projectsQuery['team_members']);
+        $project = Projects::create($projectsQuery);
+        $teamMembers = json_decode($projectsQuery['team_members']);
         foreach ($teamMembers as $memberId) {
             $project->teamMembers()->attach($memberId);
         }
@@ -100,6 +90,15 @@ class ProjectsController extends Controller
             ->with('members', $members);
     }
 
+    public function UpdateValidation(Request $request)
+    {
+        $project = Projects::find($request->input('id'));
+        $project->update($request->only('validation', 'note'));
+
+        return redirect()->route('projects.list_projects')
+            ->with('project', $project);
+    }
+
     public function DeleteProject(Request $request)
     {
         $project = Projects::findOrFail($request->id);
@@ -120,13 +119,8 @@ class ProjectsController extends Controller
 
     public function StoreTasks(Request $request)
     {
-        $validatedData = $request->validate([
-            'task' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'status' => 'required|in:to do,doing,done',
-            'id_project' => 'required|integer',
-        ]);
-        Tasks::create($validatedData);
+        $task = $request->all();
+        Tasks::create($task);
     }
 
     public function ListTasks(Request $request){

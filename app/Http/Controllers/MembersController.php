@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Members;
@@ -62,29 +61,24 @@ class MembersController extends Controller
     {
         return Inertia::render('Members/AddMember');
     }
-
+    
     public function StoreMembers(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'role' => 'required|string|max:255|in:Super Admin,Admin 1,Admin 2,User',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'position' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:members,email',
-            'password' => 'required|string|min:8',  
-        ])->validate();
+        $member = $request->all();
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePath = $image->store('public/images'); 
-            $validatedData['image'] = str_replace('public/images/', '', $imagePath);
+            $member['image'] = str_replace('public/images/', '', $imagePath);
         }
-        $newPassword = $validatedData['password'];
-            if (!empty($newPassword)) {
+
+        $newPassword = $member['password'];
+        if (!empty($newPassword)) {
             $hashedPassword = bcrypt($newPassword);
-            $validatedData['password'] = $hashedPassword;
+            $member['password'] = $hashedPassword;
         }
-        Members::create($validatedData);
+
+        Members::create($member);
         return redirect()->route('members.list_members');
     }
 

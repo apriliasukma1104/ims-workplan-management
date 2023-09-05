@@ -23,9 +23,9 @@
                 <Column field="position" header="Position"></Column>
                 <Column field="role" header="Member Role"></Column>
                 <Column field="email" header="Email"></Column>
-                <Column :exportable="false" header="Action">
+                <Column :exportable="false" header="Action" v-if="user && user.role === 'Super Admin'">
                     <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
+                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"/>
                         <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
                     </template>
                 </Column>
@@ -51,6 +51,12 @@ export default {
         ErrorsAndMessages,
         Layout,
     },
+    setup() {
+        const user = computed(() => usePage().props.value.auth.user);
+        return {
+            user
+        }
+    },
     data() {
         return {
             members: [],
@@ -64,11 +70,9 @@ export default {
             loading: false
         };
     },
-
     props: {
         errors: Object
     },
-
     methods: {
         async loadLazyData() {
             this.loading = true;
