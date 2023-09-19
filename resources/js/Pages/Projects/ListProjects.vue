@@ -53,6 +53,13 @@
                         <span>{{ slotProps.data.team_leader.name }}</span>
                     </template>
                 </Column>
+                <!-- <Column field="team_members" header="Team Members">
+                    <template #body="slotProps">
+                        <div v-for="member in slotProps.data.team_members">
+                            {{ member.name }}
+                        </div>
+                    </template>
+                </Column> -->
                 <Column field="start_date" header="Start Date"></Column>
                 <Column field="end_date" header="End Date"></Column>
                 <Column field="status" header="Status">
@@ -62,12 +69,12 @@
                         </span>
                     </template>
                 </Column>
-                <Column :exportable="false" header="Action" v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2' || user.role === 'User')">
+                <Column :exportable="false" header="Action" v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep' || user.role === 'User')">
                     <template #body="slotProps">
-                        <Button v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2')" @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 5px;" />
-                        <Button v-if="user && (user.role === 'Admin 1' || user.role === 'Admin 2')" @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 5px;" />
-                        <Button v-if="user && (user.role === 'Admin 2' || user.role === 'User')" @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" />
-                        <Button v-if="user && user.role === 'Admin 1'" @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
+                        <Button v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep')" @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 5px;" />
+                        <Button v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep')" @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 5px;" />
+                        <Button v-if="user && (user.role === 'Kadep' || user.role === 'User')" @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" />
+                        <Button v-if="user && user.role === 'Kadiv'" @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
                     </template>
                 </Column>
                 <template #empty>
@@ -82,9 +89,8 @@
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
-import { computed, inject } from "vue";
-import { pageListProjects, deleteProject, updateValidation, storeProject } from '../../Api/projects.api.js';
+import { computed } from "vue";
+import { pageListProjects, deleteProject, updateValidation } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -95,7 +101,7 @@ export default {
     setup() {
         const user = computed(() => usePage().props.value.auth.user);
         return {
-            user
+            user,
         }
     },
     data() {
@@ -103,11 +109,11 @@ export default {
             projects: [],
             display:false,
             form:{
-                id:null,
-                validation:null,
-                note:null
+                id:"",
+                validation:"",
+                note:""
             },
-            dataPerPage: 5, 
+            dataPerPage: 10, 
             totalData: 0, 
             error: {},
             lazyParams: {
@@ -117,7 +123,7 @@ export default {
         };
     },
     props: {
-        errors: Object
+        errors: Object,
     },
     methods: {
         async loadLazyData() {
@@ -165,27 +171,31 @@ export default {
             }
             this.loadLazyData();
         },
-        onValidation(id) {
-            this.form.id = id;
+
+        onValidation(data) {
+            this.form.id = data.id;
+            this.form.validation = '';
+            this.form.note = '';
             this.display = true;
         },
+
         async simpanValidation() {
             try {
                 this.display = false;
 
-                if (this.form.id && this.form.validation !== null && this.form.note !== null) {
+                if (this.form.id && this.form.validation.trim() !== '' && this.form.note.trim() !== '') {
                     await updateValidation(this.form); 
-                    alert("Data Updated Successfully!");
-                } else {
-                    const response = await storeProjects(form);
                     alert("Data Saved Successfully!");
+                } else {
+                    alert("Please fill in all required fields.");
                 }
-                this.loadLazyData();  
+                
+                this.loadLazyData();
             } catch (error) {
-                // alert("Data Failed to Save!");
-                alert(error.message); 
+                alert("Data Failed to Save!");
             }
         },
+
         getStatusBadgeClass(status) {
         switch (status) {
             case "to do":

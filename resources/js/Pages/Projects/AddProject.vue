@@ -25,13 +25,13 @@
                 <label for="team_leader" class="control-label" style="display: block; margin-top: 1rem;">Team Leader</label>
                 <select name="team_leader" id="team_leader" class="custom-select custom-select-sm" required v-model="formData.team_leader" @change="handleTeamLeaderChange">
                   <option disabled value="">Please Select One</option>
-                  <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
+                  <option v-for="member in members.filter(member => user && (member.role === 'Kadep' || member.role === 'User'))" :key="member.id" :value="member.id">{{ member.name }}</option>
                 </select>
             </div>
             <div class="form-group mt-3 ml-3">
               <label for="team_members" class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
               <select name="team_members[]" id="team_members" class="custom-select custom-select-sm" multiple required v-model="formData.team_members">
-                <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
+                <option v-for="member in members.filter(member => user && (member.role === 'Kadep' || member.role === 'User'))" :key="member.id" :value="member.id">{{ member.name }}</option>
               </select>
             </div>
           </div>
@@ -76,13 +76,15 @@
 import Layout from "../../Partials/Layout";
 import { reactive } from 'vue';
 import { usePage } from "@inertiajs/inertia-vue3";
+import { computed} from "vue";
 
 export default {
   components: {
     Layout, 
   },
   setup() {
-    const { userType, members } = usePage().props.value; // Ambil data members dari props
+    const { userType, members } = usePage().props.value;
+    const user = computed(() => usePage().props.value.auth.user); 
 
     const formData = reactive({
       id: "",
@@ -95,15 +97,6 @@ export default {
       status: "",
       description: "",
     });
-
-    const handleTeamLeaderChange = () => {
-      if (formData.team_members.includes(formData.team_leader)) {
-        const index = formData.team_members.indexOf(formData.team_leader);
-        formData.team_members.splice(index, 1);
-      } else {
-        formData.team_members = formData.team_members.filter(memberId => memberId !== formData.team_leader);
-      }
-    };
 
     function submitForm() {
       axios.post('/projects/add/store_projects', formData)
@@ -126,10 +119,10 @@ export default {
     };
 
     return {
+      user,
       userType,
       formData,
       members,
-      handleTeamLeaderChange,
       submitForm,
       cancelForm,
     };

@@ -26,10 +26,11 @@
                   </select>
               </div>
               <div class="form-group mt-3 ml-3">
-                <label for="team_members" class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
-                <select name="team_members[]" id="team_members" class="custom-select custom-select-sm" multiple v-model="formData.team_members">
-                  <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
-                </select>
+                  <label for="team_members" class="control-label" style="display: block; margin-top: 1rem;">Team Members</label>
+                  <select name="team_members[]" id="team_members" class="custom-select custom-select-sm" multiple v-model="formData.team_members">
+                      <option v-for="member in members" :key="member.id" :value="member.id" :selected="formData.team_members.includes(member.id)">{{ member.name }}</option>
+                  </select>
+                  <small><i>{{ "Especially for team members, select the data again" }}</i></small>
               </div>
             </div>
             <div class="col-md-6">
@@ -61,7 +62,6 @@
           <div class="row">
             <div class="col-md-12 text-right justify-content-center d-flex mb-3">
               <button @click="update" class="btn btn-dark ml-2" >Update</button>
-              <button @click="cancelForm" class="btn btn-secondary ml-2">Cancel</button>
             </div>
           </div>
         </div>
@@ -107,16 +107,11 @@
         }
       };
   
-      const cancelForm = () => {
-        window.location.href = "/projects/list_projects";
-      };
-  
       return {
         userType,
         formData,
         members,
-        update,
-        cancelForm,
+        update
       };
   
     },

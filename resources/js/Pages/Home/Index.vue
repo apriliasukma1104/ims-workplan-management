@@ -90,8 +90,7 @@
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import {usePage} from "@inertiajs/inertia-vue3";
-import {Inertia} from "@inertiajs/inertia";
-import {computed, inject} from "vue";
+import {computed} from "vue";
 import { pageListDashboard } from '../../Api/dashboard.api.js';
 
 export default {
@@ -108,6 +107,12 @@ export default {
             page: 1,
           },
           loading:false
+        }
+    },
+    setup() {     
+        const user = computed(() => usePage().props.value.auth.user);
+        return {
+            user
         }
     },
     props: {
@@ -148,12 +153,6 @@ export default {
               return "badge";
           }
         },
-    },
-    setup() {     
-        const user = computed(() => usePage().props.value.auth.user);
-        return {
-            user
-        }
     },
     mounted(){
         this.formattedDashboard = this.$page.props.dashboard.data;

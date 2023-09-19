@@ -16,8 +16,8 @@ class CreateMembersTable extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('role',['Super Admin','Admin 1','Admin 2','User']);
-            $table->string("image")->nullable();
+            $table->enum('role',['Super Admin','Kadiv','Kadep','User']);
+            $table->string("image");
             $table->string('position');
             $table->string('email')->unique();
             $table->string('password');

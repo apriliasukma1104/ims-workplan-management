@@ -24,7 +24,7 @@
                 </Column>
                 <Column field="" header="Project">
                     <template #body="slotProps">
-                    {{ slotProps.data.project_name }}
+                    <b>{{ slotProps.data.project_name }}</b>
                     <br>
                     <small>Due: {{ slotProps.data.due }}</small>
                     </template>
@@ -53,9 +53,12 @@
                         </span>
                     </template>
                 </Column>
-                <Column field="validation" header="Validation">
-                </Column>
-                <Column field="note" header="Note">
+                <Column field="" header="Validation">
+                    <template #body="slotProps">
+                    <b>{{ slotProps.data.validation }}</b>
+                    <br>
+                    <small>{{ slotProps.data.note }}</small>
+                    </template>
                 </Column>
                 <template #empty>
                     No records found
@@ -82,7 +85,7 @@ export default {
     data() {
         return {
         reports: [],
-        dataPerPage: 3,
+        dataPerPage: 10,
         display: false,
         lazyParams: {
             page: 1,

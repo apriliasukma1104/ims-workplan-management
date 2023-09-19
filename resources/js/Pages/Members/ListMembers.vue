@@ -60,7 +60,7 @@ export default {
     data() {
         return {
             members: [],
-            dataPerPage: 5, 
+            dataPerPage: 10, 
             totalData: 0, 
             display: false,
             error: {},

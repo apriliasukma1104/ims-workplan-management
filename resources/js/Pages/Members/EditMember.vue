@@ -14,8 +14,8 @@
               <select class="custom-select custom-select-sm" v-model="formData.role">
                 <option disabled value="">Please Select One</option>
                 <option>Super Admin</option>
-                <option>Admin 1</option>
-                <option>Admin 2</option>
+                <option>Kadiv</option>
+                <option>Kadep</option>
                 <option>User</option>
               </select>
             </div>

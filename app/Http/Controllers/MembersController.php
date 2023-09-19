@@ -35,8 +35,17 @@ class MembersController extends Controller
 
     public function PageListMembers(Request $request)
     {
+        $user = Auth::user();
         $membersQuery = Members::select('id', 'name', 'position', 'role', 'email');
 
+        if ($user->role === 'Kadiv' || $user->role === 'Kadep') {
+            $membersQuery->where(function ($query) use ($user) {
+                $query->where('role', 'Kadiv')
+                      ->orWhere('role', 'Kadep')
+                      ->orWhere('role', 'User');
+            });
+        }
+        
         $search = $request->input('search');
         if ($search) {
             $membersQuery->where(function ($query) use ($search) {
@@ -47,13 +56,14 @@ class MembersController extends Controller
             });
         }
 
-        $members = $membersQuery->paginate(5); 
+        $members = $membersQuery->paginate(10); 
         if ($request->ajax()) {
             return response()->json(['data' => $members]);
         }
 
         return Inertia::render('Members/ListMembers', [
             'members' => $members,
+            'auth' => $user 
         ]);
     }
 
@@ -69,7 +79,7 @@ class MembersController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePath = $image->store('public/images'); 
-            $member['image'] = str_replace('public/images/', '', $imagePath);
+            $member['image'] = str_replace('public/', '', $imagePath);
         }
 
         $newPassword = $member['password'];

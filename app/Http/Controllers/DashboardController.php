@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\Eloquent\SoContractRepo;
 use App\Models\Projects;
 
@@ -18,27 +19,32 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        $user = Auth::user();
         $projectsQuery = Projects::with('tasks')
-            ->select('id', 'name', 'start_date', 'end_date', 'status');
+            ->select('id', 'name', 'team_members', 'start_date', 'end_date', 'status');
+
+        if ($user->role === 'User') {
+            $projectsQuery->where(function ($query) use ($user) {
+                $query->where('team_leader', $user->id)
+                    ->orWhereRaw("JSON_SEARCH(team_members, 'one', ?) IS NOT NULL", [$user->id]);
+            });
+        } 
         
         $search = $request->input('search');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
 
+        $totalTaskProjects = $projectsQuery->with('tasks')->get()->pluck('tasks')->flatten()->count();
         $dashboard = $projectsQuery->paginate(5);
+        $totalProject = $projectsQuery->count();
 
         $formattedDashboard = [];
-        $totalTaskProjects = 0;
-        $totalProject = 0;
 
         foreach ($dashboard as $project) {
             $completedTasks = $project->tasks->where('status', 'done')->count();
             $totalTasks = $project->tasks->count();
             $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
-
-            $totalTaskProjects += $totalTasks;
-            $totalProject = $project->count();
 
             $end_date = new \DateTime($project->end_date);
             $end_date->setTime(23, 59, 0);
@@ -73,6 +79,7 @@ class DashboardController extends Controller
             'dashboard' => ['data' => $formattedDashboard, 'total' => $totalProject], 
             'total_tasks' => $totalTaskProjects,
             'total_projects' => $totalProject,
+            'auth' => $user 
         ]);
     }
 

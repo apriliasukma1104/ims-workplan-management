@@ -3,6 +3,7 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="top-center" />
 
+    <!-- <form enctype="multipart/formData"> -->
     <form>
       <div class="callout callout">
         <div class="row">
@@ -16,17 +17,16 @@
               <label for="role" class="control-label" style="display: block; margin-top: 1rem;">Member Role</label>
               <select class="custom-select custom-select-sm" required v-model="formData.role">
                 <option disabled value="">Please Select One</option>
-                <option>Super Admin</option>
-                <option>Admin 1</option>
-                <option>Admin 2</option>
+                <option>Kadiv</option>
+                <option>Kadep</option>
                 <option>User</option>
               </select>
             </div>
             <div class="form-group mt-3 ml-3">
-              <label for="customFile" class="control-label">Image</label>
+              <label for="image" class="control-label">Image</label>
               <div class="custom-file">
-                <input type="file" class="custom-file-input" id="customFile" name="image" ref="customFile" @change="displayImg($event)">
-                <label class="custom-file-label" for="customFile">Choose file</label>
+                <input type="file" class="custom-file-input" id="image" name="image" @change="displayImg" required>
+                <label class="custom-file-label" for="image">Choose file</label>
               </div>
             </div>
             <div class="form-group d-flex justify-content-center align-items-center">
@@ -79,7 +79,7 @@ export default {
       id: "",
       name: "",
       role: "",
-      image: null,
+      image: "",
       position: "",
       email: "",
       password: "",
@@ -87,7 +87,7 @@ export default {
     });
     
     const avatar = reactive({
-      value: null,
+      value: "",
     });
 
     async function submitForm() {

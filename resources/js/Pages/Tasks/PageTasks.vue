@@ -52,6 +52,14 @@
                 {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
               </template>
             </Column>
+            <!-- <Column field="team_members" header="Team Members"></Column> -->
+            <Column field="team_members" header="Team Members">
+                <template #body="slotProps">
+                    <div v-for="member in slotProps.data.team_members">
+                        {{ member.name }}
+                    </div>
+                </template>
+            </Column>
             <Column field="name" header="Project Name"></Column>
             <Column field="" header="Tasks">
                 <template #body="slotProps">
@@ -91,7 +99,6 @@ import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { reactive} from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import { computed, inject } from "vue";
 import { pageListTasks } from '../../Api/projects.api.js'
 
 export default {
@@ -165,6 +172,7 @@ export default {
   data() {
     return {
       tasks: [],
+      projects: [],
       dataPerPage: 10,
       totalData: 0,
       display: false,

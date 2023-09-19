@@ -4,21 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Projects;
 
 class ReportsController extends Controller
 {
     public function PageReports(Request $request)
     {
+        $user = Auth::user();
         $projectsQuery = Projects::with('tasks')
-            ->select('id', 'name', 'start_date', 'end_date', 'status');
-        
+            ->select('id', 'name', 'team_members', 'start_date', 'end_date', 'status', 'validation', 'note');
+
+        if ($user->role === 'User') {
+            $projectsQuery->where(function ($query) use ($user) {
+                $query->where('team_leader', $user->id)
+                    ->orWhereRaw("JSON_SEARCH(team_members, 'one', ?) IS NOT NULL", [$user->id]);
+            });
+        } 
+
         $search = $request->input('search');
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
 
-        $reportsQuery = $projectsQuery->paginate(3);
+        $reportsQuery = $projectsQuery->paginate(10);
         $totalData = $projectsQuery->count();
 
         $reports = [];
@@ -56,7 +65,10 @@ class ReportsController extends Controller
                 'work_duration' => $work_duration,
                 'progress' => $progress,
                 'status' => $status,
+                'validation' => $project->validation,
+                'note'=> $project->note,
             ];
+
         }
 
         if ($request->ajax()) {
@@ -64,7 +76,8 @@ class ReportsController extends Controller
         }
 
         return Inertia::render('Reports/PageReports', [
-            'reports' => ['data' => $reports, 'total' => $totalData] 
+            'reports' => ['data' => $reports, 'total' => $totalData],
+            'auth' => $user 
         ]);
     }
 }

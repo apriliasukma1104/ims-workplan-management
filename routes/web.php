@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\{
     LoginController,
-    RegisterController,
 };
 
 use App\Http\Controllers\{
@@ -11,11 +10,6 @@ use App\Http\Controllers\{
     ProjectsController,
     TasksController,
     ReportsController,
-
-    MasterController,
-    PostsController,
-    DcrController,
-    CekController,
 };
 use App\Models\Members;
 use App\Models\Projects;
@@ -34,10 +28,7 @@ use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 */
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('showLoginForm')->middleware('guest');
-Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('showRegisterForm')->middleware('guest');
-
 Route::post('login', [LoginController::class, 'authenticate'])->name('login');
-Route::post('register', [RegisterController::class, 'register'])->name('register');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -46,6 +37,8 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::post('/', [DashboardController::class, 'indexPost'])->name('indexPost');
     Route::get('/getDataDashboard', [DashboardController::class, 'getDataDashboard'])->name('data');
 });
+
+Route::redirect('/', 'dashboard');
 
 Route::prefix('members')->name('members.')->group(function () {
     Route::get('/add_member', [MembersController::class, 'PageAddMember'])->name('add_member');
@@ -94,7 +87,3 @@ Route::prefix('tasks')->name('tasks.')->group(function () {
 Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/', [ReportsController::class, 'PageReports'])->name('page_reports');
 });
-
-Route::resource('post', PostsController::class);
-
-Route::redirect('/', 'dashboard');

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Members;
 use App\Models\Projects;
 use App\Models\Tasks;
@@ -13,8 +13,18 @@ class ProjectsController extends Controller
 {
     public function PageListProjects(Request $request)
     {
+        $user = Auth::user();
         $projectsQuery = Projects::with('teamLeader', 'teamMembers')
-            ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
+            ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members'); 
+
+        if ($user->role === 'User') {
+            $projectsQuery->where(function ($query) use ($user) {
+                $query->where('team_leader', $user->id)
+                      ->orWhereHas('teamMembers', function ($query) use ($user) {
+                          $query->where('id', $user->id);
+                      });
+            });
+        }
 
         $search = $request->input('search');
         if ($search) {
@@ -29,13 +39,15 @@ class ProjectsController extends Controller
             });
         }
 
-        $projects = $projectsQuery->paginate(5);
+        $projects = $projectsQuery->paginate(10);
+        
         if ($request->ajax()){
             return response()->json(['data'=>$projects]);
         }
         
         return Inertia::render('Projects/ListProjects', [
-            'projects' => $projects
+            'projects' => $projects,
+            'auth' => $user 
         ]);
     }
 
@@ -43,7 +55,7 @@ class ProjectsController extends Controller
     {
         $members = Members::all(); 
         return Inertia::render('Projects/ValidationProject', [
-            'members' => $members 
+            'members' => $members
         ]);
     }
 
@@ -79,7 +91,7 @@ class ProjectsController extends Controller
 
     public function UpdateProject(Request $request)
     {
-        $project = Projects::find($request->input('id'));
+        $project = Projects::findOrFail($request->id); 
         $project->update($request->all());
 
         $members = $project->teamMembers;
@@ -89,14 +101,11 @@ class ProjectsController extends Controller
             ->with('project', $project)
             ->with('members', $members);
     }
-
+    
     public function UpdateValidation(Request $request)
     {
-        $project = Projects::find($request->input('id'));
-        $project->update($request->only('validation', 'note'));
-
-        return redirect()->route('projects.list_projects')
-            ->with('project', $project);
+        $project = Projects::findOrFail($request->id); 
+        $project->update($request->all());
     }
 
     public function DeleteProject(Request $request)

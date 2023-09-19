@@ -95,12 +95,19 @@
                         </div>
                     </div>
                     <div class="card-body p-0 ml-2 mr-2">
-                        <DataTable :value=" dataTask.task" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
+                        <DataTable :value="dataTask.task" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
                             <Column field="" header="No">
                               <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
                               </template>
                             </Column>
+                            <!-- <Column field="team_members" header="From">
+                                <template #body="slotProps">
+                                    <div v-if="user">
+                                        {{ user.name }} 
+                                    </div>
+                                </template>
+                            </Column> -->
                             <Column field="task" header="Task"></Column>
                             <Column field="description" header="Description"></Column>
                             <Column field="status" header="Status">
@@ -116,6 +123,9 @@
                                     <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
                                 </template>
                             </Column>
+                            <template #empty>
+                                No records found
+                            </template>
                         </DataTable>
                     </div>
                 </div>
@@ -128,14 +138,16 @@
   <script>
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
-  import { reactive} from "vue";
+  import { computed, reactive} from "vue";
   import { storeTasks, listTasks, updateTask, deleteTask } from '../../Api/projects.api.js';
   
   export default {
     components: {
         Layout,
     },
+
     setup() {
+        const user = computed(() => usePage().props.value.auth.user);
         const { userType, members } = usePage().props.value;
         const data = usePage().props.value.formData;
         const tasks = usePage().props.value.tasks;
@@ -228,6 +240,7 @@
         }
 
         return {
+            user,
             userType,
             members,
             formData,
