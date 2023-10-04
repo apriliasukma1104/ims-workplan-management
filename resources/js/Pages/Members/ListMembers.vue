@@ -77,6 +77,7 @@ export default {
         async loadLazyData() {
             this.loading = true;
             var response = await pageListMembers ({ page : this.lazyParams.page, search: this.search });
+            // console.log(response);
             this.members = response.data.data.data;
             this.totalData = response.data.data.total;
             this.loading = false;

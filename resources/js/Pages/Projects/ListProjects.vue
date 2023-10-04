@@ -18,7 +18,7 @@
                         </div>
                         <div class="p-field">
                             <label for="note">Note<span style="color:red;">*</span></label>
-                            <InputText v-model="form.note" type="text" style="width: 100%;" />
+                            <InputText v-model="form.note" type="text" />
                             <!-- <div>
                                 <TextArea v-model="form.note" class="form-control" />
                             </div> -->
@@ -90,7 +90,7 @@ import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed } from "vue";
-import { pageListProjects, deleteProject, updateValidation } from '../../Api/projects.api.js';
+import { pageListProjects, deleteProject, validation } from '../../Api/projects.api.js';
 
 export default {
     name: "ListProjects",
@@ -184,7 +184,7 @@ export default {
                 this.display = false;
 
                 if (this.form.id && this.form.validation.trim() !== '' && this.form.note.trim() !== '') {
-                    await updateValidation(this.form); 
+                    await validation(this.form); 
                     alert("Data Saved Successfully!");
                 } else {
                     alert("Please fill in all required fields.");

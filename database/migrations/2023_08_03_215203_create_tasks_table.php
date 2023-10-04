@@ -17,6 +17,7 @@ class CreateTasksTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_project');
             $table->foreign('id_project')->references('id')->on('projects');
+            $table->string('name_member');
             $table->string('task');
             $table->string('description');
             $table->enum('status', ['to do', 'doing', 'done']);

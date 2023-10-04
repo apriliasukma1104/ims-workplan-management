@@ -14,8 +14,8 @@
           <div class="login-box">
             <div class="card card-outline card-danger">
               <div class="card-body">
-                   <form method="post" @submit.prevent="submit">
-                    <errors-and-messages :errors="errors"></errors-and-messages>
+                <form method="post" @submit.prevent="submit">
+                  <errors-and-messages :errors="errors"></errors-and-messages>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="username" v-model="form.name" placeholder="Username" />
                       <div class="input-group-append">
@@ -25,16 +25,16 @@
                       </div>
                     </div>
                     <div class="input-group mb-3">
-                       <input type="password" class="form-control" name="password" id="password" v-model="form.password" placeholder="Password" />
+                      <input :type="showPassword ? 'password' : 'text'" class="form-control" name="password" id="password" v-model="form.password" placeholder="Password" />
                       <div class="input-group-append">
                         <div class="input-group-text">
-                          <span class="fas fa-lock"></span>
+                          <span class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" @click="togglePassword"></span>
                         </div>
                       </div>
+                    </div>                    
+                    <div class="form-group">
+                      <button class="btn btn-block btn-login text-white " type="submit">Login</button>
                     </div>
-                  <div class="form-group">
-                    <button class="btn btn-block btn-login text-white " type="submit">Login</button>
-                  </div>
                 </form>
               </div>
             </div>
@@ -49,40 +49,53 @@
 </template>
 
 <script>
-    import AppHeader from "../../Partials/AppHeader";
-    import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
+import AppHeader from "../../Partials/AppHeader";
+import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
+import {Inertia} from "@inertiajs/inertia";
+import { usePage } from '@inertiajs/inertia-vue3'
+import {reactive,inject} from 'vue';
 
-    import {Inertia} from "@inertiajs/inertia";
-    import { usePage } from '@inertiajs/inertia-vue3'
-    import {reactive,inject} from 'vue';
-
-    export default {
-        components: {
-            ErrorsAndMessages,
-            AppHeader
+export default {
+    data() {
+      return {
+        showPassword: false,
+        form: {
+          password: '',
         },
-        name: "Login",
-        props: {
-            errors: Object
-        },
-        setup() {
-            const form = reactive({
-               name: null,
-               password: null,
-               _token: usePage().props.value.csrf_token
-            });
+      };
+    },
 
-            const route = inject('$route');
+    methods: {
+      togglePassword() {
+        this.showPassword = !this.showPassword;
+      },
+    },
 
-            function submit() {
-                Inertia.post(route('login'), form);
-            }
+    components: {
+        ErrorsAndMessages,
+        AppHeader
+    },
 
-            return {
-                form, submit
-            }
+    name: "Login",
+    props: {
+        errors: Object
+    },
+
+    setup() {
+        const form = reactive({
+            name: null,
+            password: null,
+            _token: usePage().props.value.csrf_token
+        });
+        function submit() {
+            Inertia.post(route('login'), form);
+        }
+        return {
+            form,
+            submit
         }
     }
+}
 </script>
 
 <style scoped>

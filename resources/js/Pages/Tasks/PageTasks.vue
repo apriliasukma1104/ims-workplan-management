@@ -2,41 +2,42 @@
     <layout title="Tasks List">
     <Toast position="top-center" />
 
-      <!-- <Dialog header="Header" v-model:visible="dataTask.display" >
-          <template #header>
-                  <label>New Progress</label>
-                  </template>
-                  <div class="p-fluid">
-                      <div class="p-field">
-                          <label for="task">Task<span style="color:red;">*</span></label>
-                          <InputText v-model="form.id" type="text" hidden/>
-                          <InputText v-model="form.id_project" type="text" hidden/>
-                          <InputText v-model="form.task" type="text" />
-                      </div>
-                      <div class="p-field">
-                          <label for="description">Description<span style="color:red;">*</span></label>
-                          <InputText v-model="form.description" type="text" />
-                      </div>
-                      <div class="p-field">
-                          <label for="status">Status<span style="color:red;">*</span></label>
-                            <select class="custom-select custom-select-sm" v-model="form.status">
-                              <option disabled value="">Please Select One</option>
-                              <option>to do</option>
-                              <option>doing</option>
-                              <option>done</option>
-                            </select>
-                      </div>
-                  </div>
-                  <template #footer>
-                      <Button @click="simpanTask" label="Save" icon="pi pi-check" autofocus class="p-button-sm" />
-                  </template>
-        </Dialog> -->
+        <Dialog header="Header" v-model:visible="display" :style="{ width: '40vw' }">
+            <template #header>
+                <label>New Progress</label>
+            </template>
+                <div class="p-fluid">
+                    <div class="p-field">
+                        <InputText v-model="form.id" type="text" hidden/>
+                        <label for="subject">Subject<span style="color:red;">*</span></label>
+                        <InputText v-model="form.subject" type="text" />
+                    </div>
+                    <div class="p-field">
+                        <label for="date">Date<span style="color:red;">*</span></label>
+                        <InputText v-model="form.date" type="date" />
+                    </div>
+                    <div class="p-field">
+                        <label for="start_time">Start Time<span style="color:red;">*</span></label>
+                        <InputText v-model="form.start_time" type="time" />
+                    </div>
+                    <div class="p-field">
+                        <label for="end_time">End Time<span style="color:red;">*</span></label>
+                        <InputText v-model="form.end_time" type="time" />
+                    </div>
+                    <div class="p-field">
+                        <label for="comment">Comment/Progress Description<span style="color:red;">*</span></label>
+                        <div>
+                            <TextArea v-model="form.comment" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            <template #footer>
+                <Button @click="simpanProductivity" label="Save" icon="pi pi-check" autofocus class="p-button-sm" />
+            </template>
+        </Dialog>
 
         <div class="card">
           <Toolbar class="p-mb-4">
-            <template #left>
-              <Button label="Add Productivity" icon="pi pi-plus" class="p-button-primary p-button-sm" @click="addProductivity" />
-            </template>
             <template #right>
               <span>
                 <InputText placeholder="Search..." v-model="search" style="font-size: 13px;" />
@@ -51,14 +52,6 @@
               <template #body="slotProps">
                 {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
               </template>
-            </Column>
-            <!-- <Column field="team_members" header="Team Members"></Column> -->
-            <Column field="team_members" header="Team Members">
-                <template #body="slotProps">
-                    <div v-for="member in slotProps.data.team_members">
-                        {{ member.name }}
-                    </div>
-                </template>
             </Column>
             <Column field="name" header="Project Name"></Column>
             <Column field="" header="Tasks">
@@ -82,6 +75,11 @@
                     <span :class="getStatusBadgeClass(slotProps.data.status)">
                             {{ slotProps.data.status }}
                     </span>
+                </template>
+            </Column>
+            <Column :exportable="false" header="Action">
+                <template #body="slotProps">
+                    <Button @click="addProductivity(slotProps.data)" icon="pi pi-plus" class="p-button-rounded p-button-primary" />
                 </template>
             </Column>
             <template #empty>
@@ -108,67 +106,6 @@ export default {
     Layout,
   },
 
-  // setup(){
-  //   const { userType } = usePage().props.value;
-  //   const tasks = usePage().props.value.tasks;
-
-  //   const form = reactive({
-  //           id: "",
-  //           task: "",
-  //           description: "",
-  //           status: "",
-  //       });
-
-  //       var dataTask = reactive({
-  //           task : [],
-  //           display: false
-  //       });
-
-  //       dataTask.task=tasks;
-
-  //       const newTask = () => {
-  //           dataTask.display = true;
-  //           form.id = '';
-  //           form.task = '';
-  //           form.description = '';
-  //           form.status = '';
-  //       };
-
-  //       async function loadLazyTask(form) {
-  //           var params = {id_project:formData.id};
-  //           const result = await listTasks( form );
-  //           dataTask.task = result.data.data;
-  //       };
-
-  //       async function simpanTask() {
-  //           form.id_project = formData.id;
-  //           try {
-  //               dataTask.display = false;  
-  //               if (form.id) {
-  //                   await updateTask(form); 
-  //                   alert("Data Updated Successfully!");
-  //               } else {
-  //                   const response = await storeTasks(form);
-  //                   alert("Data Saved Successfully!");
-  //               }
-  //               loadLazyTask(form);
-  //           } catch (error) {
-  //               console.error(error);
-  //               alert("Data Failed to Save!");
-  //           }
-  //       };
-
-  //       return {
-  //           userType,
-  //           form,
-  //           tasks,
-  //           dataTask,
-  //           newTask,
-  //           loadLazyTask,
-  //           simpanTask
-  //       };
-  // },
-
   data() {
     return {
       tasks: [],
@@ -176,6 +113,14 @@ export default {
       dataPerPage: 10,
       totalData: 0,
       display: false,
+      form:{
+        id:null,
+        subject:null,
+        date:null,
+        start_time:null,
+        end_time:null,
+        comment:null,
+      },
       lazyParams: {
         page: 1,
       },
@@ -203,6 +148,35 @@ export default {
       this.lazyParams.page = event.page + 1;
       this.loadLazyData();
     }, 
+    addProductivity(){
+      this.display = true;
+      this.form ='';
+    },
+    // addProductivity(data) {
+    //   this.form.id = data.id;
+    //   this.form.subject = '';
+    //   this.form.date = '';
+    //   this.form.start_time = '';
+    //   this.form.end_time = '';
+    //   this.form.comment = '';
+    //   this.display = true;
+    // },
+    async simpanProductivity() {
+        try {
+            this.display = false;
+
+            if (this.form.id) {
+                await updateValidation(this.form); 
+                alert("Data Saved Successfully!");
+            } else {
+                alert("Please fill in all required fields.");
+            }
+                
+            this.loadLazyData();
+        } catch (error) {
+            alert("Data Failed to Save!");
+        }
+    },
     getStatusBadgeClass(status) {
         switch (status) {
             case "to do":

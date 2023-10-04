@@ -55,9 +55,9 @@
                 </Column>
                 <Column field="" header="Validation">
                     <template #body="slotProps">
-                    <b>{{ slotProps.data.validation }}</b>
-                    <br>
-                    <small>{{ slotProps.data.note }}</small>
+                        <b>{{ slotProps.data.validation }}</b>
+                        <br>
+                        <small v-if="slotProps.data.note">Note: {{ slotProps.data.note }}</small>
                     </template>
                 </Column>
                 <template #empty>

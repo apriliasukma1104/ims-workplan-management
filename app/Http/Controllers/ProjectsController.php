@@ -51,14 +51,6 @@ class ProjectsController extends Controller
         ]);
     }
 
-    public function PageValidationProjects()
-    {
-        $members = Members::all(); 
-        return Inertia::render('Projects/ValidationProject', [
-            'members' => $members
-        ]);
-    }
-
     public function PageAddProject()
     {
         $members = Members::all(); 
@@ -101,12 +93,6 @@ class ProjectsController extends Controller
             ->with('project', $project)
             ->with('members', $members);
     }
-    
-    public function UpdateValidation(Request $request)
-    {
-        $project = Projects::findOrFail($request->id); 
-        $project->update($request->all());
-    }
 
     public function DeleteProject(Request $request)
     {
@@ -117,13 +103,19 @@ class ProjectsController extends Controller
     public function ViewProject(Request $request)
     {
         $project = Projects::with(['teamMembers', 'teamLeader'])->findOrFail($request->id);
-        $task = Tasks::select('id', 'id_project', 'task', 'description', 'status')
+        $task = Tasks::select('id', 'id_project', 'name_member', 'task', 'description', 'status')
             ->where('id_project', $request->id) ->get();
 
         return Inertia::render('Projects/ViewProject', [
             'formData' => $project,
             'tasks' => $task,
         ]);
+    }
+
+    public function validation(Request $request)
+    {
+        $project = Projects::findOrFail($request->id); 
+        $project->update($request->all());
     }
 
     public function StoreTasks(Request $request)

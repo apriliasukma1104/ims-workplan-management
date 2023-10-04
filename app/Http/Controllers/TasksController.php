@@ -54,4 +54,11 @@ class TasksController extends Controller
             'auth' => $user 
         ]);
     }
+
+    public function UpdateProductivity(Request $request)
+    {
+        $project = Tasks::findOrFail($request->id); 
+        $project->update($request->all());
+    }
+
 }

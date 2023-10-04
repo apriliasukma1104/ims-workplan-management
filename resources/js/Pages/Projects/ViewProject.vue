@@ -13,7 +13,8 @@
                         <InputText v-model="form.id_project" type="text" hidden/>
                         <InputText v-model="form.task" type="text" />
                     </div>
-                     <div class="p-field">
+                    <div class="p-field">
+                        <InputText v-model="form.name_member" type="text" :value="user.name" hidden disabled/>
                         <label for="description">Description<span style="color:red;">*</span></label>
                         <InputText v-model="form.description" type="text" />
                     </div>
@@ -80,8 +81,18 @@
                         <span><b>Team Member/s:</b></span>
                     </div>
                     <div class="card-body p-0 mt-3 ml-3 mb-3">
-                        <div v-for="members in formData.team_members">
-                            {{ members.name }} 
+                        <div style="display: flex;">
+                            <div v-for="members in formData.team_members" style="margin-right: 8px; width: 80px;">
+                                <div style="text-align: center;">
+                                    <img
+                                        :src="'/images/user.png'"
+                                        width="40"
+                                        height="40"
+                                    />
+                                    <br>
+                                    <span style="font-size: 14px;">{{ members.name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,13 +112,7 @@
                                 {{ slotProps.index + 1 }}
                               </template>
                             </Column>
-                            <!-- <Column field="team_members" header="From">
-                                <template #body="slotProps">
-                                    <div v-if="user">
-                                        {{ user.name }} 
-                                    </div>
-                                </template>
-                            </Column> -->
+                            <Column field="name_member" header="From"></Column>
                             <Column field="task" header="Task"></Column>
                             <Column field="description" header="Description"></Column>
                             <Column field="status" header="Status">
@@ -166,6 +171,7 @@
 
         const form = reactive({
             id: "",
+            name_member: user.value.name,
             task: "",
             description: "",
             status: "",
@@ -181,6 +187,7 @@
         const newTask = () => {
             dataTask.display = true;
             form.id = '';
+            form.name_member = user.value.name;
             form.task = '';
             form.description = '';
             form.status = '';
@@ -208,6 +215,12 @@
                 alert("Data Failed to Save!");
             }
         };
+
+        // async function handlePageChange(event) {
+        //     const currentPage = event.page;
+        //     const rowsPerPage = event.rowsPerPage;
+        //     await loadLazyTask({ currentPage, rowsPerPage });
+        // };
 
         const onEdit = (item) => {
             Object.assign(form, item);
@@ -250,6 +263,7 @@
             newTask,
             loadLazyTask,
             simpanTask,
+            // handlePageChange,
             onEdit,
             onDelete,
             getStatusBadgeClass  
