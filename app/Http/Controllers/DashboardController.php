@@ -23,6 +23,10 @@ class DashboardController extends Controller
         $projectsQuery = Projects::with('tasks')
             ->select('id', 'name', 'team_members', 'start_date', 'end_date', 'status');
 
+        // Setting Sortable
+        $sortField = $request->input('sortField', 'name'); 
+        $sortOrder = $request->input('sortOrder', 'asc'); 
+
         if ($user->role === 'User') {
             $projectsQuery->where(function ($query) use ($user) {
                 $query->where('team_leader', $user->id)
@@ -36,6 +40,10 @@ class DashboardController extends Controller
         }
 
         $totalTaskProjects = $projectsQuery->with('tasks')->get()->pluck('tasks')->flatten()->count();
+
+        
+        $projectsQuery->orderBy($sortField, $sortOrder);
+        
         $dashboard = $projectsQuery->paginate(5);
         $totalProject = $projectsQuery->count();
 

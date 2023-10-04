@@ -15,6 +15,10 @@ class ReportsController extends Controller
         $projectsQuery = Projects::with('tasks')
             ->select('id', 'name', 'team_members', 'start_date', 'end_date', 'status', 'validation', 'note');
 
+        // Setting Sortable
+        $sortField = $request->input('sortField', 'name'); 
+        $sortOrder = $request->input('sortOrder', 'asc'); 
+
         if ($user->role === 'User') {
             $projectsQuery->where(function ($query) use ($user) {
                 $query->where('team_leader', $user->id)
@@ -26,6 +30,8 @@ class ReportsController extends Controller
         if ($search) {
             $projectsQuery->where('name', 'like', '%' . $search . '%');
         }
+
+        $projectsQuery->orderBy($sortField, $sortOrder);
 
         $reportsQuery = $projectsQuery->paginate(10);
         $totalData = $projectsQuery->count();

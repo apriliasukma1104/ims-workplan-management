@@ -18143,7 +18143,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       lazyParams: {
         page: 1
       },
-      loading: false
+      loading: false,
+      sortOrder: null
     };
   },
   props: {

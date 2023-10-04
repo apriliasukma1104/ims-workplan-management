@@ -103,7 +103,7 @@ export default {
   name: "PageTasks",
   components: {
     ErrorsAndMessages,
-    Layout,
+    Layout
   },
 
   data() {
@@ -125,6 +125,7 @@ export default {
         page: 1,
       },
       loading: false,
+      sortOrder: null,
     };
   },
 
@@ -135,7 +136,7 @@ export default {
   methods: {
     async loadLazyData() {
       this.loading = true;
-      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search });
+      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search});
       this.tasks = response.data.data.data;
       this.totalData = response.data.data.total;
       this.loading = false;

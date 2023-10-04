@@ -24,7 +24,11 @@ class TasksController extends Controller
                 'projects.start_date',
                 'projects.end_date',
                 'projects.status as project_status'
-        );      
+        );     
+        
+        // Setting Sortable
+        $sortField = $request->input('sortField', 'projects.name'); 
+        $sortOrder = $request->input('sortOrder', 'asc'); 
         
         if ($user->role === 'User') {
             $tasksQuery->where(function ($query) use ($user) {
@@ -43,6 +47,8 @@ class TasksController extends Controller
             });
         }
 
+        $tasksQuery->orderBy($sortField, $sortOrder);
+
         $tasks = $tasksQuery->paginate(10);
 
         if ($request->ajax()){
@@ -51,7 +57,7 @@ class TasksController extends Controller
             
         return Inertia::render('Tasks/PageTasks', [
             'tasks' => $tasks,
-            'auth' => $user 
+            'auth' => $user,
         ]);
     }
 
