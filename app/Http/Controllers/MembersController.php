@@ -38,10 +38,6 @@ class MembersController extends Controller
         $user = Auth::user();
         $membersQuery = Members::select('id', 'name', 'position', 'role', 'email');
 
-        // Setting Sortable
-        $sortField = $request->input('sortField', 'name'); 
-        $sortOrder = $request->input('sortOrder', 'asc'); 
-
         if ($user->role === 'Kadiv' || $user->role === 'Kadep') {
             $membersQuery->where(function ($query) use ($user) {
                 $query->where('role', 'Kadiv')
@@ -60,9 +56,9 @@ class MembersController extends Controller
             });
         }
 
-        $membersQuery->orderBy($sortField, $sortOrder);
+        // Setting ascending pada members
+        $members = $membersQuery->orderBy('name', 'asc')->paginate(10);
 
-        $members = $membersQuery->paginate(10); 
         if ($request->ajax()) {
             return response()->json(['data' => $members]);
         }

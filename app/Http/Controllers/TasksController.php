@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Tasks;
+use App\Models\Projects;
 
 class TasksController extends Controller
 {
@@ -24,11 +25,10 @@ class TasksController extends Controller
                 'projects.start_date',
                 'projects.end_date',
                 'projects.status as project_status'
-        );     
+        ); 
         
-        // Setting Sortable
-        $sortField = $request->input('sortField', 'projects.name'); 
-        $sortOrder = $request->input('sortOrder', 'asc'); 
+        // Filter projects -> name
+        $projects = Projects::orderBy('name', 'asc')->get(); 
         
         if ($user->role === 'User') {
             $tasksQuery->where(function ($query) use ($user) {
@@ -47,15 +47,15 @@ class TasksController extends Controller
             });
         }
 
-        $tasksQuery->orderBy($sortField, $sortOrder);
-
-        $tasks = $tasksQuery->paginate(10);
+        // Setting ascending pada task
+        $tasks = $tasksQuery->orderBy('projects.name', 'asc')->paginate(10);
 
         if ($request->ajax()){
             return response()->json(['data'=>$tasks]);
         }
             
         return Inertia::render('Tasks/PageTasks', [
+            'projects' => $projects,
             'tasks' => $tasks,
             'auth' => $user,
         ]);

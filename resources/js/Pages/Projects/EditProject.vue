@@ -30,7 +30,7 @@
                   <select name="team_members[]" id="team_members" class="custom-select custom-select-sm" multiple v-model="formData.team_members">
                       <option v-for="member in members" :key="member.id" :value="member.id" :selected="formData.team_members.includes(member.id)">{{ member.name }}</option>
                   </select>
-                  <small><i>{{ "Especially for team members, select the data again" }}</i></small>
+                  <!-- <small><i>{{ "Especially for team members, select the data again" }}</i></small> -->
               </div>
             </div>
             <div class="col-md-6">
@@ -42,13 +42,13 @@
                 <label for="end_date" class="control-label">End Date</label>
                 <input type="date" name="end_date" id="end_date" class="form-control form-control-sm" v-model="formData.end_date">
               </div>
-              <div class="form-group mt-3 mr-3">
+              <div class="form-group mt-3 mr-3" v-if="user && user.role === 'Kadep'">
                 <label for="status" class="control-label" style="display: block; margin-top: 1rem;">Status</label>
                 <select class="custom-select custom-select-sm" v-model="formData.status">
                   <option disabled value="">Please Select One</option>
                   <option>to do</option>
                   <option>doing</option>
-                  <option>review</option>
+                  <option>submission</option>
                   <option>done</option>
                 </select>
               </div>
@@ -62,6 +62,7 @@
           <div class="row">
             <div class="col-md-12 text-right justify-content-center d-flex mb-3">
               <button @click="update" class="btn btn-dark ml-2" >Update</button>
+              <button @click="cancel" class="btn btn-secondary ml-2">Cancel</button>
             </div>
           </div>
         </div>
@@ -72,7 +73,7 @@
   <script>
   import Layout from "../../Partials/Layout";
   import { usePage } from "@inertiajs/inertia-vue3";
-  import { reactive } from "vue";
+  import { reactive, computed } from "vue";
   import { updateProject } from '../../Api/projects.api.js';
   
   export default {
@@ -82,13 +83,14 @@
     setup() {
       const { userType, members } = usePage().props.value;
       const data = usePage().props.value.formData;
+      const user = computed(() => usePage().props.value.auth.user);
 
       const formData = reactive({
         id: data.id,
         name: data.name,
         project_type: data.project_type,
         team_leader: data.team_leader,
-        team_members: data.team_members,
+        team_members: JSON.parse(data.team_members),
         start_date: data.start_date,
         end_date: data.end_date,
         status: data.status,
@@ -106,12 +108,18 @@
           alert("Data Failed to Save!");
         }
       };
+
+      const cancel = () => {
+        window.location.href = "/projects/list_projects";
+      };
   
       return {
+        user,
         userType,
         formData,
         members,
-        update
+        update,
+        cancel
       };
   
     },

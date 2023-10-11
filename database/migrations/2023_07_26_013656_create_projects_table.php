@@ -21,7 +21,7 @@ class CreateProjectsTable extends Migration
             $table->json('team_members')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status', ['to do', 'doing', 'review', 'done']);
+            $table->enum('status', ['pending', 'to do', 'doing', 'submission', 'done']);
             $table->string('description');
             $table->enum('validation', ['approved', 'not approved']);
             $table->string('note');

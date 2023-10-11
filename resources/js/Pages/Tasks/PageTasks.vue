@@ -38,6 +38,10 @@
 
         <div class="card">
           <Toolbar class="p-mb-4">
+            <template #left>
+                <Dropdown v-model="form.name" :options="projects" optionLabel="name" optionValue="id" 
+                  placeholder="Select a Project Name" style="width: 350px" :filter="true"  filterPlaceholder="Search..." />
+            </template>
             <template #right>
               <span>
                 <InputText placeholder="Search..." v-model="search" style="font-size: 13px;" />
@@ -65,14 +69,14 @@
             <Column field="end_date" header="Project End Date"></Column>
             <Column field="project_status" header="Project Status">
                 <template #body="slotProps">
-                    <span :class="getStatusBadgeClass(slotProps.data.project_status)">
+                    <span :class="['status-badge', getStatusBadgeClass(slotProps.data.project_status)]">
                             {{ slotProps.data.project_status }}
                     </span>
                 </template>
             </Column>
             <Column field="status" header="Task Status">
                 <template #body="slotProps">
-                    <span :class="getStatusBadgeClass(slotProps.data.status)">
+                    <span :class="['status-badge', getStatusBadgeClass(slotProps.data.status)]">
                             {{ slotProps.data.status }}
                     </span>
                 </template>
@@ -120,12 +124,13 @@ export default {
         start_time:null,
         end_time:null,
         comment:null,
+        name: null, // untuk menambahkan filter project -> name
       },
       lazyParams: {
         page: 1,
       },
       loading: false,
-      sortOrder: null,
+      selectedProject: null,
     };
   },
 
@@ -136,7 +141,7 @@ export default {
   methods: {
     async loadLazyData() {
       this.loading = true;
-      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search});
+      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search, ...this.form});
       this.tasks = response.data.data.data;
       this.totalData = response.data.data.total;
       this.loading = false;
@@ -184,7 +189,7 @@ export default {
             return "badge badge-primary";
             case "doing":
             return "badge badge-info";
-            case "review":
+            case "submission":
             return "badge badge-dark";
             case "done":
             return "badge badge-success";
@@ -195,9 +200,16 @@ export default {
   },
 
   mounted() {
+        this.projects = this.$page.props.projects;
         this.tasks = this.$page.props.tasks.data; 
         this.totalData = this.$page.props.tasks.total;
   }
 
 };
 </script>
+
+<style scoped>
+.status-badge {
+  min-width: 80px; 
+}
+</style>

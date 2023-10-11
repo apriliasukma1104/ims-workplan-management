@@ -10,7 +10,7 @@
                     <div class="p-field">
                         <label for="task">Task<span style="color:red;">*</span></label>
                         <InputText v-model="form.id" type="text" hidden/>
-                        <InputText v-model="form.id_project" type="text" hidden/>
+                        <InputText type="text" :value="formData.name" hidden/>
                         <InputText v-model="form.task" type="text" />
                     </div>
                     <div class="p-field">
@@ -66,9 +66,10 @@
                 </div>
                 <div class="form-group mt-3 mr-3">
                     <label class="control-label" style="display: block; margin-top: 1rem;">Status</label>
+                    <span class="badge badge-secondary" v-if="formData.status === 'pending'">pending</span>
                     <span class="badge badge-primary" v-if="formData.status === 'to do'">to do</span>
                     <span class="badge badge-info" v-if="formData.status === 'doing'">doing</span>
-                    <span class="badge badge-secondary" v-if="formData.status === 'review'">review</span>
+                    <span class="badge badge-dark" v-if="formData.status === 'submission'">submission</span>
                     <span class="badge badge-success" v-if="formData.status === 'done'">done</span>
                 </div>
             </div>
@@ -106,7 +107,7 @@
                         </div>
                     </div>
                     <div class="card-body p-0 ml-2 mr-2">
-                        <DataTable :value="dataTask.task" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll">
+                        <DataTable :value="dataTask.task" :lazy="true" :rows="totalData" ref="dt" :loading="loading" responsiveLayout="scroll" >
                             <Column field="" header="No">
                               <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
@@ -124,8 +125,8 @@
                             </Column>
                             <Column :exportable="false" header="Action">
                                 <template #body="slotProps">
-                                    <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;" />
-                                    <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
+                                    <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" v-if="user && user.name === slotProps.data.name_member" style="margin-right: 10px;" />
+                                    <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" v-if="user && user.name === slotProps.data.name_member" />
                                 </template>
                             </Column>
                             <template #empty>
@@ -241,12 +242,14 @@
         };
 
         const getStatusBadgeClass = (status) => {
-            if (status === 'to do') {
+            if (status === 'pending') {
+                return 'badge badge-secondary';
+            } else if (status === 'to do') {
                 return 'badge badge-primary';
             } else if (status === 'doing') {
                 return 'badge badge-info';
-            } else if (status === 'review') {
-                return 'badge badge-secondary';
+            } else if (status === 'submission') {
+                return 'badge badge-dark';
             } else if (status === 'done') {
                 return 'badge badge-success';
             } 

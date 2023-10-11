@@ -2,7 +2,7 @@
     <layout title="Project List">
     <Toast position="top-center" />
 
-            <Dialog header="Header" v-model:visible="display" :style="{ width: '30vw' }">
+            <Dialog header="Header" v-model:visible="display" :style="{ width: '30vw' }" >
             <template #header>
                     <label>Project Validation</label>
                     </template>
@@ -31,6 +31,12 @@
 
         <div class="card">
             <Toolbar class="p-mb-4">
+                <!-- <template #left>
+                <select name="project_type" id="project_type" class="custom-select" required @change="handleTeamLeaderChange">
+                    <option disabled value="">Please Select One</option>
+                    <option v-for="project in projects" :key="project.id" :value="project.id">{{ project.project_type }}</option>
+                </select>
+                </template> -->
                 <template #right>
                     <span>
                         <InputText placeholder="Search..." v-model="search" style="font-size: 13px;" />
@@ -74,7 +80,8 @@
                         <Button v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep')" @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 5px;" />
                         <Button v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep')" @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" style="margin-right: 5px;" />
                         <Button v-if="user && (user.role === 'Kadep' || user.role === 'User')" @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" />
-                        <Button v-if="user && user.role === 'Kadiv'" @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
+                        <!-- <Button v-if="user && (user.role === 'Kadep' || user.role === 'User') && (slotProps.data.team_leader.id === user.id || slotProps.data.team_members.some(member => member.id === user.id))" @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-success" style="margin-right: 5px;" /> -->
+                        <Button v-if="user && user.role === 'Kadiv' && slotProps.data.status === 'submission'" @click="onValidation(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-secondary" />
                     </template>
                 </Column>
                 <template #empty>
@@ -189,7 +196,6 @@ export default {
                 } else {
                     alert("Please fill in all required fields.");
                 }
-                
                 this.loadLazyData();
             } catch (error) {
                 alert("Data Failed to Save!");
@@ -198,12 +204,14 @@ export default {
 
         getStatusBadgeClass(status) {
         switch (status) {
+            case "pending":
+            return "badge badge-secondary";
             case "to do":
             return "badge badge-primary";
             case "doing":
             return "badge badge-info";
-            case "review":
-            return "badge badge-secondary";
+            case "submission":
+            return "badge badge-dark";
             case "done":
             return "badge badge-success";
             default:
@@ -223,6 +231,6 @@ export default {
     font-size: 14px;
 }
 .status-badge {
-    min-width: 50px; 
+    min-width: 80px; 
 }
 </style>

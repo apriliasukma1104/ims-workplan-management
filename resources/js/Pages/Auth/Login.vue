@@ -58,7 +58,7 @@ import {reactive,inject} from 'vue';
 export default {
     data() {
       return {
-        showPassword: false,
+        showPassword: true,
         form: {
           password: '',
         },

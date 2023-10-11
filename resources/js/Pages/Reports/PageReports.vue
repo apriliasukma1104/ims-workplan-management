@@ -121,7 +121,7 @@ export default {
             return "badge badge-primary";
             case "on-progress":
             return "badge badge-info";
-            case "review":
+            case "submission":
             return "badge badge-dark";
             case "done":
             return "badge badge-success";

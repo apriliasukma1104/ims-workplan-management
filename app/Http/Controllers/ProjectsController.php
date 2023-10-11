@@ -16,10 +16,6 @@ class ProjectsController extends Controller
         $user = Auth::user();
         $projectsQuery = Projects::with('teamLeader', 'teamMembers')
             ->select('id', 'name', 'project_type', 'team_leader', 'start_date', 'end_date', 'status', 'team_members');
-            
-        // Setting Sortable
-        $sortField = $request->input('sortField', 'name'); 
-        $sortOrder = $request->input('sortOrder', 'asc'); 
 
         if ($user->role === 'User') {
             $projectsQuery->where(function ($query) use ($user) {
@@ -43,9 +39,8 @@ class ProjectsController extends Controller
             });
         }
 
-        $projectsQuery->orderBy($sortField, $sortOrder);
-
-        $projects = $projectsQuery->paginate(10);
+        // Setting ascending pada projects
+        $projects = $projectsQuery->orderBy('name', 'asc')->paginate(10);
         
         if ($request->ajax()){
             return response()->json(['data'=>$projects]);

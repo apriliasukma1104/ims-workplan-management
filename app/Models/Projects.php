@@ -9,6 +9,9 @@ use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 class Projects extends Model
 {
     use HasFactory;
+    
+    protected $table = 'projects';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'name',
@@ -21,7 +24,6 @@ class Projects extends Model
         'description',
         'validation',
         'note',
-        
     ];
 
     public function teamLeader()
