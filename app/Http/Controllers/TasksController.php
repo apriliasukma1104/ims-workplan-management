@@ -13,6 +13,7 @@ class TasksController extends Controller
     public function PageTasks(Request $request)
     {
         $user = Auth::user();
+
         $tasksQuery = Tasks::with('project') 
             ->leftJoin('projects', 'tasks.id_project', '=', 'projects.id')
             ->select(
@@ -27,8 +28,14 @@ class TasksController extends Controller
                 'projects.status as project_status'
         ); 
         
-        // Filter projects -> name
+        // Opsi filter projects -> name
         $projects = Projects::orderBy('name', 'asc')->get(); 
+
+        // Filter projects -> name
+        $tasksFilter = $request->query('tasksFilter');
+        if ($tasksFilter) {
+            $tasksQuery = $tasksQuery->where('projects.name', 'LIKE', "%$tasksFilter%");
+        }
         
         if ($user->role === 'User') {
             $tasksQuery->where(function ($query) use ($user) {

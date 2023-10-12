@@ -18154,6 +18154,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       tasks: [],
       projects: [],
+      selectedProject: null,
       dataPerPage: 10,
       totalData: 0,
       display: false,
@@ -18170,8 +18171,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       lazyParams: {
         page: 1
       },
-      loading: false,
-      selectedProject: null
+      loading: false
     };
   },
   props: {
@@ -18189,18 +18189,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this.loading = true;
                 _context.next = 3;
-                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListTasks)(_objectSpread({
+                return (0,_Api_projects_api_js__WEBPACK_IMPORTED_MODULE_6__.pageListTasks)(_objectSpread(_objectSpread({
                   page: _this.lazyParams.page,
                   search: _this.search
-                }, _this.form));
+                }, _this.form), {}, {
+                  tasksFilter: _this.selectedProject
+                }));
 
               case 3:
                 response = _context.sent;
+                console.log('Response:', response);
+                console.log('this.selectedProject:', _this.selectedProject);
                 _this.tasks = response.data.data.data;
                 _this.totalData = response.data.data.total;
                 _this.loading = false;
 
-              case 7:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -18209,6 +18213,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onSearch: function onSearch() {
+      this.totalData = 0;
+      this.loadLazyData();
+    },
+    filterProjectName: function filterProjectName() {
       this.totalData = 0;
       this.loadLazyData();
     },
@@ -21530,13 +21538,14 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
       }, {
         left: _withId(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Dropdown, {
-            modelValue: $data.form.name,
+            modelValue: $data.selectedProject,
             "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
-              return $data.form.name = $event;
+              return $data.selectedProject = $event;
             }),
             options: $data.projects,
             optionLabel: "name",
-            optionValue: "id",
+            optionValue: "name",
+            onChange: $options.filterProjectName,
             placeholder: "Select a Project Name",
             style: {
               "width": "350px"
@@ -21545,7 +21554,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
             filterPlaceholder: "Search..."
           }, null, 8
           /* PROPS */
-          , ["modelValue", "options"])];
+          , ["modelValue", "options", "onChange"])];
         }),
         right: _withId(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputText, {

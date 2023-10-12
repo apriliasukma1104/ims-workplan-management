@@ -39,7 +39,7 @@
         <div class="card">
           <Toolbar class="p-mb-4">
             <template #left>
-                <Dropdown v-model="form.name" :options="projects" optionLabel="name" optionValue="id" 
+                <Dropdown v-model="selectedProject" :options="projects" optionLabel="name" optionValue="name" @change="filterProjectName"
                   placeholder="Select a Project Name" style="width: 350px" :filter="true"  filterPlaceholder="Search..." />
             </template>
             <template #right>
@@ -114,6 +114,7 @@ export default {
     return {
       tasks: [],
       projects: [],
+      selectedProject: null,
       dataPerPage: 10,
       totalData: 0,
       display: false,
@@ -130,7 +131,6 @@ export default {
         page: 1,
       },
       loading: false,
-      selectedProject: null,
     };
   },
 
@@ -141,12 +141,18 @@ export default {
   methods: {
     async loadLazyData() {
       this.loading = true;
-      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search, ...this.form});
+      var response = await pageListTasks ({ page : this.lazyParams.page, search: this.search, ...this.form,  tasksFilter: this.selectedProject});
+      console.log('Response:', response);
+      console.log('this.selectedProject:', this.selectedProject);
       this.tasks = response.data.data.data;
       this.totalData = response.data.data.total;
       this.loading = false;
     },
     onSearch() {
+      this.totalData = 0;
+      this.loadLazyData();
+    },
+    filterProjectName() {
       this.totalData = 0;
       this.loadLazyData();
     },
