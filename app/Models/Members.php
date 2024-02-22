@@ -37,6 +37,6 @@ class Members extends Authenticatable
 
     public function projectsAsTeamMember()
     {
-        return $this->belongsToMany(Projects::class, 'project_team_members', 'member_id', 'project_id');
+        return $this->belongsToMany(Projects::class, 'projects_has_members', 'id_projects', 'id_members');
     }
 }

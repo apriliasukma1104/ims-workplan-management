@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tasks extends Model
+class WeightTaskPlans extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'id_project', 'name_member', 'task', 'description', 'month', 'weight_plan', 'percentage'];
+    protected $fillable = ['id', 'id_project', 'id_task_plan', 'month_plan', 'weight_plan'];
 
     public function project()
     {
         return $this->belongsTo(Projects::class, 'id_project');
     }
 
-    public function task_realizations()
+    public function task_plans()
     {
-        return $this->hasMany(TaskRealizations::class, 'id_task');
+        return $this->belongsTo(TaskPlans::class, 'id_task_plan');
     }
 }

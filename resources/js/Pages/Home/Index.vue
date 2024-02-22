@@ -21,6 +21,8 @@
                     </span>
                 </template>
             </Toolbar>
+
+            <!-- Tampilan Sementara -->
             <DataTable :value="formattedDashboard" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
                 :totalRecords="totalProject" :totalProject="total" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
               <Column field="" header="No">
@@ -28,7 +30,22 @@
                   {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
                 </template>
               </Column>
-              <Column field="project_name" header="Project"></Column>
+              <Column field="" header="Work Plans"></Column>
+              <Column field="" header="Progress"></Column>
+              <Column field="" header="Status"></Column>
+              <template #empty>
+                  No records found
+              </template>
+            </DataTable>
+
+            <!-- <DataTable :value="formattedDashboard" :lazy="true" :paginator="true" :rows="dataPerPage" ref="dt"
+                :totalRecords="totalProject" :totalProject="total" :loading="loading" @page="onPage($event)" responsiveLayout="scroll">
+              <Column field="" header="No">
+                <template #body="slotProps">
+                  {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
+                </template>
+              </Column>
+              <Column field="project_name" header="Work Plans"></Column>
               <Column field="progress" header="Progress">
                   <template #body="slotProps">
                       <div class="progress progress-sm">
@@ -51,7 +68,7 @@
               <template #empty>
                   No records found
               </template>
-            </DataTable>
+            </DataTable> -->
           </div>
         </div>
       </div>
@@ -60,8 +77,9 @@
           <div class="col-12 col-sm-6 col-md-12">
             <div class="small-box bg-light shadow-sm border">
               <div class="inner">
-                <h3>{{ total_projects }}</h3>
-                <p>Total Projects</p>
+                <!-- <h3>{{ total_projects }}</h3> -->
+                <h3>12</h3>
+                <p>Total Work Plans</p>
               </div>
               <div class="icon">
                 <i class="fa fa-th-list"></i>
@@ -71,7 +89,8 @@
           <div class="col-12 col-sm-6 col-md-12">
             <div class="small-box bg-light shadow-sm border">
               <div class="inner">
-                <h3>{{ total_tasks }}</h3>
+                <!-- <h3>{{ total_tasks }}</h3> -->
+                <h3>24</h3>
                 <p>Total Tasks</p>
               </div>
               <div class="icon">
@@ -155,15 +174,15 @@ export default {
         },
     },
     mounted(){
-        this.formattedDashboard = this.$page.props.dashboard.data;
-        this.totalProject = this.$page.props.dashboard.total;
+        // this.formattedDashboard = this.$page.props.dashboard.data;
+        // this.totalProject = this.$page.props.dashboard.total;
     }
 }
 </script>
 
 <style scoped>
 .custom-card {
-  background: linear-gradient(to bottom right, #ff8000, #d05428);
+  background: linear-gradient(to bottom right, #ff0008, #680808);
   color: white;
 }
 .status-badge {

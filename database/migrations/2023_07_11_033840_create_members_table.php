@@ -16,11 +16,13 @@ class CreateMembersTable extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('role',['Super Admin','Kadiv','Kadep','User']);
-            $table->string("image");
+            $table->string('nip');
             $table->string('position');
+            $table->enum('sub_department',['Infrastructure & Support', 'ERP & EIM', 'Apps Development & Governance']);
+            $table->enum('role',['Kadep','Kabag','Staf','Admin']);
             $table->string('email')->unique();
             $table->string('password');
+            $table->unsignedTinyInteger('members_status')->default(0); // 0: Inactive, 1: Active
             $table->timestamps();
         });
     }

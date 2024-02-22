@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="text-center mt-4">
-          <p>Made by Aprilia SD | PKL IMS 2023</p>
+          <p>IT Department | PT INKA Multi Solusi</p>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@ import AppHeader from "../../Partials/AppHeader";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import {Inertia} from "@inertiajs/inertia";
 import { usePage } from '@inertiajs/inertia-vue3'
-import {reactive,inject} from 'vue';
+import { reactive } from 'vue';
 
 export default {
     data() {
@@ -64,23 +64,19 @@ export default {
         },
       };
     },
-
     methods: {
       togglePassword() {
         this.showPassword = !this.showPassword;
       },
     },
-
     components: {
         ErrorsAndMessages,
         AppHeader
     },
-
     name: "Login",
     props: {
         errors: Object
     },
-
     setup() {
         const form = reactive({
             name: null,
@@ -97,13 +93,12 @@ export default {
     }
 }
 </script>
-
 <style scoped>
     form {
         margin-top: 20px;
     }
     .btn-login {
-    background-color: #FF4A31;
-    border-color: #FF4A31;
+    background-color: #ff0008;
+    border-color: #ff0008;
   }
 </style>

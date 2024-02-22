@@ -14,17 +14,17 @@
         <span class="navbar-text mr-3" v-if="user">
             Logged in as {{user.name}}
         </span>
-        <inertia-link :href="$route('logout')" as="button" method="get" class="btn btn-sm nav-link logout-link " style="display: inline;background: #FF4A31" type="button">Logout</inertia-link>
+        <inertia-link :href="$route('logout')" as="button" method="get" class="btn btn-sm nav-link logout-link " style="display: inline;background: #ff0008" type="button">Logout</inertia-link>
       </li>      
     </ul>
   </nav>
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-light-orange elevation-4" style="position: fixed;">  
+  <aside class="main-sidebar sidebar-light-red elevation-4" style="position: fixed;">  
     <!-- Brand Logo -->
     <div class="brand-link text-center">
-      <span class="brand-text font-weight-bold text-orange" style="font-size: 22px;"><b style="color: #000;">Project Monitoring</b> IMS</span>
+      <span style="font-size: 22px; color: #ff0008; font-weight: bold;"><b style="color: #000;">WorkPlan </b>Management</span>
     </div>
 
     <!-- Sidebar -->
@@ -34,14 +34,14 @@
       <nav class="mt-2">
         <ul class="nav nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           
-          <li class="nav-item">
+          <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'Staf')">
             <a :href="$route('dashboard.index')" class="nav-link" :class="$route().current('dashboard.index') ? 'active' : ''">
               <i class="fas fa-th-large nav-icon"></i>
               <p>Dashboard</p>
             </a>
           </li>
 
-          <li class="nav-item" :class="$route().current().indexOf('members') >= 0 ? 'menu-open' : ''">
+          <li class="nav-item" :class="$route().current().indexOf('members') >= 0 ? 'menu-open' : ''" v-if="user && user.role === 'Admin'">
             <a href="#" class="nav-link" :class="$route().current().indexOf('members') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -50,19 +50,13 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a :href="$route('members.manage_member')" class="nav-link" :class="$route().current('members.manage_member') ? 'active' : ''">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Manage</p>
-                </a>
-              </li>
-              <li class="nav-item" v-if="user && (user.role === 'Super Admin' || user.role === 'Kadiv' || user.role === 'Kadep')">
+              <li class="nav-item" v-if="user && user.role === 'Admin'">
                 <a :href="$route('members.list_members')" class="nav-link" :class="$route().current('members.list_members') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>List</p>
                 </a>
               </li>
-              <li class="nav-item" v-if="user && user.role === 'Super Admin'">
+              <li class="nav-item" v-if="user && user.role === 'Admin'">
                 <a :href="$route('members.add_member')" class="nav-link" :class="$route().current('members.add_member') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add New</p>
@@ -71,44 +65,29 @@
             </ul>
           </li>
 
-          <li class="nav-item" :class="$route().current().indexOf('projects') >= 0 ? 'menu-open' : ''">
-            <a href="#" class="nav-link" :class="$route().current().indexOf('projects') >= 0 ? 'active' : ''">
+          <li class="nav-item" :class="$route().current().indexOf('workplans') >= 0 ? 'menu-open' : ''" v-if="user && (user.role === 'Kadep' || user.role === 'Kabag' || user.role === 'Staf')" >
+            <a href="#" class="nav-link" :class="$route().current().indexOf('workplans') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-th-list"></i>
               <p>
-                Projects
+                Work Plans
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a :href="$route('projects.list_projects')" class="nav-link" :class="$route().current('projects.list_projects') ? 'active' : ''">
+              <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'Kabag' || user.role === 'Staf')">
+                <a :href="$route('workplans.list_workplans')" class="nav-link" :class="$route().current('workplans.list_workplans') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>List</p>
                 </a>
               </li>
-              <li class="nav-item" v-if="user && (user.role === 'Kadiv' || user.role === 'Kadep')">
-                <a :href="$route('projects.add_project')" class="nav-link" :class="$route().current('projects.add_project') ? 'active' : ''">
+              <li class="nav-item" v-if="user && user.role === 'Kabag'">
+                <a :href="$route('workplans.add_workplan')" class="nav-link" :class="$route().current('workplans.add_workplan') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add New</p>
                 </a>
               </li>
             </ul>
           </li>
-          
-          <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'User')">
-            <a :href="$route('tasks.page_tasks')" class="nav-link" :class="$route().current('tasks.page_tasks') ? 'active' : ''">
-              <i class="nav-icon fas fa-tasks"></i>
-              <p>Tasks</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a :href="$route('reports.page_reports')" class="nav-link" :class="$route().current('reports.page_reports') ? 'active' : ''">
-              <i class="nav-icon fas fa-newspaper"></i>
-              <p>Reports</p>
-            </a>
-          </li>
-          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

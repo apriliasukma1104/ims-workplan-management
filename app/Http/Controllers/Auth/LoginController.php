@@ -21,31 +21,40 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        $credentials['deleted_at'] = null;
-
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return Inertia::location('/');
+            // Memeriksa peran pengguna saat login
+            $user = Auth::user();
+
+            if ($user->members_status === '1') {
+                // Jika members_status='1', maka bisa login
+                if ($user->role === 'Admin') {
+                    return Inertia::location('/members/list_members');
+                } elseif ($user->role === 'Kabag') {
+                    return Inertia::location('/workplans/list_workplans');
+                } elseif ($user->role === 'Kadep' || $user->role === 'Staf') {
+                    return Inertia::location('/dashboard');
+                }
+            } else {
+                // Jika members_status='0', maka gagal login
+                Auth::logout(); // Logout pengguna yang tidak aktif
+                return back()->withErrors([
+                    'error' => 'Your account is inactive. Please contact the administrator.',
+                ]);
+            }
         }
 
         return back()->withErrors([
-            'name' => 'The provided credentials do not match our records.',
+            'error' => 'The provided credentials do not match our records.',
         ]);
-    }
-
-    public function username(){
-        return 'name';
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }

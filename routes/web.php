@@ -7,9 +7,7 @@ use App\Http\Controllers\Auth\{
 use App\Http\Controllers\{
     DashboardController,
     MembersController,
-    ProjectsController,
-    TasksController,
-    ReportsController,
+    WorkplansController
 };
 use App\Models\Members;
 use App\Models\Projects;
@@ -43,47 +41,39 @@ Route::redirect('/', 'dashboard');
 Route::prefix('members')->name('members.')->group(function () {
     Route::get('/add_member', [MembersController::class, 'PageAddMember'])->name('add_member');
     Route::get('/list_members', [MembersController::class, 'PageListMembers'])->name('list_members');
-    Route::get('/manage_member', [MembersController::class, 'PageManageMember'])->name('manage_member');
-    Route::post('/update_manage_member', [MembersController::class, 'UpdateManageMember'])->name('update_manage_member');
 
     Route::post('/add/store_members', [MembersController::class, 'StoreMembers'])->name('store_members');
     Route::get('/list/edit_member', [MembersController::class, 'EditMember'])->name('edit_member');
     Route::post('/list/update_member', [MembersController::class, 'UpdateMember'])->name('update_member');
-    Route::post('/list/delete_member', [MembersController::class, 'DeleteMember'])->name('delete_member');
+    Route::post('/list/update_status_member', [MembersController::class, 'UpdateStatusMember'])->name('update_status_member');
 });
 
-// Route::get('/images/{filename}', function ($filename) {
-//     $path = storage_path('app/public/uploads/' . $filename);
-    
-//     // if (file_exists($path)) {
-//     //     return Response::file($path);
-//     // } else {
-//     //     abort(404);
-//     // }
-// }); 
-
-Route::prefix('projects')->name('projects.')->group(function () {
-    Route::get('/add_project', [ProjectsController::class, 'PageAddProject'])->name('add_project');
-    Route::get('/list_projects', [ProjectsController::class, 'PageListProjects'])->name('list_projects');
+Route::prefix('workplans')->name('workplans.')->group(function () {
+    Route::get('/add_workplan', [WorkplansController::class, 'PageAddWorkplan'])->name('add_workplan');
+    Route::get('/list_workplans', [WorkplansController::class, 'PageListWorkplans'])->name('list_workplans');
    
-    Route::post('/add/store_projects', [ProjectsController::class, 'StoreProjects'])->name('store_projects');
-    Route::get('/list/edit_project', [ProjectsController::class, 'EditProject'])->name('edit_project');
-    Route::post('/list/update_project', [ProjectsController::class, 'UpdateProject'])->name('update_project');
-    Route::post('/list/validation', [ProjectsController::class, 'validation'])->name('validation');
-    Route::post('/list/team_leader_name', [ProjectsController::class, 'GetTeamLeaderName'])->name('team_leader_name');
-    Route::post('/list/delete_project', [ProjectsController::class, 'DeleteProject'])->name('delete_project');
+    Route::post('/add/store_workplans', [WorkplansController::class, 'StoreWorkplans'])->name('store_workplans');
+    Route::get('/list/edit_workplan', [WorkplansController::class, 'EditWorkplan'])->name('edit_workplan');
+    Route::post('/list/update_workplan', [WorkplansController::class, 'UpdateWorkplan'])->name('update_workplan');
+    Route::post('/list/update_status_project', [WorkplansController::class, 'UpdateStatusProject'])->name('update_status_project');
+    Route::get('/list/view_workplan', [WorkplansController::class, 'ViewWorkplan'])->name('view_workplan');
 
-    Route::get('/list/view_project', [ProjectsController::class, 'ViewProject'])->name('view_project');
-    Route::post('/list/view_project/store_tasks', [ProjectsController::class, 'StoreTasks'])->name('store_tasks');
-    Route::get('/list/view_project/list_tasks', [ProjectsController::class, 'ListTasks'])->name('list_tasks');
-    Route::post('/list/view_project/update_task', [ProjectsController::class, 'UpdateTask'])->name('update_task');
-    Route::post('/list/view_project/delete_task', [ProjectsController::class, 'DeleteTask'])->name('delete_task');
+
+    // Task Plans
+    Route::post('/list/view_workplan/store_task_plans', [WorkplansController::class, 'StoreTaskPlans'])->name('store_task_plans');
+    Route::get('/list/view_workplan/list_task_plans', [WorkplansController::class, 'ListTaskPlans'])->name('list_task_plans');
+    Route::post('/list/view_workplan/update_task_plan', [WorkplansController::class, 'UpdateTaskPlan'])->name('update_task_plan');
+    // Weight
+    Route::post('/list/view_workplan/store_weight_task_plans', [WorkplansController::class, 'StoreWeightTaskPlans'])->name('store_weight_task_plans');
+    Route::get('/list/view_workplan/list_weight_task_plans', [WorkplansController::class, 'ListWeightTaskPlans'])->name('list_weight_task_plans');
+    Route::post('/list/view_workplan/update_weight_task_plan', [WorkplansController::class, 'UpdateWeightTaskPlan'])->name('update_weight_task_plan');
+
+    // Task Realizations
+    Route::post('/list/view_workplan/store_task_realizations', [WorkplansController::class, 'StoreTaskRealizations'])->name('store_task_realizations');
+    Route::get('/list/view_workplan/list_task_realizations', [WorkplansController::class, 'ListTaskRealizations'])->name('list_task_realizations');
+    Route::post('/list/view_workplan/update_task_realization', [WorkplansController::class, 'UpdateTaskRealization'])->name('update_task_realization');
 });
 
-Route::prefix('tasks')->name('tasks.')->group(function () {
-    Route::get('/', [TasksController::class, 'PageTasks'])->name('page_tasks');
-});
-
-Route::prefix('reports')->name('reports.')->group(function () {
-    Route::get('/', [ReportsController::class, 'PageReports'])->name('page_reports');
-});
+// Route::prefix('tasks')->name('tasks.')->group(function () {
+//     Route::get('/', [TasksController::class, 'PageTasks'])->name('page_tasks');
+// });

@@ -9,47 +9,15 @@ use App\Models\Members;
 
 class MembersController extends Controller
 {
-
-    public function PageManageMember()
-    {
-        $user = Auth::user();
-        return Inertia::render('Members/ManageMember', [
-            'formData' => $user
-        ]);
-    }
-
-    public function UpdateManageMember(Request $request)
-    {
-        $member = Members::find($request->input('id'));
-
-        $member->fill($request->except('password'));
-        $newPassword = $request->input('password');
-            if (!empty($newPassword)) {
-                $hashedPassword = bcrypt($newPassword);
-                $member->password = $hashedPassword;
-            }
-        $member->save();
-
-        return redirect()->route('members.list_members');
-    }
-
     public function PageListMembers(Request $request)
     {
         $user = Auth::user();
-        $membersQuery = Members::select('id', 'name', 'position', 'role', 'email');
-
-        if ($user->role === 'Kadiv' || $user->role === 'Kadep') {
-            $membersQuery->where(function ($query) use ($user) {
-                $query->where('role', 'Kadiv')
-                      ->orWhere('role', 'Kadep')
-                      ->orWhere('role', 'User');
-            });
-        }
+        $membersQuery = Members::select('id', 'name', 'nip', 'position', 'sub_department','role', 'email', 'members_status');
         
         $search = $request->input('search');
         if ($search) {
             $membersQuery->where(function ($query) use ($search) {
-                $columns = ['name', 'position', 'role', 'email'];
+                $columns = ['name', 'nip', 'position', 'sub_department', 'role', 'email'];
                 foreach ($columns as $column) {
                     $query->orWhere($column, 'like', '%' . $search . '%');
                 }
@@ -57,7 +25,7 @@ class MembersController extends Controller
         }
 
         // Setting ascending pada members
-        $members = $membersQuery->orderBy('name', 'asc')->paginate(10);
+        $members = $membersQuery->orderBy('role', 'asc')->paginate(10);
 
         if ($request->ajax()) {
             return response()->json(['data' => $members]);
@@ -77,12 +45,6 @@ class MembersController extends Controller
     public function StoreMembers(Request $request)
     {
         $member = $request->all();
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('public/images'); 
-            $member['image'] = str_replace('public/', '', $imagePath);
-        }
 
         $newPassword = $member['password'];
         if (!empty($newPassword)) {
@@ -117,9 +79,10 @@ class MembersController extends Controller
         return redirect()->route('members.list_members');
     }
 
-    public function DeleteMember(Request $request)
+    public function UpdateStatusMember(Request $request)
     {
-        $member = Members::findOrFail($request->id);
-        $member->delete();
+        $member = Members::find($request->input('id'));
+        $member->members_status=$request->input('members_status');
+        $member->save();
     }
 }

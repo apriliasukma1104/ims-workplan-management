@@ -15,15 +15,13 @@ class Projects extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'project_type',
         'team_leader',
         'team_members',
-        'start_date',
-        'end_date',
-        'status',
-        'description',
-        'validation',
-        'note',
+        'year',
+        'projects_status',
+        'validation'
     ];
 
     public function teamLeader()
@@ -33,12 +31,22 @@ class Projects extends Model
 
     public function teamMembers()
     {
-        return $this->belongsToMany(Members::class, 'project_team_members', 'project_id', 'member_id');
+        return $this->belongsToMany(Members::class, 'projects_has_members', 'id_projects', 'id_members');
     }
 
-    public function tasks()
+    public function task_plans()
     {
-        return $this->hasMany(Tasks::class, 'id_project');
+        return $this->hasMany(TaskPlans::class, 'id_project');
+    }
+
+    public function weight_task_plans()
+    {
+        return $this->hasMany(WeightTaskPlans::class, 'id_project');
+    }
+
+    public function task_realizations()
+    {
+        return $this->hasMany(TaskRealizations::class, 'id_project');
     }
 
 }

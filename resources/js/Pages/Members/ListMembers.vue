@@ -20,13 +20,20 @@
                     </template>
                 </Column>
                 <Column field="name" header="Name"></Column>
+                <Column field="nip" header="NIP"></Column>
                 <Column field="position" header="Position"></Column>
-                <Column field="role" header="Member Role"></Column>
+                <Column field="sub_department" header="Unit"></Column>
+                <Column field="role" header="Role"></Column>
                 <Column field="email" header="Email"></Column>
-                <Column :exportable="false" header="Action" v-if="user && user.role === 'Super Admin'">
+                <Column header="Status">
                     <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"/>
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-info" />
+                        <ToggleButton @click="onChangesToggle(slotProps.data)" v-model="slotProps.data.members_status" :class="{'p-button-sm p-button-success': slotProps.data.members_status, 'p-button-sm p-button-secondary': !slotProps.data.members_status}" 
+                            style="width: 5rem;" onLabel="Active" offLabel="Inactive" />
+                    </template>
+                </Column>
+                <Column header="Action" v-if="user && user.role === 'Admin'">
+                    <template #body="slotProps">
+                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" />
                     </template>
                 </Column>
                 <template #empty>
@@ -41,9 +48,8 @@
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
-import { computed, inject } from "vue";
-import { pageListMembers, deleteMember } from '../../Api/members.api.js';
+import { computed } from "vue";
+import { pageListMembers, updateStatusMember } from '../../Api/members.api.js';
 
 export default {
     name: "ListMembers",
@@ -74,11 +80,20 @@ export default {
         errors: Object
     },
     methods: {
+       async onChangesToggle(item){
+            this.loading = true;
+            var response = await updateStatusMember(item);
+            this.loading = false;
+            this.loadLazyData();
+        },
         async loadLazyData() {
             this.loading = true;
             var response = await pageListMembers ({ page : this.lazyParams.page, search: this.search });
-            // console.log(response);
             this.members = response.data.data.data;
+            this.members = this.members.map(function(x) { 
+                x.members_status = parseInt(x.members_status); 
+                return x
+            });
             this.totalData = response.data.data.total;
             this.loading = false;
         },
@@ -93,32 +108,13 @@ export default {
         onEdit(data) {
         this.$inertia.visit(`/members/list/edit_member?id=${data.id}`);
         },
-        onDelete(data) {
-            if (window.confirm("Are you sure you want to delete data?")) {
-                deleteMember({ id: data.id })
-                    .then(() => {
-                        this.$toast.add({
-                            severity: "success",
-                            summary: "Information!",
-                            detail: "Data Deleted Successfully!",
-                            life: 3000,
-                        });
-                        this.loadLazyData();
-                    })
-                    .catch((error) => {
-                        console.error("Error while deleting:", error);
-                        this.$toast.add({
-                            severity: "error",
-                            summary: "Error!",
-                            detail: "Data Failed to Delete!",
-                            life: 3000,
-                        });
-                    });
-            }
-        },
     },
     mounted() {
         this.members = this.$page.props.members.data; 
+        this.members = this.members.map(function(x) { 
+            x.members_status = parseInt(x.members_status); 
+            return x
+            });
         this.totalData = this.$page.props.members.total; 
     }
 };

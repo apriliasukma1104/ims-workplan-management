@@ -10,8 +10,10 @@ import { InertiaProgress } from '@inertiajs/progress'
 import PrimeVue from 'primevue/config';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Row from 'primevue/row'; 
 import ColumnGroup from 'primevue/columngroup'; 
 import Toolbar from 'primevue/toolbar';
+import ToggleButton from 'primevue/togglebutton';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
@@ -20,6 +22,7 @@ import Dropdown from 'primevue/dropdown';
 import ConfirmDialog from 'primevue/confirmdialog';
 import ConfirmationService from 'primevue/confirmationservice';
 import Calendar from 'primevue/calendar';
+import Textarea from 'primevue/textarea';
 import AutoComplete from 'primevue/autocomplete';
 import Loading from './Components/Loading';
 
@@ -46,8 +49,10 @@ InertiaProgress.init();
 
     app.component('DataTable', DataTable);
     app.component('Column', Column);
+    app.component('Row', Row);
     app.component('ColumnGroup', ColumnGroup);
     app.component('Toolbar', Toolbar);
+    app.component('ToggleButton', ToggleButton);
     app.component('Button', Button);
     app.component('InputText', InputText);
     app.component('Dialog',Dialog);
@@ -56,4 +61,5 @@ InertiaProgress.init();
     app.component('Dropdown',Dropdown);
     app.component('ConfirmDialog',ConfirmDialog);
     app.component('Calendar',Calendar);
+    app.component('Area',Textarea);
     app.component('AutoComplete', AutoComplete);

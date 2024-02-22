@@ -16,29 +16,27 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('project_type', ['RKAP', 'KPI', 'NPM']);
-            $table->unsignedBigInteger('team_leader');
-            $table->json('team_members')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->enum('status', ['pending', 'to do', 'doing', 'submission', 'done']);
             $table->string('description');
+            $table->enum('project_type', ['RKAP', 'KPI', 'NPM']);
+            $table->unsignedInteger('team_leader');
+            $table->json('team_members')->nullable();
+            $table->year('year');
+            $table->unsignedTinyInteger('projects_status')->default(0); // 0: Inactive, 1: Active
             $table->enum('validation', ['approved', 'not approved']);
-            $table->string('note');
             $table->timestamps();
 
             // Menambahkan foreign key constraint untuk team_leader
             $table->foreign('team_leader')->references('id')->on('members');
         });
 
-        Schema::create('project_team_members', function (Blueprint $table) {
-            $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('member_id');
+        Schema::create('projects_has_members', function (Blueprint $table) {
+            $table->unsignedInteger('id_projects');
+            $table->unsignedInteger('id_members');
 
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
-            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreign('id_projects')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('id_members')->references('id')->on('members')->onDelete('cascade');
 
-            $table->primary(['project_id', 'member_id']);
+            $table->primary(['id_projects', 'id_members']);
         });
     }
 
@@ -50,6 +48,6 @@ class CreateProjectsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('projects');
-        Schema::dropIfExists('project_team_members');
+        Schema::dropIfExists('projects_has_members');
     }
 }

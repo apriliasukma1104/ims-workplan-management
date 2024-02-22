@@ -3,33 +3,48 @@
     <form @submit.prevent="update">
       <div class="callout callout">
         <div class="row">
-          <div class="col-md-12">
-            <div class="form-group mt-3 ml-3 mr-3">
+          <div class="col-md-6">
+            <div class="form-group mt-3 ml-3">
               <label for="name" class="control-label">Name</label>
               <input type="text" name="id" class="form-control form-control-sm" required v-model="formData.id" hidden>
-              <input type="text" name="name" class="form-control form-control-sm" v-model="formData.name">
+              <input type="text" name="name" class="form-control form-control-sm" required v-model="formData.name">
             </div>
-            <div class="form-group mt-3 ml-3 mr-3">
-              <label for="role" class="control-label" style="display: block; margin-top: 1rem;">Member Role</label>
-              <select class="custom-select custom-select-sm" v-model="formData.role">
+            <div class="form-group mt-3 ml-3">
+              <label for="nip" class="control-label">NIP</label>
+              <input type="text" name="nip" class="form-control form-control-sm" required v-model="formData.nip">
+            </div>
+            <div class="form-group mt-3 ml-3">
+              <label for="position" class="control-label">Position</label>
+              <input type="text" name="position" class="form-control form-control-sm" required v-model="formData.position">
+            </div>
+            <div class="form-group mt-3 ml-3">
+              <label for="sub_department" class="control-label">Unit</label>
+              <select class="custom-select custom-select-sm" required v-model="formData.sub_department">
                 <option disabled value="">Please Select One</option>
-                <option>Super Admin</option>
-                <option>Kadiv</option>
-                <option>Kadep</option>
-                <option>User</option>
+                <option>Infrastructure & Support</option>
+                <option>ERP & EIM</option>
+                <option>Apps Development & Governance</option>
               </select>
             </div>
-            <div class="form-group mt-3 ml-3 mr-3">
-              <label for="position" class="control-label">Position</label>
-              <input type="text" name="position" class="form-control form-control-sm" v-model="formData.position">
+          </div>
+          <div class="col-md-6">
+            <div class="form-group mt-3 mr-3">
+              <label for="role" class="control-label">Role</label>
+              <select class="custom-select custom-select-sm" required v-model="formData.role">
+                <option disabled value="">Please Select One</option>
+                <option>Kadep</option>
+                <option>Kabag</option>
+                <option>Staf</option>
+                <option>Admin</option>
+              </select>
             </div>
-            <div class="form-group mt-3 ml-3 mr-3">
-              <label class="control-label">Email</label>
-              <input type="email" class="form-control form-control-sm" name="email" v-model="formData.email">
+            <div class="form-group mt-3 mr-3">
+              <label for="email" class="control-label">Email</label>
+              <input type="email" name="email" class="form-control form-control-sm" required v-model="formData.email">
             </div>
-            <div class="form-group mt-3 ml-3 mr-3">
+            <div class="form-group mt-3 mr-3">
               <label class="control-label">Password</label>
-              <input type="text" class="form-control form-control-sm" name="password" v-model="formData.password">
+              <input type="password" name="password" class="form-control form-control-sm" v-model="formData.password">
               <small><i>{{ "Leave this blank if you don't want to change your password" }}</i></small>
             </div>
           </div>
@@ -63,8 +78,10 @@ export default {
     const formData = reactive({
       id: data.id,
       name: data.name,
-      role: data.role,
+      nip: data.nip,
       position: data.position,
+      sub_department: data.sub_department,
+      role: data.role,
       email: data.email,
       password: data.password,
     });
