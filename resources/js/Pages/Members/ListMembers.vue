@@ -1,7 +1,8 @@
 <template>
     <layout title="Member List">
-    <ConfirmDialog></ConfirmDialog>
     <Toast position="top-center" />
+
+    <ConfDialogDelete :visible.sync="visible" :message="messageConfirm" v-on:onDelete="SaveDelete()"></ConfDialogDelete>
     
         <div class="card">
             <Toolbar class="p-mb-4">
@@ -25,15 +26,12 @@
                 <Column field="sub_department" header="Unit"></Column>
                 <Column field="role" header="Role"></Column>
                 <Column field="email" header="Email"></Column>
-                <Column header="Status">
-                    <template #body="slotProps">
-                        <ToggleButton @click="onChangesToggle(slotProps.data)" v-model="slotProps.data.members_status" :class="{'p-button-sm p-button-success': slotProps.data.members_status, 'p-button-sm p-button-secondary': !slotProps.data.members_status}" 
-                            style="width: 5rem;" onLabel="Active" offLabel="Inactive" />
-                    </template>
-                </Column>
                 <Column header="Action" v-if="user && user.role === 'Admin'">
                     <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" />
+                        <ToggleButton @click="onChangesToggle(slotProps.data)" v-model="slotProps.data.members_status" :class="{'p-button-sm p-button-success': slotProps.data.members_status, 'p-button-sm p-button-secondary': !slotProps.data.members_status}" 
+                            onIcon="pi pi-lock" offIcon="pi pi-lock-open" class="p-button-rounded" style="margin-right: 5px;" />
+                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" :title="'Edit'" style="margin-right: 5px;" />
+                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-danger" :title="'Delete'" />
                     </template>
                 </Column>
                 <template #empty>
@@ -47,15 +45,17 @@
 <script>
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
+import ConfDialogDelete from "../../Components/ConfDialogDelete.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed } from "vue";
-import { pageListMembers, updateStatusMember } from '../../Api/members.api.js';
+import { pageListMembers, updateStatusMember, deleteMember } from '../../Api/members.api.js';
 
 export default {
     name: "ListMembers",
     components: {
-        ErrorsAndMessages,
         Layout,
+        ErrorsAndMessages,
+        ConfDialogDelete
     },
     setup() {
         const user = computed(() => usePage().props.value.auth.user);
@@ -66,9 +66,12 @@ export default {
     data() {
         return {
             members: [],
+            form:{},
             dataPerPage: 10, 
             totalData: 0, 
             display: false,
+            messageConfirm:null,
+            visible:false,
             error: {},
             lazyParams: {
                 page: 1
@@ -108,13 +111,25 @@ export default {
         onEdit(data) {
         this.$inertia.visit(`/members/list/edit_member?id=${data.id}`);
         },
+        onDelete(data){
+            this.visible = true;
+            this.messageConfirm = `Do you want to delete this data (NIP: ${data.nip})?`;
+            this.selectedDataDelete = data;
+        },
+        async SaveDelete(){
+            this.visible = false;
+            this.form.id = this.selectedDataDelete.id;
+            await deleteMember(this.form); 
+            this.$toast.add({severity:'info', summary: 'Deleted!', detail:'Data Deleted Successfully!', life: 3000});
+            this.loadLazyData();
+        },
     },
     mounted() {
         this.members = this.$page.props.members.data; 
         this.members = this.members.map(function(x) { 
             x.members_status = parseInt(x.members_status); 
             return x
-            });
+        });
         this.totalData = this.$page.props.members.total; 
     }
 };

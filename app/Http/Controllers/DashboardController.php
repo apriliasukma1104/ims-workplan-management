@@ -6,89 +6,82 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\Eloquent\SoContractRepo;
+use Illuminate\Support\Facades\DB;
 use App\Models\Projects;
+use App\Models\Members;
 
 class DashboardController extends Controller
 {
     private $SoContractRepo;
+    
     public function __construct(SoContractRepo $SoContractRepo)
     {
         $this->middleware("auth");
         $this->SoContractRepo = $SoContractRepo;
     }
 
-    // Mengarahkan ke Tampilan Sementara 
     public function index(Request $request)
     {
-        return Inertia::render('Home/Index');
+        $user = Auth::user();
+
+        $projectsQuery = Projects::with('teamLeader', 'teamMembers')
+            ->select('projects.*'); 
+
+        if ($user->role === 'Kabag') {
+            $projectsQuery->where(function ($query) use ($user) {
+                $query->where('team_leader', $user->id)
+                    ->orWhereHas('teamMembers', function ($query) use ($user) {
+                        $query->where('id', $user->id)
+                            ->orWhere('sub_department', $user->sub_department);
+                    });
+            });
+        } else if ($user->role === 'Staf') {
+            $projectsQuery->where('status', '!=', 'Created')
+                        ->where('status', '!=', 'Submitted')
+                        ->where(function ($query) use ($user) {
+                                $query->where('team_leader', $user->id)
+                                    ->orWhereHas('teamMembers', function ($query) use ($user) {
+                                            $query->where('id', $user->id);
+                                    });
+                        });
+        }  
+
+        $projects = $projectsQuery->get();
+
+        $members = Members::all();
+        $totalMembers = $members->count();
+
+        $progress = DB::table('vw_progress_workplans')->get();
+
+        if ($request->ajax()) {
+            return response()->json(['projects' => $projects, 'members' => $members, 'progress_projects' =>  $progress]);
+        }   
+
+        return Inertia::render('Home/Index', [
+            'auth' => $user,
+            'projects' => $projects,
+            'total_members' => $totalMembers,
+            'progress_projects' => $progress
+        ]);
     }
 
-    // public function index(Request $request)
-    // {
-    //     $user = Auth::user();
-    //     $projectsQuery = Projects::with('tasks')
-    //         ->select('id', 'name', 'team_members', 'start_date', 'end_date', 'status');
-
-    //     if ($user->role === 'User') {
-    //         $projectsQuery->where(function ($query) use ($user) {
-    //             $query->where('team_leader', $user->id)
-    //                 ->orWhereRaw("JSON_SEARCH(team_members, 'one', ?) IS NOT NULL", [$user->id]);
-    //         });
-    //     } 
+    public function progressProjects(Request $request)
+    {
+        $selectedName = $request->input('code_workplans');
         
-    //     $search = $request->input('search');
-    //     if ($search) {
-    //         $projectsQuery->where('name', 'like', '%' . $search . '%');
-    //     }
+        $progress = DB::table('vw_progress_workplans')
+            ->leftJoin('projects', 'vw_progress_workplans.id', '=', 'projects.id');
+        
+        if ($selectedName) {
+            $progress->where('vw_progress_workplans.id', $selectedName);
+        }
 
-    //     $totalTaskProjects = $projectsQuery->with('tasks')->get()->pluck('tasks')->flatten()->count();
-    //     $totalProject = $projectsQuery->count();
+        $data = $progress->first();
 
-    //     // Setting ascending pada dashboard
-    //     $dashboard = $projectsQuery->orderBy('name', 'asc')->paginate(5);
+        $progressProject = [
+            'progress' => $data ? $data->progress : 0,
+        ];
 
-    //     $formattedDashboard = [];
-
-    //     foreach ($dashboard as $project) {
-    //         $completedTasks = $project->tasks->where('status', 'done')->count();
-    //         $totalTasks = $project->tasks->count();
-    //         $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
-
-    //         $end_date = new \DateTime($project->end_date);
-    //         $end_date->setTime(23, 59, 0);
-
-    //         $now = now();
-    //         if ($now > $end_date && ($completedTasks < $totalTasks || $totalTasks === 0)) {
-    //             $status = 'over due';
-    //         } elseif (($project->status === 'pending' || $project->status === 'to do') && $totalTasks === 0) {
-    //             $status = 'pending';
-    //         } elseif ($project->status === 'to do' && $completedTasks === 0) {
-    //             $status = 'started';
-    //         } elseif ($project->status === 'doing' && ($completedTasks === 0 || $completedTasks !== 0)) {
-    //             $status = 'on-progress';
-    //         } elseif ($project->status === 'submission' && $completedTasks !== 0) {
-    //             $status = 'submission';
-    //         } else {
-    //             $status = 'done';
-    //         }
-
-    //         $formattedDashboard[] = [
-    //             'project_name' => $project->name,
-    //             'progress' => $progress,
-    //             'status' => $status,
-    //         ];
-    //     }
-
-    //     if ($request->ajax()) {
-    //         return response()->json(['dashboard' => ['data' => $formattedDashboard, 'total' => $totalProject]]);
-    //     }
-
-    //     return Inertia::render('Home/Index', [
-    //         'dashboard' => ['data' => $formattedDashboard, 'total' => $totalProject], 
-    //         'total_tasks' => $totalTaskProjects,
-    //         'total_projects' => $totalProject,
-    //         'auth' => $user 
-    //     ]);
-    // }
-
+        return response()->json($progressProject);
+    }
 }

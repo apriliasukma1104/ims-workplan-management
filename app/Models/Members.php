@@ -10,6 +10,7 @@ class Members extends Authenticatable
     protected $table = 'members';
     protected $primaryKey = 'id';
     protected $guarded = [];
+    protected $perPage = 10;
     use Notifiable;
 
     /**

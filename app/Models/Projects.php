@@ -13,16 +13,7 @@ class Projects extends Model
     protected $table = 'projects';
     protected $primaryKey = 'id';
 
-    protected $fillable = [
-        'name',
-        'description',
-        'project_type',
-        'team_leader',
-        'team_members',
-        'year',
-        'projects_status',
-        'validation'
-    ];
+    protected $guarded = [];
 
     public function teamLeader()
     {
@@ -32,6 +23,11 @@ class Projects extends Model
     public function teamMembers()
     {
         return $this->belongsToMany(Members::class, 'projects_has_members', 'id_projects', 'id_members');
+    }
+
+    public function historyAsIdProjects()
+    {
+        return $this->hasMany(History::class, 'id_projects');
     }
 
     public function task_plans()
@@ -48,5 +44,4 @@ class Projects extends Model
     {
         return $this->hasMany(TaskRealizations::class, 'id_project');
     }
-
 }

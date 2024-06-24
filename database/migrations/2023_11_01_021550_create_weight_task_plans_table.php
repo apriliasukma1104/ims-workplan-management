@@ -20,7 +20,7 @@ class CreateWeightTaskPlansTable extends Migration
             $table->unsignedBigInteger('id_task_plan');
             $table->foreign('id_task_plan')->references('id')->on('task_plans');
             $table->string('month_plan');
-            $table->string('weight_plan');
+            $table->float('weight_plan');
             $table->timestamps();
         });
     }

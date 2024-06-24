@@ -2,14 +2,13 @@
   <div class="hold-transition login-page">
     <div class="row align-items-center">
       <div class="col-md-8">
-        <div>
-          <img
-            src="images/bg.png"
-            class="w-100 h-100"
-          />
-        </div>
+          <img src="images/bg.png" class="w-100 h-100" />
       </div>
       <div class="col-md-4">
+        <div class="d-flex justify-content-center">
+            <img src="images/logo-ims.png" style="width: 170px;" />
+        </div>
+        <br>
         <div class="d-flex justify-content-center">
           <div class="login-box">
             <div class="card card-outline card-danger">
@@ -17,10 +16,10 @@
                 <form method="post" @submit.prevent="submit">
                   <errors-and-messages :errors="errors"></errors-and-messages>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="username" v-model="form.name" placeholder="Username" />
+                        <input type="text" class="form-control" v-model="form.nip" placeholder="NIP" />
                       <div class="input-group-append">
                         <div class="input-group-text">
-                          <span class="fas fa-envelope"></span>
+                          <span class="fas fa-envelope" style="width: 25px;"></span>
                         </div>
                       </div>
                     </div>
@@ -28,7 +27,7 @@
                       <input :type="showPassword ? 'password' : 'text'" class="form-control" name="password" id="password" v-model="form.password" placeholder="Password" />
                       <div class="input-group-append">
                         <div class="input-group-text">
-                          <span class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" @click="togglePassword"></span>
+                          <span class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" @click="togglePassword" style="width: 25px;"></span>
                         </div>
                       </div>
                     </div>                    
@@ -40,7 +39,8 @@
             </div>
           </div>
         </div>
-        <div class="text-center mt-4">
+        <br>
+        <div class="text-center">
           <p>IT Department | PT INKA Multi Solusi</p>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default {
     },
     setup() {
         const form = reactive({
-            name: null,
+            nip: null,
             password: null,
             _token: usePage().props.value.csrf_token
         });
@@ -93,10 +93,8 @@ export default {
     }
 }
 </script>
+
 <style scoped>
-    form {
-        margin-top: 20px;
-    }
     .btn-login {
     background-color: #ff0008;
     border-color: #ff0008;

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-
+use App\Models\Members;
 class LoginController extends Controller
 {
     public function showLoginForm()
@@ -17,36 +17,30 @@ class LoginController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $this->validate($request, [
-            'name' => ['required'],
+            'nip' => ['required'],
             'password' => ['required'],
         ]);
 
-        if(Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        $members = Members::where('nip', $request->nip)->first();
 
-            // Memeriksa peran pengguna saat login
-            $user = Auth::user();
-
-            if ($user->members_status === '1') {
-                // Jika members_status='1', maka bisa login
-                if ($user->role === 'Admin') {
-                    return Inertia::location('/members/list_members');
-                } elseif ($user->role === 'Kabag') {
-                    return Inertia::location('/workplans/list_workplans');
-                } elseif ($user->role === 'Kadep' || $user->role === 'Staf') {
-                    return Inertia::location('/dashboard');
-                }
-            } else {
-                // Jika members_status='0', maka gagal login
-                Auth::logout(); // Logout pengguna yang tidak aktif
-                return back()->withErrors([
-                    'error' => 'Your account is inactive. Please contact the administrator.',
-                ]);
-            }
+        if (!$members) {
+            return back()->withErrors([
+                'error' => 'We could not find an account with that username. Please contact Administrator (IT Help Desk: 081334342992).',
+            ]);
+        } elseif ($members->members_status === '0') {
+            return back()->withErrors([
+                'error' => 'Your account is inactive. Please contact Administrator (IT Help Desk: 081334342992).',
+            ]);
+        } elseif (!Auth::attempt($credentials)) {
+            return back()->withErrors([
+                'error' => 'The password provided does not match our records. Please contact Administrator (IT Help Desk: 081334342992).',
+            ]);
+        } else {
+            return Inertia::location('/dashboard'); 
         }
 
         return back()->withErrors([
-            'error' => 'The provided credentials do not match our records.',
+            'error' => 'Unknown error occurred. Please contact Administrator (IT Help Desk: 081334342992).',
         ]);
     }
 

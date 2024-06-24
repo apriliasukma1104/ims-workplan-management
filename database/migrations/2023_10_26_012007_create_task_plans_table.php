@@ -21,9 +21,9 @@ class CreateTaskPlansTable extends Migration
             $table->string('type');
             $table->string('task');
             $table->string('description');
-            $table->date('start_month');
-            $table->date('end_month');
-            $table->string('tot_weight_plan');
+            $table->tinyInteger('start_month');
+            $table->tinyInteger('end_month');
+            $table->tinyInteger('tot_weight_plan');
             $table->timestamps();
         });
     }

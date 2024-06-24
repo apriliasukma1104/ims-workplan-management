@@ -17,12 +17,12 @@ class CreateProjectsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->enum('project_type', ['RKAP', 'KPI', 'NPM']);
+            $table->enum('project_type', ['Program Kerja', 'Kegiatan Rutin', 'Investasi']);
             $table->unsignedInteger('team_leader');
             $table->json('team_members')->nullable();
             $table->year('year');
-            $table->unsignedTinyInteger('projects_status')->default(0); // 0: Inactive, 1: Active
-            $table->enum('validation', ['approved', 'not approved']);
+            $table->decimal('budget');
+            $table->string('status')->default('Created');
             $table->timestamps();
 
             // Menambahkan foreign key constraint untuk team_leader

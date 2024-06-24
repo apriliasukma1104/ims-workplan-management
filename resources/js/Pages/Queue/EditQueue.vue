@@ -1,5 +1,5 @@
 <template>
-    <layout title="Edit Work Plan">
+    <layout title="Edit Queue">
     <Toast position="top-center" />
 
       <form @submit.prevent="update">
@@ -29,7 +29,7 @@
               <div class="form-group mt-3 mr-3">
                 <label for="team_leader" class="control-label">PIC</label>
                 <select name="team_leader" id="team_leader" class="custom-select custom-select-sm" v-model="formData.team_leader">
-                  <option v-for="member in pic" :key="member.id" :value="member.id">{{ member.name }}</option>
+                  <option v-for="member in members" :key="member.id" :value="member.id">{{ member.name }}</option>
                 </select>
               </div>
               <div class="form-group mt-3 mr-3">
@@ -47,7 +47,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="padding: 4px 8px; font-size: 14px;">Rp</span>
                     </div>
-                    <input type="text" name="budget" id="budget" class="form-control form-control-sm" v-model="formData.budget" placeholder="1000000.00">
+                    <input type="decimal" name="budget" id="budget" class="form-control form-control-sm" v-model="formData.budget" placeholder="1000000.00">
                 </div>
               </div>
             </div>
@@ -70,7 +70,7 @@
   import { reactive } from "vue";
   import MultiSelect from 'primevue/multiselect';
   import { useToast } from 'primevue/usetoast';
-  import { updateWorkplan } from '../../Api/workplans.api.js';
+  import { updateQueue } from '../../Api/queue.api.js';
   
   export default {
     components: {
@@ -78,7 +78,7 @@
       MultiSelect
     },
     setup() {
-      const { userType, members, pic, team_members } = usePage().props.value;
+      const { userType, members, team_members } = usePage().props.value;
       const data = usePage().props.value.formData;
       const toast = useToast();
 
@@ -88,26 +88,25 @@
         description: data.description,
         project_type: data.project_type,
         team_leader: data.team_leader,
-        pic: data.pic,
         team_members: team_members,
         year: data.year,
         budget: data.budget,
         status: data.status
       });
-      
+  
       const update = async (e) => {
         e.preventDefault();
         try {
-          await updateWorkplan(formData); 
+          await updateQueue(formData); 
           toast.add({ severity: 'success', summary: 'Information!', detail: 'Data Successfully Updated!', life: 3000 });
-          window.location.href = "/workplans/list_workplans";
+          window.location.href = "/queue";
         } catch (error) {
           toast.add({ severity: 'error', summary: 'Error!', detail: 'Data Failed to Save!', life: 3000 });
         }
       };
 
       const cancel = () => {
-        window.location.href = "/workplans/list_workplans";
+        window.location.href = "/queue";
       };
   
       return {
@@ -115,7 +114,6 @@
         toast,
         formData,
         members,
-        pic,
         update,
         cancel
       };
@@ -129,3 +127,4 @@
     font-size: 14px;
   }
   </style>
+  

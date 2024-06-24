@@ -16,6 +16,7 @@ import Toolbar from 'primevue/toolbar';
 import ToggleButton from 'primevue/togglebutton';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import Dropdown from 'primevue/dropdown';
@@ -25,6 +26,7 @@ import Calendar from 'primevue/calendar';
 import Textarea from 'primevue/textarea';
 import AutoComplete from 'primevue/autocomplete';
 import Loading from './Components/Loading';
+import ProgressBar from 'primevue/progressbar';
 
 const el = document.getElementById('app');
 
@@ -55,6 +57,7 @@ InertiaProgress.init();
     app.component('ToggleButton', ToggleButton);
     app.component('Button', Button);
     app.component('InputText', InputText);
+    app.component('InputNumber', InputNumber);
     app.component('Dialog',Dialog);
     app.component('Loading',Loading);
     app.component('Toast',Toast);
@@ -63,3 +66,4 @@ InertiaProgress.init();
     app.component('Calendar',Calendar);
     app.component('Area',Textarea);
     app.component('AutoComplete', AutoComplete);
+    app.component('ProgressBar', ProgressBar);

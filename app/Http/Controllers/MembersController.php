@@ -12,7 +12,8 @@ class MembersController extends Controller
     public function PageListMembers(Request $request)
     {
         $user = Auth::user();
-        $membersQuery = Members::select('id', 'name', 'nip', 'position', 'sub_department','role', 'email', 'members_status');
+        
+        $membersQuery = Members::select('members.*');
         
         $search = $request->input('search');
         if ($search) {
@@ -24,13 +25,14 @@ class MembersController extends Controller
             });
         }
 
-        // Setting ascending pada members
-        $members = $membersQuery->orderBy('role', 'asc')->paginate(10);
+        $members = $membersQuery->orderBy('sub_department','asc')
+        ->orderBy('id','asc')
+        ->paginate();
 
         if ($request->ajax()) {
             return response()->json(['data' => $members]);
         }
-
+    
         return Inertia::render('Members/ListMembers', [
             'members' => $members,
             'auth' => $user 
@@ -41,19 +43,26 @@ class MembersController extends Controller
     {
         return Inertia::render('Members/AddMember');
     }
-    
+
     public function StoreMembers(Request $request)
     {
-        $member = $request->all();
+        $members = $request->all();
 
-        $newPassword = $member['password'];
-        if (!empty($newPassword)) {
-            $hashedPassword = bcrypt($newPassword);
-            $member['password'] = $hashedPassword;
+        $member = Members::where('nip', $request->nip)->first();
+        if ($member) {
+            return response()->json([
+                'error' => "The account (NIP: $request->nip ) already exists."
+            ], 422);
         }
 
-        Members::create($member);
-        return redirect()->route('members.list_members');
+        $newPassword = $members['password'];
+        if (!empty($newPassword)) {
+            $hashedPassword = bcrypt($newPassword);
+            $members['password'] = $hashedPassword;
+        }
+
+        Members::create($members);
+        return response()->json(['success' => 'Data Saved Successfully!'], 200);
     }
 
     public function EditMember(Request $request)
@@ -66,6 +75,15 @@ class MembersController extends Controller
 
     public function UpdateMember(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'nip' => 'required',
+            'position' => 'required',
+            'sub_department' => 'required',
+            'role' => 'required',
+            'email' => 'required|email',
+        ]);
+        
         $member = Members::find($request->input('id'));
 
         $member->fill($request->except('password'));
@@ -84,5 +102,11 @@ class MembersController extends Controller
         $member = Members::find($request->input('id'));
         $member->members_status=$request->input('members_status');
         $member->save();
+    }
+
+    public function DeleteMember(Request $request)
+    {
+        $member = Members::findOrFail($request->id);
+        $member->delete();
     }
 }

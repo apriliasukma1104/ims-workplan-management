@@ -20,7 +20,7 @@ const errorInterceptor = error => {
     switch(error.response.status) {
         case 400:
             console.error(error.response.status, error.message);
-            alert('Nothing to display','Data Not Found');
+            // alert('Nothing to display','Data Not Found');
             break;
 
         case 401: // authentication error, logout the user
@@ -29,11 +29,11 @@ const errorInterceptor = error => {
             router.push('/auth');
             break;
 
+        case 406:
+            alert(error.response.data.message, 'Information!');
+            break;
         default:
-            // console.error(error.response.status, error.message);
-            alert('Server Error');
-            
-
+            // alert('Server Error');
     }
     return Promise.reject(error);
 }

@@ -1,8 +1,6 @@
 <template>
-    <layout title="Work Plan List">
+    <layout title="History List">
     <Toast position="top-center" />
-
-    <ConfDialogDelete :visible.sync="visible" :message="messageConfirm" v-on:onDelete="SaveDelete()"></ConfDialogDelete>
 
         <div class="card">
             <Toolbar class="p-mb-4">
@@ -21,8 +19,23 @@
                         {{ ((lazyParams.page - 1) * dataPerPage) + slotProps.index + 1 }}
                     </template>
                 </Column>
+                <Column header="Date">
+                    <template #body="slotProps">
+                    <small>
+                        <b>Submitted on: </b>
+                        <br>
+                        {{ slotProps.data._date_submitted }}
+                    </small>
+                    <br>
+                    <small>
+                        <b>Approved/Rejected on: </b>
+                        <br>
+                        {{ slotProps.data._created_at }}
+                    </small>
+                    </template>
+                </Column>
                 <Column field="code_workplans" header="Code"></Column>
-                <Column header="Work Plans" style="max-width: 200px;">
+                <Column header="Work Plans" style="max-width: 250px;">
                     <template #body="slotProps">
                         {{ slotProps.data.name }}
                         <br>
@@ -34,7 +47,7 @@
                     </template>
                 </Column>
                 <Column field="project_type" header="Type"></Column>
-                <Column field="team_leader" header="PIC">
+                <Column header="PIC">
                     <template #body="slotProps">
                         {{ slotProps.data.team_leader.name }}
                         <br>
@@ -63,23 +76,11 @@
                     <template #body="slotProps">
                         {{ slotProps.data.validation }}
                         <br>
-                    <small v-if="slotProps.data.validation !== null">
+                    <small>
                         <b>Note: </b>
                         <br>
-                        {{ slotProps.data.note ? slotProps.data.note : '-'  }}
+                        {{ slotProps.data.note ? slotProps.data.note : '-' }}
                     </small>
-                    </template>
-                </Column>
-                <Column :exportable="false" header="Action">
-                    <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" :title="'Edit'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-danger" :title="'Delete'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onSubmit(slotProps.data)" icon="pi pi-send" class="p-button-rounded p-button-success" :title="'Submit'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-warning" 
-                            v-if="slotProps.data.status === 'On progress' || slotProps.data.status === 'Completed'" :title="'View'" />
                     </template>
                 </Column>
                 <template #empty>
@@ -93,45 +94,27 @@
 <script>
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
-import ConfDialogDelete from "../../Components/ConfDialogDelete.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { pageHistory } from '../../Api/history.api.js';
 import { formatRupiah } from "../../utils/index.js";
-import { pageListWorkplans, updateStatusSubmitted, deleteWorkplan } from '../../Api/workplans.api.js';
 
 export default {
     name: "ListWorkplans",
     components: {
-        Layout,
         ErrorsAndMessages,
-        ConfDialogDelete
+        Layout,
     },
     setup() {
         const user = computed(() => usePage().props.value.auth.user);
-        const checkCodeUnit = (codeUnit) => {
-            switch (user.value.role) {
-                case 'Kabag':
-                    return codeUnit === 'ADG' && user.value.sub_department === 'Apps Development & Governance' ||
-                           codeUnit === 'ERP' && user.value.sub_department === 'ERP & EIM' ||
-                           codeUnit === 'INS' && user.value.sub_department === 'Infrastructure & Support';
-                default:
-                    return false;
-            }
-        };
-
         return {
             user,
-            checkCodeUnit
         }
     },
     data() {
         return {
             projects: [],
-            form:{},
-            selectedDataDelete:[],
-            display: false,
-            messageConfirm:null,
-            visible:false,
+            display:false,
             dataPerPage: 10, 
             totalData: 0, 
             error: {},
@@ -147,7 +130,7 @@ export default {
     methods: {
         async loadLazyData() {
             this.loading = true;
-            var response = await pageListWorkplans ({ page : this.lazyParams.page, search: this.search });
+            var response = await  pageHistory ({ page : this.lazyParams.page, search: this.search });
             this.projects = response.data.data.data;
             this.totalData = response.data.data.total;
             this.loading = false;
@@ -163,47 +146,19 @@ export default {
             this.lazyParams.page = event.page + 1;
             this.loadLazyData();
         },
-        onEdit(data) {
-        this.$inertia.visit(`/workplans/list/edit_workplan?id=${data.id}`);
-        },
-        onDelete(data){
-            this.visible = true;
-            this.messageConfirm = `Do you want to delete this data (code: ${data.code_workplans})?`;
-            this.selectedDataDelete = data;
-        },
-        async SaveDelete(){
-            this.visible = false;
-            this.form.id = this.selectedDataDelete.id;
-            await deleteWorkplan(this.form); 
-            this.$toast.add({severity:'info', summary: 'Deleted!', detail:'Data Deleted Successfully!', life: 3000});
-            this.loadLazyData();
-        },
-        async onSubmit(item){
-            this.loading = true;
-            var response = await updateStatusSubmitted(item);
-            this.loading = false;
-            this.loadLazyData();
-        },
-        onView(data) {
-        this.$inertia.visit(`/workplans/list/view_workplan?id=${data.id}`);
-        },
         getStatusBadgeClass(status) {
-            switch (status) {
-                case "Created":
-                return "badge badge-secondary";
-                case "Submitted":
-                return "badge badge-warning";
-                case "On progress":
-                return "badge badge-primary";
-                case "Overdue":
-                return "badge badge-danger";
-                case "Rejected":
-                return "badge badge-dark";
-                case "Completed":
-                return "badge badge-success";
-                default:
-                return "badge";
-            }
+        switch (status) {
+            case "On progress":
+            return "badge badge-primary";
+            case "Overdue":
+            return "badge badge-danger";
+            case "Rejected":
+            return "badge badge-dark";
+            case "Completed":
+            return "badge badge-success";
+            default:
+            return "badge";
+        }
         },
     },
     mounted() {
@@ -211,6 +166,8 @@ export default {
         this.totalData = this.$page.props.projects.total;
     }
 };
+
+const date = ref();
 
 </script>
 

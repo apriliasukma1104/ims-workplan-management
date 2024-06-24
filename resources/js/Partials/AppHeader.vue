@@ -1,4 +1,6 @@
 <template>
+  <ConfirmDialog />
+
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -14,7 +16,7 @@
         <span class="navbar-text mr-3" v-if="user">
             Logged in as {{user.name}}
         </span>
-        <inertia-link :href="$route('logout')" as="button" method="get" class="btn btn-sm nav-link logout-link " style="display: inline;background: #ff0008" type="button">Logout</inertia-link>
+        <button @click="confirmLogout" class="btn btn-sm nav-link logout-link" style="display: inline; background: #ff0008" type="button">Logout</button>
       </li>      
     </ul>
   </nav>
@@ -24,7 +26,8 @@
   <aside class="main-sidebar sidebar-light-red elevation-4" style="position: fixed;">  
     <!-- Brand Logo -->
     <div class="brand-link text-center">
-      <span style="font-size: 22px; color: #ff0008; font-weight: bold;"><b style="color: #000;">WorkPlan </b>Management</span>
+      <span><b style="color: #ff0008;">IMS </b></span>
+      <span style="font-size: 19px; color: #000; font-weight: bold;">Work Plan Management</span>
     </div>
 
     <!-- Sidebar -->
@@ -34,7 +37,7 @@
       <nav class="mt-2">
         <ul class="nav nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           
-          <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'Staf')">
+          <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'Kabag' || user.role === 'Staf' || user.role === 'Admin')">
             <a :href="$route('dashboard.index')" class="nav-link" :class="$route().current('dashboard.index') ? 'active' : ''">
               <i class="fas fa-th-large nav-icon"></i>
               <p>Dashboard</p>
@@ -65,7 +68,7 @@
             </ul>
           </li>
 
-          <li class="nav-item" :class="$route().current().indexOf('workplans') >= 0 ? 'menu-open' : ''" v-if="user && (user.role === 'Kadep' || user.role === 'Kabag' || user.role === 'Staf')" >
+          <li class="nav-item" :class="$route().current().indexOf('workplans') >= 0 ? 'menu-open' : ''" v-if="user && (user.role === 'Kabag' || user.role === 'Staf')" >
             <a href="#" class="nav-link" :class="$route().current().indexOf('workplans') >= 0 ? 'active' : ''">
               <i class="nav-icon fas fa-th-list"></i>
               <p>
@@ -74,7 +77,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item" v-if="user && (user.role === 'Kadep' || user.role === 'Kabag' || user.role === 'Staf')">
+              <li class="nav-item" v-if="user && (user.role === 'Kabag' || user.role === 'Staf')">
                 <a :href="$route('workplans.list_workplans')" class="nav-link" :class="$route().current('workplans.list_workplans') ? 'active' : ''">
                   <i class="far fa-circle nav-icon"></i>
                   <p>List</p>
@@ -88,6 +91,21 @@
               </li>
             </ul>
           </li>
+
+          <li class="nav-item" v-if="user && user.role === 'Kadep'">
+            <a :href="$route('queue.page_queue')" class="nav-link" :class="$route().current('queue.page_queue') ? 'active' : ''">
+              <i class="fas fa-layer-group nav-icon"></i>
+              <p>Queue</p>
+            </a>
+          </li>
+
+          <li class="nav-item" v-if="user && user.role === 'Kadep'">
+            <a :href="$route('history.page_history')" class="nav-link" :class="$route().current('history.page_history') ? 'active' : ''">
+              <i class="fas fa-history nav-icon"></i>
+              <p>History</p>
+            </a>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -100,14 +118,34 @@
 <script>
 import {computed} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
+import { useConfirm } from 'primevue/useconfirm';
 
 export default {
     name: "AppHeader",
+
     setup() {
-        const user = computed(() => usePage().props.value.auth.user);
-        return {
-            user
-        }
+      const user = computed(() => usePage().props.value.auth.user);
+      const confirm = useConfirm();
+
+      const confirmLogout = () => {
+        confirm.require({
+          message: 'Are you sure you want to logout?',
+          header: 'Confirm Logout ',
+          icon: 'pi pi-exclamation-triangle',
+          rejectLabel: 'Cancel',
+          rejectClass: 'p-button-secondary p-button-outlined',
+          acceptLabel: 'Logout',
+          acceptClass: 'p-button-danger',
+          accept: () => {
+            window.location.href = '/logout';
+          }
+        });
+      };
+
+      return {
+        user,
+        confirmLogout
+      }
     },
 }
 </script>

@@ -1,8 +1,20 @@
 <template>
-    <layout title="Work Plan List">
+    <layout title="Queue List">
     <Toast position="top-center" />
 
-    <ConfDialogDelete :visible.sync="visible" :message="messageConfirm" v-on:onDelete="SaveDelete()"></ConfDialogDelete>
+        <ConfDialog :visible.sync="visible" :message="messageConfirm" v-on:onApprove="SaveApprove()"></ConfDialog>
+
+        <Dialog header="Header" v-model:visible="display" style="width: 400px;" >
+            <template #header>
+                <label>Rejection Note</label>
+            </template>
+            <div class="p-fluid">
+                <textarea v-model="form.note" class="form-control" style="height: 150px;"></textarea>
+            </div>
+            <template #footer>
+                <Button @click="saveNotApprove" label="Save" icon="pi pi-check" autofocus class="p-button-sm" />
+            </template>
+        </Dialog>
 
         <div class="card">
             <Toolbar class="p-mb-4">
@@ -22,7 +34,7 @@
                     </template>
                 </Column>
                 <Column field="code_workplans" header="Code"></Column>
-                <Column header="Work Plans" style="max-width: 200px;">
+                <Column header="Work Plans" style="max-width: 250px;">
                     <template #body="slotProps">
                         {{ slotProps.data.name }}
                         <br>
@@ -34,7 +46,7 @@
                     </template>
                 </Column>
                 <Column field="project_type" header="Type"></Column>
-                <Column field="team_leader" header="PIC">
+                <Column header="PIC">
                     <template #body="slotProps">
                         {{ slotProps.data.team_leader.name }}
                         <br>
@@ -59,27 +71,11 @@
                         </span>
                     </template>
                 </Column>
-                <Column header="Validation">
-                    <template #body="slotProps">
-                        {{ slotProps.data.validation }}
-                        <br>
-                    <small v-if="slotProps.data.validation !== null">
-                        <b>Note: </b>
-                        <br>
-                        {{ slotProps.data.note ? slotProps.data.note : '-'  }}
-                    </small>
-                    </template>
-                </Column>
                 <Column :exportable="false" header="Action">
                     <template #body="slotProps">
-                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" :title="'Edit'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onDelete(slotProps.data)" icon="pi pi-trash" class="p-button-rounded p-button-danger" :title="'Delete'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onSubmit(slotProps.data)" icon="pi pi-send" class="p-button-rounded p-button-success" :title="'Submit'" style="margin-right: 5px;" 
-                            v-if="user.role === 'Kabag' && slotProps.data.status === 'Created' && checkCodeUnit(slotProps.data.code_unit)" />
-                        <Button @click="onView(slotProps.data)" icon="pi pi-eye" class="p-button-rounded p-button-warning" 
-                            v-if="slotProps.data.status === 'On progress' || slotProps.data.status === 'Completed'" :title="'View'" />
+                        <Button @click="onEdit(slotProps.data)" icon="pi pi-pencil" class="p-button-rounded p-button-primary" :title="'Edit'" style="margin-right: 5px;" />
+                        <Button @click="onNotApprove(slotProps.data)" icon="pi pi-times" class="p-button-rounded p-button-danger" :title="'Reject'" style="margin-right: 5px;" />
+                        <Button @click="onApprove(slotProps.data)" icon="pi pi-check" class="p-button-rounded p-button-success" :title="'Approve'" />
                     </template>
                 </Column>
                 <template #empty>
@@ -93,43 +89,33 @@
 <script>
 import Layout from "../../Partials/Layout";
 import ErrorsAndMessages from "../../Partials/ErrorsAndMessages";
-import ConfDialogDelete from "../../Components/ConfDialogDelete.vue";
+import ConfDialog from "../../Components/ConfDialog.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { formatRupiah } from "../../utils/index.js";
-import { pageListWorkplans, updateStatusSubmitted, deleteWorkplan } from '../../Api/workplans.api.js';
-
+import { pageQueue } from '../../Api/queue.api.js';
+import { approve, notApprove  } from '../../Api/history.api.js';
+ 
 export default {
     name: "ListWorkplans",
     components: {
         Layout,
         ErrorsAndMessages,
-        ConfDialogDelete
+        ConfDialog
     },
     setup() {
         const user = computed(() => usePage().props.value.auth.user);
-        const checkCodeUnit = (codeUnit) => {
-            switch (user.value.role) {
-                case 'Kabag':
-                    return codeUnit === 'ADG' && user.value.sub_department === 'Apps Development & Governance' ||
-                           codeUnit === 'ERP' && user.value.sub_department === 'ERP & EIM' ||
-                           codeUnit === 'INS' && user.value.sub_department === 'Infrastructure & Support';
-                default:
-                    return false;
-            }
-        };
 
         return {
-            user,
-            checkCodeUnit
+            user
         }
     },
     data() {
         return {
             projects: [],
+            display:false,
             form:{},
-            selectedDataDelete:[],
-            display: false,
+            selectedDataApprove:[],
             messageConfirm:null,
             visible:false,
             dataPerPage: 10, 
@@ -138,7 +124,7 @@ export default {
             lazyParams: {
                 page: 1
             },
-            loading: false
+            loading: false,
         };
     },
     props: {
@@ -147,7 +133,7 @@ export default {
     methods: {
         async loadLazyData() {
             this.loading = true;
-            var response = await pageListWorkplans ({ page : this.lazyParams.page, search: this.search });
+            var response = await pageQueue ({ page : this.lazyParams.page, search: this.search });
             this.projects = response.data.data.data;
             this.totalData = response.data.data.total;
             this.loading = false;
@@ -164,46 +150,49 @@ export default {
             this.loadLazyData();
         },
         onEdit(data) {
-        this.$inertia.visit(`/workplans/list/edit_workplan?id=${data.id}`);
+        this.$inertia.visit(`/queue/edit_queue?id=${data.id}`);
         },
-        onDelete(data){
+        onApprove(data){
             this.visible = true;
-            this.messageConfirm = `Do you want to delete this data (code: ${data.code_workplans})?`;
-            this.selectedDataDelete = data;
+            this.messageConfirm = `Are you sure? If you proceed, the work plan with code ${data.code_workplans} will be locked as an active work plan to work on.`;
+            this.selectedDataApprove = data;
         },
-        async SaveDelete(){
+        async SaveApprove(){
             this.visible = false;
-            this.form.id = this.selectedDataDelete.id;
-            await deleteWorkplan(this.form); 
-            this.$toast.add({severity:'info', summary: 'Deleted!', detail:'Data Deleted Successfully!', life: 3000});
+            this.form.id = this.selectedDataApprove.id;
+            this.form.validation = 'Approved';
+            await approve(this.form); 
+            this.$toast.add({severity:'success', summary: 'Information!', detail:'Data Saved Successfully!', life: 3000});
             this.loadLazyData();
         },
-        async onSubmit(item){
-            this.loading = true;
-            var response = await updateStatusSubmitted(item);
-            this.loading = false;
-            this.loadLazyData();
+        onNotApprove(data) {
+            this.display = true;
+            this.form.id = data.id;
+            this.form.validation = 'Not Approved';
+            this.form.note = '';
         },
-        onView(data) {
-        this.$inertia.visit(`/workplans/list/view_workplan?id=${data.id}`);
+        async saveNotApprove() {
+            try {
+                this.display = false;
+
+                if (this.form.id && this.form.note) {
+                    await notApprove(this.form); 
+                    this.$toast.add({severity:'success', summary: 'Information!', detail:'Data Saved Successfully!', life: 3000});
+                } else {
+                    this.$toast.add({severity:'error', summary: 'Error!', detail:'Please fill in the note fields!', life: 3000});
+                }
+                this.loadLazyData();
+            } catch (error) {
+                this.$toast.add({severity:'error', summary: 'Error!', detail:'Data Failed to Save!', life: 3000});
+            }
         },
         getStatusBadgeClass(status) {
-            switch (status) {
-                case "Created":
-                return "badge badge-secondary";
-                case "Submitted":
-                return "badge badge-warning";
-                case "On progress":
-                return "badge badge-primary";
-                case "Overdue":
-                return "badge badge-danger";
-                case "Rejected":
-                return "badge badge-dark";
-                case "Completed":
-                return "badge badge-success";
-                default:
-                return "badge";
-            }
+        switch (status) {
+            case "Submitted":
+            return "badge badge-warning";
+            default:
+            return "badge";
+        }
         },
     },
     mounted() {
@@ -211,7 +200,6 @@ export default {
         this.totalData = this.$page.props.projects.total;
     }
 };
-
 </script>
 
 <style scoped>

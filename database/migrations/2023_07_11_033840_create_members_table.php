@@ -17,7 +17,7 @@ class CreateMembersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('nip');
-            $table->string('position');
+            $table->enum('position',['Kepala Departemen','Kepala Bagian','Staf','IT Help Desk']);
             $table->enum('sub_department',['Infrastructure & Support', 'ERP & EIM', 'Apps Development & Governance']);
             $table->enum('role',['Kadep','Kabag','Staf','Admin']);
             $table->string('email')->unique();
