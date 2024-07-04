@@ -1,7 +1,7 @@
 <template>
 	<Dialog v-model:visible="visible" modal header="Information!" :style="{ width: '25rem' }">
         <template #header>
-			<h3>Information</h3>
+			<h4>Information</h4>
 	    </template>
 		{{ message }}
 		<template #footer>
